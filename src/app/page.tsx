@@ -147,12 +147,13 @@ export default function HomePage() {
                 Kytky & eventy
               </p>
               <h2 className="mt-3 font-display text-6xl text-moss-deep sm:text-7xl">
-                Větší zakázky, ne malé kytice
+                Květiny na míru
               </h2>
               <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground">
-                Květiny do domu, do firmy, výzdoba eventů a individuální
-                aranžmá — orientačně od 2&nbsp;000&nbsp;Kč. Objednání probíhá
-                přes poptávku.
+                Květiny do domu, do firmy, výzdoba eventů i individuální
+                aranžmá. Každá zakázka vzniká podle vaší představy a konkrétní
+                příležitosti, orientačně od 2&nbsp;000&nbsp;Kč. Stačí poslat
+                poptávku a domluvíme se na všem ostatním.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <CtaLink href="/kytky">Kytky</CtaLink>
