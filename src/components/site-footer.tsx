@@ -25,7 +25,7 @@ export function SiteFooter() {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="text-sm text-white/90 transition-colors hover:text-white"
+                  className="text-sm text-white/90 transition-colors hover:text-bloom-light"
                 >
                   {item.label}
                 </Link>
@@ -39,14 +39,14 @@ export function SiteFooter() {
           </p>
           <ul className="mt-4 space-y-2 text-sm text-white/90">
             <li>
-              <a href={`mailto:${site.email}`} className="hover:text-white">
+              <a href={`mailto:${site.email}`} className="transition-colors hover:text-bloom-light">
                 {site.email}
               </a>
             </li>
             <li>
               <a
                 href={`tel:${site.phone.replace(/\s/g, "")}`}
-                className="hover:text-white"
+                className="transition-colors hover:text-bloom-light"
               >
                 {site.phone}
               </a>
@@ -56,7 +56,7 @@ export function SiteFooter() {
                 href={site.instagram}
                 target="_blank"
                 rel="noreferrer"
-                className="hover:text-white"
+                className="transition-colors hover:text-bloom-light"
               >
                 @{site.instagramHandle}
               </a>
@@ -76,7 +76,7 @@ export function SiteFooter() {
               href="https://forejt.net"
               target="_blank"
               rel="noreferrer"
-              className="text-bloom-pink underline underline-offset-2 hover:text-bloom-deep"
+              className="text-bloom-pink underline underline-offset-2 hover:text-bloom-light"
             >
               forejt.net
             </a>
@@ -85,7 +85,7 @@ export function SiteFooter() {
               href="https://seo-radar.com"
               target="_blank"
               rel="noreferrer"
-              className="text-bloom-pink underline underline-offset-2 hover:text-bloom-deep"
+              className="text-bloom-pink underline underline-offset-2 hover:text-bloom-light"
             >
               seo-radar.com
             </a>

@@ -40,7 +40,7 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "px-3 py-2 text-xs font-medium tracking-[0.18em] uppercase underline-offset-4 transition-colors hover:text-bloom hover:underline",
+                  "px-3 py-2 text-xs font-medium tracking-[0.18em] uppercase underline-offset-4 transition-colors hover:text-bloom-light hover:underline",
                   active
                     ? "text-bloom underline"
                     : "text-muted-foreground",

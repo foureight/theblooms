@@ -16,6 +16,7 @@
   --font-heading: "acumin-pro-wide", var(--font-name-fallback), ui-sans-serif, system-ui, sans-serif;
   --color-bloom: var(--bloom);
   --color-bloom-deep: var(--bloom-deep);
+  --color-bloom-light: var(--bloom-light);
   --color-bloom-pink: var(--bloom-pink);
   --color-bloom-orange: var(--bloom-orange);
   --color-bloom-yellow: var(--bloom-yellow);
@@ -68,6 +69,7 @@
   --ink: #141814;
   --bloom: #42856c;
   --bloom-deep: #2f5f4d;
+  --bloom-light: #5dba97;
   --bloom-pink: #d75994;
   --bloom-orange: #ef7d61;
   --bloom-yellow: #f9d76d;
