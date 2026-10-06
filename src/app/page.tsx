@@ -62,11 +62,11 @@ export default function HomePage() {
           <div className="mt-8 grid gap-10 md:grid-cols-2">
             <div className="border-t border-bloom/40 pt-6">
               <h2 className="font-display text-5xl text-moss-deep sm:text-6xl">
-                Svatby · kytky · eventy
+                Svatby & kytky
               </h2>
               <p className="mt-3 max-w-sm text-base leading-relaxed text-muted-foreground">
-                Větší zakázky a realizace na míru — napíšete poptávku a domluvíme
-                se společně.
+                Větší zakázky, eventy a realizace na míru — napíšete poptávku a
+                domluvíme se společně.
               </p>
               <CtaLink href="/kontakt" variant="ghost" className="mt-5 px-0">
                 Poslat poptávku →
