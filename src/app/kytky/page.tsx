@@ -39,10 +39,14 @@ export default function KytkyPage() {
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <FadeIn>
           <p className="max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            Nemám klasické květinářství a neberu běžné malé kytice. Zaměřuji se
-            na větší a individuální zakázky — orientačně od{" "}
-            <strong className="font-medium text-foreground">2&nbsp;000&nbsp;Kč</strong>.
-            Objednání není přes e-shop; napište mi poptávku.
+            Nemám klasické květinářství, květiny tvořím vždy na objednávku a
+            podle vaší představy. Věnuji se větším a individuálním zakázkám,
+            orientačně od{" "}
+            <strong className="font-medium text-foreground">
+              2&nbsp;000&nbsp;Kč
+            </strong>
+            . Stačí mi napsat, pro jakou příležitost květiny hledáte, a společně
+            něco vymyslíme.
           </p>
         </FadeIn>
 
