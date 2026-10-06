@@ -27,12 +27,10 @@ Poptávky se logují na server (`/api/inquiry`) — e-mailová služba a platebn
 
 Kontakty (z vizitky): Alena Šmejkalová · theblooms@chtel.biz · +420 775 125 224 · Instagram @thebloomscz
 
-Typografie: značka používá **Acumin Pro Wide** přes Adobe Fonts kit `zwe5oqo`.
+Typografie: celý web běží na **Acumin Pro Wide** (Adobe Fonts kit `zwe5oqo`).
 
-Kit je v kódu defaultně zapnutý. Přepsat jde přes `.env.local`:
+- text / jméno Aleny → Regular (400)
+- nadpisy → Regular (400), wide
+- wordmark BLOOMS → Extra Bold Italic (800)
 
-```bash
-NEXT_PUBLIC_TYPEKIT_ID=zwe5oqo
-```
-
-Jméno Aleny je Regular (400); wordmark BLOOMS používá Extra Bold Italic (800).
+Fallback při výpadku Typekitu: Encode Sans Expanded.
