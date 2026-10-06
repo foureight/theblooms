@@ -58,6 +58,7 @@ V kořeni je `zerops.yml` (Node.js 22, Next.js SSR, port 3000).
 
 Lokálně: `npm run dev` (port 43123). Produkce: `npm run build && npm run start` (port 3000).
 
+Kontakty (z vizitky): Alena Šmejkalová · theblooms@chtel.biz · +420 775 125 224 · Instagram @thebloomscz
 
 Typografie: celý web na **Acumin Pro Wide** (Adobe Fonts kit `zwe5oqo`, včetně češtiny).
 
