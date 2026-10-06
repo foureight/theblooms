@@ -33,10 +33,10 @@ export function BloomLogo({
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        src="/theblooms-white.png"
+        src="/theblooms-white.svg"
         alt="THE BLOOMS"
-        width={300}
-        height={46}
+        width={553}
+        height={85}
         decoding={priority ? "sync" : "async"}
         fetchPriority={priority ? "high" : "auto"}
         className={cn("h-auto w-auto", className)}
