@@ -246,20 +246,31 @@ export default function HomePage() {
       </section>
 
       <section className="border-t border-bloom/30">
-        <div className="mx-auto flex max-w-7xl flex-col gap-12 px-4 py-20 sm:px-6 md:flex-row md:items-end md:justify-between md:gap-16 lg:px-8 lg:py-28">
-          <FadeIn className="max-w-2xl border-l-4 border-bloom pl-6 sm:pl-8">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:py-28">
+          <FadeIn>
+            <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[5/4] lg:aspect-[4/5]">
+              <Image
+                src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=1400&q=80"
+                alt="Svatební květinová realizace"
+                fill
+                className="object-cover"
+                sizes="(max-width:1024px) 100vw, 50vw"
+              />
+            </div>
+          </FadeIn>
+          <FadeIn delay={80} className="lg:py-4">
             <p className="font-display text-5xl leading-[1.05] text-moss-deep sm:text-6xl md:text-7xl text-balance">
               „Jo, přesně tohle chci.“
             </p>
             <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground">
               Podívejte se na realizace, nebo mi rovnou napište.
             </p>
-          </FadeIn>
-          <FadeIn delay={100} className="flex shrink-0 flex-wrap gap-3 md:pb-2">
-            <CtaLink href="/svatby" variant="outline">
-              Realizace
-            </CtaLink>
-            <CtaLink href="/kontakt">Napsat</CtaLink>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <CtaLink href="/svatby" variant="outline">
+                Realizace
+              </CtaLink>
+              <CtaLink href="/kontakt">Napsat</CtaLink>
+            </div>
           </FadeIn>
         </div>
       </section>
