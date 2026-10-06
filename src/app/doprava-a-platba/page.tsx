@@ -13,6 +13,8 @@ export default function ShippingPage() {
     <LegalPage
       title="Doprava a platba"
       path="/doprava-a-platba"
+      image="https://images.unsplash.com/photo-1508610048659-a06b669e3321?w=1800&q=80"
+      imageAlt="Sezónní věnec THE BLOOMS"
       description="Přehled způsobů doručení a plateb u online nákupu sezónních věnců."
     >
       <LegalSection title="1. Doprava">

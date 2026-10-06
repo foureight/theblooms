@@ -13,6 +13,8 @@ export default function ObchodniPodminkyPage() {
     <LegalPage
       title="Obchodní podmínky"
       path="/obchodni-podminky"
+      image="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=1800&q=80"
+      imageAlt="Floristický inventář THE BLOOMS"
       description={`Tyto podmínky upravují nákup sezónních věnců na webu ${site.name} a rámec poptávkových služeb (svatby, kytky, eventy, workshopy).`}
     >
       <LegalSection title="1. Provozovatel">

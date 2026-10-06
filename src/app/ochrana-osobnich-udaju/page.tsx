@@ -13,6 +13,8 @@ export default function PrivacyPage() {
     <LegalPage
       title="Ochrana osobních údajů"
       path="/ochrana-osobnich-udaju"
+      image="https://images.unsplash.com/photo-1487070183336-b863922373d4?w=1800&q=80"
+      imageAlt="Detail květinového aranžmá"
       description={`Informace o tom, jak ${site.name} (${site.owner}) zpracovává osobní údaje návštěvníků a zákazníků.`}
     >
       <LegalSection title="1. Správce údajů">

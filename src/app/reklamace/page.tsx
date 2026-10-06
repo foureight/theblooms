@@ -13,6 +13,8 @@ export default function ClaimsPage() {
     <LegalPage
       title="Reklamace"
       path="/reklamace"
+      image="https://images.unsplash.com/photo-1478147251538-a3d440df566b?w=1800&q=80"
+      imageAlt="Floristická práce THE BLOOMS"
       description="Postup při reklamaci zboží z e-shopu věnců a při výhradách ke službám na míru."
     >
       <LegalSection title="1. Reklamace věnce">
