@@ -27,7 +27,7 @@ export function SiteHeader() {
           <BloomLogo
             variant="full"
             priority
-            className="h-7 w-auto sm:h-8"
+            className="h-6 w-auto sm:h-7"
           />
         </Link>
 
