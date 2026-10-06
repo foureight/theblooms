@@ -180,7 +180,7 @@ export default function HomePage() {
                 <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
                   E-shop
                 </p>
-                <h2 className="mt-2 font-display text-6xl text-moss-deep sm:text-7xl">
+                <h2 className="mt-2 font-display text-5xl text-moss-deep sm:text-6xl">
                   Sezónní věnce
                 </h2>
               </div>
