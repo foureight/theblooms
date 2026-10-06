@@ -33,7 +33,7 @@ export default function HomePage() {
             Floristické studio pro svatby, větší květinové realizace a věnce
           </h1>
           <p className="reveal reveal-delay-2 mt-3 max-w-md text-sm leading-relaxed text-white/70">
-            Ne klasické květinářství — osobní práce v dílně, od celého
+            Nejsem klasické květinářství — osobní práce v dílně, od celého
             svatebního konceptu po sezónní věnce.
           </p>
           <div className="reveal reveal-delay-3 mt-8 flex flex-wrap gap-3">
