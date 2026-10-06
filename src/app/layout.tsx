@@ -7,9 +7,8 @@ import { site } from "@/data/site";
 import "./globals.css";
 
 /**
- * Primary UI font with full Czech (latin-ext).
- * Typekit Acumin Pro Wide kit zwe5oqo is currently subset without CE glyphs
- * (Š/č/ř/ě/ů/ž…) — so Acumin is used only for ASCII brand wordmark.
+ * Encode Sans Expanded = fallback if Typekit is blocked.
+ * Primary typeface is Acumin Pro Wide via kit zwe5oqo (with Czech).
  */
 const encodeExpanded = Encode_Sans_Expanded({
   variable: "--font-name-fallback",
