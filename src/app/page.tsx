@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { BloomWordmarkLive } from "@/components/bloom-logo";
+import { BloomLogo } from "@/components/bloom-logo";
 import { CtaLink } from "@/components/cta-link";
 import { FadeIn } from "@/components/fade-in";
 import { weddings } from "@/data/weddings";
@@ -23,10 +23,11 @@ export default function HomePage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/20" />
         <div className="relative mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-end px-4 pb-16 pt-28 sm:px-6 lg:px-8 lg:pb-24">
-          <div className="reveal">
-            <BloomWordmarkLive
-              className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl"
-              tone="dark"
+          <div className="reveal inline-flex max-w-full items-center rounded-sm bg-white px-5 py-3 sm:px-7 sm:py-4">
+            <BloomLogo
+              variant="full"
+              priority
+              className="h-10 w-auto sm:h-14 md:h-16"
             />
           </div>
           <h1 className="reveal reveal-delay-1 mt-6 max-w-2xl font-sans text-lg font-normal tracking-wide text-white/90 sm:text-xl">
