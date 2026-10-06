@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { BloomLogo } from "@/components/bloom-logo";
-import { nav, site } from "@/data/site";
+import { legalNav, nav, site } from "@/data/site";
 
 export function SiteFooter() {
   return (
     <footer className="mt-0 bg-moss-deep text-white">
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-8">
         <div>
           <BloomLogo tone="white" className="h-8 w-auto" />
           <p className="mt-4 font-name text-lg font-bold tracking-wide text-bloom-yellow">
@@ -35,11 +35,31 @@ export function SiteFooter() {
         </div>
         <div>
           <p className="text-xs tracking-[0.2em] uppercase text-white/70">
+            Informace
+          </p>
+          <ul className="mt-4 space-y-2">
+            {legalNav.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className="text-sm text-white/90 transition-colors hover:text-bloom-light"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <p className="text-xs tracking-[0.2em] uppercase text-white/70">
             Kontakt
           </p>
           <ul className="mt-4 space-y-2 text-sm text-white/90">
             <li>
-              <a href={`mailto:${site.email}`} className="transition-colors hover:text-bloom-light">
+              <a
+                href={`mailto:${site.email}`}
+                className="transition-colors hover:text-bloom-light"
+              >
                 {site.email}
               </a>
             </li>

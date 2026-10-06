@@ -18,6 +18,13 @@ export const nav = [
   { href: "/kontakt", label: "Kontakt" },
 ] as const;
 
+export const legalNav = [
+  { href: "/obchodni-podminky", label: "Obchodní podmínky" },
+  { href: "/ochrana-osobnich-udaju", label: "Ochrana osobních údajů" },
+  { href: "/doprava-a-platba", label: "Doprava a platba" },
+  { href: "/reklamace", label: "Reklamace" },
+] as const;
+
 export type InquiryType = "svatba" | "kytky" | "event" | "workshop" | "jine";
 
 export const inquiryTypes: { value: InquiryType; label: string }[] = [
