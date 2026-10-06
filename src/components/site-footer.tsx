@@ -68,11 +68,11 @@ export function SiteFooter() {
       </div>
 
       <div className="bg-white text-foreground">
-        <div className="mx-auto flex max-w-7xl flex-col items-center gap-3 px-4 py-4 sm:flex-row sm:justify-between sm:gap-6 lg:px-8">
-          <p className="order-1 text-center text-sm sm:flex-1 sm:text-left md:text-center">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6 lg:px-8">
+          <p className="text-sm">
             © {new Date().getFullYear()} THE BLOOMS – {site.owner}
           </p>
-          <p className="order-2 text-center text-xs leading-relaxed text-muted-foreground sm:text-right">
+          <p className="text-xs leading-relaxed text-muted-foreground sm:text-right">
             Design, programming a SEO / GEO
             <br />
             <a
