@@ -199,4 +199,23 @@
   .hero-media {
     animation: soft-zoom 1.6s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
+  /* Logo flower: ~5s pause, then one slow turn, repeat */
+  @keyframes bloom-flower-spin {
+    0%,
+    77% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  .logo-flower-spin {
+    transform-origin: center center;
+    animation: bloom-flower-spin 6.5s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .logo-flower-spin {
+      animation: none;
+    }
+  }
 }
