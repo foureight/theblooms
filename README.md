@@ -23,7 +23,7 @@ Otevřete [http://127.0.0.1:43123](http://127.0.0.1:43123).
 
 Next.js (App Router), TypeScript, Tailwind CSS, shadcn/ui.
 
-Poptávky se logují na server (`/api/inquiry`) — e-mailová služba a platební brána zatím nejsou napojené.
+Poptávky se logují na server (`/api/inquiry`) — e-mailová služba a platební brána zatím nejsou napojené. Formulář má matematickou captchu (HMAC) a honeypot; volitelně nastavte `CAPTCHA_SECRET` v prostředí.
 
 Kontakty (z vizitky): Alena Šmejkalová · theblooms@chtel.biz · +420 775 125 224 · Instagram @thebloomscz
 

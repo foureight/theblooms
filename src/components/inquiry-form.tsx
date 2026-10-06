@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 import type { InquiryType } from "@/data/site";
 import { inquiryTypes } from "@/data/site";
 import { Button } from "@/components/ui/button";
@@ -19,15 +19,44 @@ type Props = {
   defaultType?: InquiryType;
 };
 
+type Captcha = {
+  token: string;
+  question: string;
+};
+
 export function InquiryForm({ defaultType = "svatba" }: Props) {
   const [type, setType] = useState<InquiryType>(defaultType);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">(
     "idle",
   );
+  const [errorKind, setErrorKind] = useState<"generic" | "captcha" | null>(
+    null,
+  );
+  const [captcha, setCaptcha] = useState<Captcha | null>(null);
+  const [captchaLoading, setCaptchaLoading] = useState(true);
+
+  const loadCaptcha = useCallback(async () => {
+    setCaptchaLoading(true);
+    try {
+      const res = await fetch("/api/captcha", { cache: "no-store" });
+      if (!res.ok) throw new Error("captcha");
+      const data = (await res.json()) as Captcha;
+      setCaptcha(data);
+    } catch {
+      setCaptcha(null);
+    } finally {
+      setCaptchaLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadCaptcha();
+  }, [loadCaptcha]);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("loading");
+    setErrorKind(null);
     const form = e.currentTarget;
     const data = new FormData(form);
 
@@ -44,12 +73,27 @@ export function InquiryForm({ defaultType = "svatba" }: Props) {
           weddingDate: data.get("weddingDate"),
           weddingPlace: data.get("weddingPlace"),
           weddingVision: data.get("weddingVision"),
+          website: data.get("website"),
+          captchaToken: captcha?.token,
+          captchaAnswer: data.get("captchaAnswer"),
         }),
       });
-      if (!res.ok) throw new Error("fail");
+      if (!res.ok) {
+        const payload = (await res.json().catch(() => null)) as {
+          code?: string;
+        } | null;
+        if (payload?.code === "captcha") {
+          setErrorKind("captcha");
+          void loadCaptcha();
+        } else {
+          setErrorKind("generic");
+        }
+        throw new Error("fail");
+      }
       setStatus("success");
       form.reset();
       setType(defaultType);
+      void loadCaptcha();
     } catch {
       setStatus("error");
     }
@@ -75,6 +119,18 @@ export function InquiryForm({ defaultType = "svatba" }: Props) {
 
   return (
     <form onSubmit={onSubmit} className="space-y-5">
+      {/* Honeypot — leave empty */}
+      <div className="absolute -left-[9999px] top-auto h-0 w-0 overflow-hidden" aria-hidden>
+        <Label htmlFor="website">Web</Label>
+        <Input
+          id="website"
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </div>
+
       <div className="space-y-2">
         <Label htmlFor="type">Čeho se poptávka týká</Label>
         <Select
@@ -160,14 +216,51 @@ export function InquiryForm({ defaultType = "svatba" }: Props) {
         />
       </div>
 
+      <div className="space-y-2">
+        <Label htmlFor="captchaAnswer">
+          Ověření{" "}
+          <span className="font-normal text-muted-foreground">
+            {captchaLoading
+              ? "(načítám…)"
+              : captcha
+                ? `— ${captcha.question}`
+                : "(nedostupné)"}
+          </span>
+        </Label>
+        <div className="flex flex-wrap items-center gap-3">
+          <Input
+            id="captchaAnswer"
+            name="captchaAnswer"
+            inputMode="numeric"
+            autoComplete="off"
+            required
+            disabled={captchaLoading || !captcha}
+            placeholder="Výsledek"
+            className="max-w-[10rem]"
+          />
+          <button
+            type="button"
+            onClick={() => void loadCaptcha()}
+            className="text-xs tracking-wide text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+          >
+            Nový příklad
+          </button>
+        </div>
+      </div>
+
       {status === "error" && (
         <p className="text-sm text-destructive">
-          Odeslání se nepovedlo. Zkuste to prosím znovu, nebo napište přímo na
-          e-mail.
+          {errorKind === "captcha"
+            ? "Ověření nesedí. Zkuste nový příklad a odešlete znovu."
+            : "Odeslání se nepovedlo. Zkuste to prosím znovu, nebo napište přímo na e-mail."}
         </p>
       )}
 
-      <Button type="submit" disabled={status === "loading"} className="w-full sm:w-auto">
+      <Button
+        type="submit"
+        disabled={status === "loading" || captchaLoading || !captcha}
+        className="w-full sm:w-auto"
+      >
         {status === "loading" ? "Odesílám…" : "Odeslat poptávku"}
       </Button>
     </form>
