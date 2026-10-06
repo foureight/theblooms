@@ -26,7 +26,7 @@ export function WreathCatalog() {
             type="button"
             onClick={() => setSeason(s)}
             className={cn(
-              "px-4 py-2 text-[11px] tracking-[0.16em] uppercase transition-colors",
+              "px-4 py-2 text-xs tracking-[0.16em] uppercase transition-colors",
               season === s
                 ? "bg-moss-deep text-primary-foreground"
                 : "bg-muted text-muted-foreground hover:text-foreground",
@@ -62,7 +62,7 @@ export function WreathCatalog() {
               </div>
               <div className="mt-4 flex items-start justify-between gap-3">
                 <div>
-                  <h2 className="font-display text-xl text-moss-deep">
+                  <h2 className="font-display text-2xl text-moss-deep">
                     {w.name}
                   </h2>
                   <p className="mt-1 text-xs tracking-[0.12em] uppercase text-muted-foreground">

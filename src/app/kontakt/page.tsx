@@ -32,13 +32,13 @@ export default async function KontaktPage({ searchParams }: Props) {
     <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
       <div className="grid gap-14 lg:grid-cols-[0.85fr_1.15fr]">
         <FadeIn>
-          <p className="text-[11px] tracking-[0.22em] uppercase text-muted-foreground">
+          <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
             Domluvíme se
           </p>
-          <h1 className="mt-3 font-display text-5xl text-bloom-deep sm:text-6xl">
+          <h1 className="mt-3 font-display text-6xl text-bloom-deep sm:text-7xl">
             Kontakt
           </h1>
-          <p className="mt-3 font-name text-xl font-medium tracking-wide text-foreground">
+          <p className="mt-3 font-name text-2xl font-medium tracking-wide text-foreground">
             {site.owner}
           </p>
           <p className="mt-5 max-w-md text-sm leading-relaxed text-muted-foreground">
@@ -47,7 +47,7 @@ export default async function KontaktPage({ searchParams }: Props) {
           </p>
           <dl className="mt-10 space-y-4 text-sm">
             <div>
-              <dt className="text-[11px] tracking-[0.16em] uppercase text-muted-foreground">
+              <dt className="text-xs tracking-[0.16em] uppercase text-muted-foreground">
                 E-mail
               </dt>
               <dd className="mt-1">
@@ -57,7 +57,7 @@ export default async function KontaktPage({ searchParams }: Props) {
               </dd>
             </div>
             <div>
-              <dt className="text-[11px] tracking-[0.16em] uppercase text-muted-foreground">
+              <dt className="text-xs tracking-[0.16em] uppercase text-muted-foreground">
                 Telefon
               </dt>
               <dd className="mt-1">
@@ -70,7 +70,7 @@ export default async function KontaktPage({ searchParams }: Props) {
               </dd>
             </div>
             <div>
-              <dt className="text-[11px] tracking-[0.16em] uppercase text-muted-foreground">
+              <dt className="text-xs tracking-[0.16em] uppercase text-muted-foreground">
                 Instagram
               </dt>
               <dd className="mt-1">

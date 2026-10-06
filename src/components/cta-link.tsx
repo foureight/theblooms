@@ -18,7 +18,7 @@ export function CtaLink({
     <Link
       href={href}
       className={cn(
-        "inline-flex items-center justify-center px-6 py-3 text-[11px] font-medium tracking-[0.2em] uppercase transition-all duration-300",
+        "inline-flex items-center justify-center px-7 py-3.5 text-xs font-medium tracking-[0.2em] uppercase transition-all duration-300",
         variant === "solid" &&
           "bg-bloom-deep text-primary-foreground hover:bg-bloom",
         variant === "outline" &&

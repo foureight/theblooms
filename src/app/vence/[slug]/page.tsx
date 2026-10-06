@@ -30,7 +30,7 @@ export default async function WreathDetailPage({ params }: Props) {
     <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
       <Link
         href="/vence"
-        className="text-[11px] tracking-[0.16em] uppercase text-muted-foreground hover:text-foreground"
+        className="text-xs tracking-[0.16em] uppercase text-muted-foreground hover:text-foreground"
       >
         ← Všechny věnce
       </Link>
@@ -46,10 +46,10 @@ export default async function WreathDetailPage({ params }: Props) {
           />
         </div>
         <div className="flex flex-col justify-center">
-          <p className="text-[11px] tracking-[0.18em] uppercase text-muted-foreground">
+          <p className="text-xs tracking-[0.18em] uppercase text-muted-foreground">
             {wreath.season}
           </p>
-          <h1 className="mt-2 font-display text-4xl text-moss-deep sm:text-5xl">
+          <h1 className="mt-2 font-display text-5xl text-moss-deep sm:text-6xl">
             {wreath.name}
           </h1>
           <p className="mt-4 text-2xl font-medium">{formatPrice(wreath.price)}</p>

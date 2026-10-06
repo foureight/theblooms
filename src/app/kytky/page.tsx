@@ -32,13 +32,13 @@ export default function KytkyPage() {
         />
         <div className="absolute inset-0 bg-moss-deep/40" />
         <div className="absolute inset-x-0 bottom-0 mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-          <h1 className="font-display text-5xl text-white sm:text-6xl">Kytky</h1>
+          <h1 className="font-display text-6xl text-white sm:text-7xl">Kytky</h1>
         </div>
       </div>
 
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <FadeIn>
-          <p className="max-w-2xl text-base leading-relaxed text-muted-foreground">
+          <p className="max-w-2xl text-lg leading-relaxed text-muted-foreground">
             Nemám klasické květinářství a neberu běžné malé kytice. Zaměřuji se
             na větší a individuální zakázky — orientačně od{" "}
             <strong className="font-medium text-foreground">2&nbsp;000&nbsp;Kč</strong>.
@@ -71,10 +71,10 @@ export default function KytkyPage() {
               />
             </div>
             <div>
-              <p className="text-[11px] tracking-[0.22em] uppercase text-muted-foreground">
+              <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
                 Eventy
               </p>
-              <h2 className="mt-2 font-display text-4xl text-moss-deep">
+              <h2 className="mt-2 font-display text-5xl text-moss-deep">
                 Výzdoba firemních akcí
               </h2>
               <p className="mt-4 text-sm leading-relaxed text-muted-foreground">

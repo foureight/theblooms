@@ -58,7 +58,7 @@ export function InquiryForm({ defaultType = "svatba" }: Props) {
   if (status === "success") {
     return (
       <div className="border border-moss/25 bg-card px-6 py-10 text-center">
-        <p className="font-display text-3xl text-moss-deep">Děkuji</p>
+        <p className="font-display text-4xl text-moss-deep">Děkuji</p>
         <p className="mt-3 text-sm text-muted-foreground">
           Vaše poptávka je u mě. Ozvu se co nejdřív.
         </p>
@@ -120,7 +120,7 @@ export function InquiryForm({ defaultType = "svatba" }: Props) {
 
       {type === "svatba" && (
         <div className="space-y-5 border border-border/70 bg-muted/40 p-4">
-          <p className="text-[11px] tracking-[0.16em] uppercase text-muted-foreground">
+          <p className="text-xs tracking-[0.16em] uppercase text-muted-foreground">
             Detaily svatby
           </p>
           <div className="grid gap-5 sm:grid-cols-2">

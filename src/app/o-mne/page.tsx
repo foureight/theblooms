@@ -27,16 +27,16 @@ export default function AboutPage() {
           </div>
         </FadeIn>
         <FadeIn delay={80}>
-          <p className="text-[11px] tracking-[0.22em] uppercase text-muted-foreground">
+          <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
             Osobně
           </p>
-          <h1 className="mt-3 font-name text-4xl font-medium tracking-wide text-foreground sm:text-5xl md:text-6xl">
+          <h1 className="mt-3 font-name text-5xl font-medium tracking-wide text-foreground sm:text-6xl md:text-7xl">
             {site.owner}
           </h1>
           <div className="mt-4">
             <BloomLogo variant="wordmark" className="h-8 w-auto sm:h-10" />
           </div>
-          <div className="mt-8 space-y-5 text-sm leading-relaxed text-muted-foreground sm:text-base">
+          <div className="mt-8 space-y-5 text-base leading-relaxed text-muted-foreground sm:text-lg">
             <p>
               Za {site.name} stojím já — {site.owner}. Pracuji ve vlastní dílně
               — bez kamenné prodejny a bez klasického květinářství. Věnuji se

@@ -19,7 +19,7 @@ export function SiteFooter() {
           </p>
         </div>
         <div>
-          <p className="text-[11px] tracking-[0.2em] uppercase text-primary-foreground/55">
+          <p className="text-xs tracking-[0.2em] uppercase text-primary-foreground/55">
             Menu
           </p>
           <ul className="mt-4 space-y-2">
@@ -36,7 +36,7 @@ export function SiteFooter() {
           </ul>
         </div>
         <div>
-          <p className="text-[11px] tracking-[0.2em] uppercase text-primary-foreground/55">
+          <p className="text-xs tracking-[0.2em] uppercase text-primary-foreground/55">
             Kontakt
           </p>
           <ul className="mt-4 space-y-2 text-sm text-primary-foreground/85">

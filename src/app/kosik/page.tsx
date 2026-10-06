@@ -25,7 +25,7 @@ export default function CartPage() {
   if (ordered) {
     return (
       <div className="mx-auto max-w-xl px-4 py-20 text-center">
-        <h1 className="font-display text-4xl text-moss-deep">Objednávka přijata</h1>
+        <h1 className="font-display text-5xl text-moss-deep">Objednávka přijata</h1>
         <p className="mt-4 text-sm text-muted-foreground">
           Děkuji. Brzy se ozvu s potvrzením a detaily doručení. (Demo režim —
           platební brána zatím není napojená.)
@@ -40,7 +40,7 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <div className="mx-auto max-w-xl px-4 py-20 text-center">
-        <h1 className="font-display text-4xl text-moss-deep">Košík</h1>
+        <h1 className="font-display text-5xl text-moss-deep">Košík</h1>
         <p className="mt-4 text-sm text-muted-foreground">
           Košík je prázdný. Vyberte si věnec v e-shopu.
         </p>
@@ -53,7 +53,7 @@ export default function CartPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
-      <h1 className="font-display text-4xl text-moss-deep sm:text-5xl">Košík</h1>
+      <h1 className="font-display text-5xl text-moss-deep sm:text-6xl">Košík</h1>
       <ul className="mt-10 divide-y divide-border">
         {items.map((item) => {
           const product = getWreath(item.slug);
@@ -74,7 +74,7 @@ export default function CartPage() {
                   <div>
                     <Link
                       href={`/vence/${product.slug}`}
-                      className="font-display text-xl text-moss-deep hover:underline"
+                      className="font-display text-2xl text-moss-deep hover:underline"
                     >
                       {product.name}
                     </Link>

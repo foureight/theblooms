@@ -16,13 +16,13 @@ export default function WorkshopyPage() {
     <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
       <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
         <FadeIn>
-          <p className="text-[11px] tracking-[0.22em] uppercase text-muted-foreground">
+          <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
             Společně tvořit
           </p>
-          <h1 className="mt-3 font-display text-5xl text-moss-deep sm:text-6xl">
+          <h1 className="mt-3 font-display text-6xl text-moss-deep sm:text-7xl">
             Workshopy
           </h1>
-          <p className="mt-5 max-w-lg text-sm leading-relaxed text-muted-foreground sm:text-base">
+          <p className="mt-5 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
             Květinové a věncové workshopy. Nemusí se konat u mě — přijedu přímo
             za vámi. Přivezu květiny, materiál, nástroje i vybavení. Vy
             zajistíte místo, o zbytek se postarám já.
@@ -46,7 +46,7 @@ export default function WorkshopyPage() {
 
       <FadeIn>
         <section className="mt-20 border-t border-border pt-12">
-          <h2 className="font-display text-3xl text-moss-deep">Kde</h2>
+          <h2 className="font-display text-4xl text-moss-deep">Kde</h2>
           <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {places.map((place) => (
               <li

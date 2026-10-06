@@ -41,17 +41,17 @@ export default async function WeddingDetailPage({ params }: Props) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-moss-deep/70 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-          <p className="text-[11px] tracking-[0.2em] uppercase text-white/70">
+          <p className="text-xs tracking-[0.2em] uppercase text-white/70">
             {wedding.season} · {wedding.place}
           </p>
-          <h1 className="mt-2 font-display text-5xl text-white sm:text-6xl">
+          <h1 className="mt-2 font-display text-6xl text-white sm:text-7xl">
             {wedding.title}
           </h1>
         </div>
       </div>
 
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <p className="max-w-2xl text-base leading-relaxed text-muted-foreground">
+        <p className="max-w-2xl text-lg leading-relaxed text-muted-foreground">
           {wedding.summary}
         </p>
         <CtaLink href="/kontakt?typ=svatba" className="mt-8">
@@ -76,7 +76,7 @@ export default async function WeddingDetailPage({ params }: Props) {
 
         {others.length > 0 && (
           <section className="mt-20 border-t border-border pt-12">
-            <h2 className="font-display text-3xl text-moss-deep">
+            <h2 className="font-display text-4xl text-moss-deep">
               Další svatby
             </h2>
             <div className="mt-8 grid gap-6 sm:grid-cols-2">

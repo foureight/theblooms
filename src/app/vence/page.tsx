@@ -12,13 +12,13 @@ export default function VencePage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
       <FadeIn>
-        <p className="text-[11px] tracking-[0.22em] uppercase text-muted-foreground">
+        <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
           E-shop
         </p>
-        <h1 className="mt-3 font-display text-5xl text-moss-deep sm:text-6xl">
+        <h1 className="mt-3 font-display text-6xl text-moss-deep sm:text-7xl">
           Věnce
         </h1>
-        <p className="mt-5 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+        <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-lg">
           Nabídka se mění podle sezóny. Každý věnec má fotografii, cenu, rozměr
           a dostupnost — vyberete a koupíte přímo zde.
         </p>

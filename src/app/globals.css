@@ -107,6 +107,8 @@
     @apply bg-background text-foreground antialiased;
     font-family: var(--font-sans);
     font-weight: 400;
+    font-size: 1.0625rem;
+    line-height: 1.65;
     letter-spacing: 0.01em;
     background-image:
       radial-gradient(ellipse 70% 45% at 0% 0%, rgb(117 184 153 / 14%), transparent),
@@ -115,7 +117,13 @@
     background-attachment: fixed;
   }
   html {
+    font-size: 17px;
     scroll-behavior: smooth;
+  }
+  @media (min-width: 768px) {
+    html {
+      font-size: 18px;
+    }
   }
   h1,
   h2,
@@ -124,6 +132,7 @@
     font-family: var(--font-heading);
     font-weight: 400;
     letter-spacing: 0.01em;
+    line-height: 1.15;
   }
   .font-brand {
     font-family: var(--font-brand);
