@@ -133,39 +133,52 @@ export default function SvatbyPage() {
           </CtaLink>
         </FadeIn>
 
-        <div className="mt-16 grid gap-8 sm:grid-cols-2">
-          {weddings.map((w, i) => (
-            <FadeIn key={w.slug} delay={(i % 2) * 80}>
-              <Link href={`/svatby/${w.slug}`} className="group block">
-                <div className="relative aspect-[4/5] overflow-hidden">
-                  <Image
-                    src={w.cover}
-                    alt={`Svatební floristika ${w.title} — ${w.place}`}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    sizes="(max-width:768px) 100vw, 50vw"
-                  />
-                </div>
-                <div className="mt-4 flex items-baseline justify-between">
-                  <h2 className="font-display text-4xl text-moss-deep">
-                    {w.title}
-                  </h2>
-                  <span className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
-                    {w.season}
-                  </span>
-                </div>
-                <p className="mt-1 text-sm text-muted-foreground">{w.place}</p>
-              </Link>
-            </FadeIn>
-          ))}
-        </div>
+        <section className="mt-16" aria-labelledby="svatby-realizace">
+          <FadeIn>
+            <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
+              Galerie
+            </p>
+            <h2
+              id="svatby-realizace"
+              className="mt-2 font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl"
+            >
+              Realizace
+            </h2>
+          </FadeIn>
+          <div className="mt-10 grid gap-8 sm:grid-cols-2">
+            {weddings.map((w, i) => (
+              <FadeIn key={w.slug} delay={(i % 2) * 80}>
+                <Link href={`/svatby/${w.slug}`} className="group block">
+                  <div className="relative aspect-[4/5] overflow-hidden">
+                    <Image
+                      src={w.cover}
+                      alt={`Svatební floristika ${w.title} — ${w.place}`}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      sizes="(max-width:768px) 100vw, 50vw"
+                    />
+                  </div>
+                  <div className="mt-4 flex items-baseline justify-between gap-3">
+                    <h3 className="font-display text-2xl text-moss-deep sm:text-3xl md:text-4xl">
+                      {w.title}
+                    </h3>
+                    <h4 className="text-[10px] font-normal tracking-[0.14em] uppercase text-muted-foreground sm:text-xs">
+                      {w.season}
+                    </h4>
+                  </div>
+                  <p className="mt-1 text-sm text-muted-foreground">{w.place}</p>
+                </Link>
+              </FadeIn>
+            ))}
+          </div>
+        </section>
 
         <section id="dekorace" className="mt-24 scroll-mt-24">
           <FadeIn>
-            <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
+            <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
               Inventář
             </p>
-            <h2 className="mt-2 font-display text-5xl text-moss-deep">
+            <h2 className="mt-2 font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
               Dekorace
             </h2>
             <p className="mt-3 max-w-xl text-sm text-muted-foreground">
@@ -182,9 +195,9 @@ export default function SvatbyPage() {
 
         <FadeIn>
           <section className="mt-20 border-t border-bloom/30 pt-12">
-            <p className="font-display text-4xl text-moss-deep sm:text-5xl text-balance">
+            <h2 className="font-display text-4xl text-moss-deep text-balance sm:text-5xl md:text-6xl">
               Domluvíme vaši svatbu
-            </p>
+            </h2>
             <p className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground">
               Napište datum, místo a představu. Ozvu se a společně nastavíme
               rozsah floristky i dekorací.

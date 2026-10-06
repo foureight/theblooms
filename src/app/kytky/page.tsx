@@ -155,7 +155,7 @@ export default function KytkyPage() {
             </p>
             <h2
               id="kytky-sluzby"
-              className="mt-2 font-display text-5xl text-moss-deep"
+              className="mt-2 font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl"
             >
               Co můžu připravit
             </h2>
@@ -169,7 +169,7 @@ export default function KytkyPage() {
                   key={item.title}
                   className="border-t border-bloom/40 pt-5"
                 >
-                  <h3 className="text-base font-medium tracking-wide text-foreground">
+                  <h3 className="font-display text-xl text-moss-deep sm:text-2xl">
                     {item.title}
                   </h3>
                   <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -196,7 +196,7 @@ export default function KytkyPage() {
               <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
                 Eventy
               </p>
-              <h2 className="mt-2 font-display text-5xl text-moss-deep">
+              <h2 className="mt-2 font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
                 Výzdoba firemních akcí
               </h2>
               <p className="mt-4 text-base leading-relaxed text-muted-foreground">
@@ -221,16 +221,16 @@ export default function KytkyPage() {
             </p>
             <h2
               id="kytky-jak"
-              className="mt-2 font-display text-5xl text-moss-deep"
+              className="mt-2 font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl"
             >
               Jak to probíhá
             </h2>
             <ol className="mt-10 grid gap-8 sm:grid-cols-3">
               <li className="border-t border-bloom/40 pt-5">
-                <p className="text-xs tracking-[0.18em] uppercase text-muted-foreground">
+                <p className="text-[10px] tracking-[0.18em] uppercase text-muted-foreground sm:text-xs">
                   01
                 </p>
-                <h3 className="mt-2 text-base font-medium tracking-wide">
+                <h3 className="mt-2 font-display text-xl text-moss-deep sm:text-2xl">
                   Napíšete poptávku
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -239,10 +239,10 @@ export default function KytkyPage() {
                 </p>
               </li>
               <li className="border-t border-bloom/40 pt-5">
-                <p className="text-xs tracking-[0.18em] uppercase text-muted-foreground">
+                <p className="text-[10px] tracking-[0.18em] uppercase text-muted-foreground sm:text-xs">
                   02
                 </p>
-                <h3 className="mt-2 text-base font-medium tracking-wide">
+                <h3 className="mt-2 font-display text-xl text-moss-deep sm:text-2xl">
                   Domluvíme koncept
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -251,10 +251,10 @@ export default function KytkyPage() {
                 </p>
               </li>
               <li className="border-t border-bloom/40 pt-5">
-                <p className="text-xs tracking-[0.18em] uppercase text-muted-foreground">
+                <p className="text-[10px] tracking-[0.18em] uppercase text-muted-foreground sm:text-xs">
                   03
                 </p>
-                <h3 className="mt-2 text-base font-medium tracking-wide">
+                <h3 className="mt-2 font-display text-xl text-moss-deep sm:text-2xl">
                   Realizace
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -270,9 +270,9 @@ export default function KytkyPage() {
 
         <FadeIn delay={160}>
           <section className="mt-20 border-t border-bloom/30 pt-12">
-            <p className="font-display text-4xl text-moss-deep sm:text-5xl text-balance">
+            <h2 className="font-display text-4xl text-moss-deep text-balance sm:text-5xl md:text-6xl">
               Napište, pro jakou příležitost květiny hledáte
-            </p>
+            </h2>
             <p className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground">
               Domů, do firmy, na event nebo jako speciální objednávku. Ozvu se a
               domluvíme zbytek.

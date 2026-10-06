@@ -119,7 +119,7 @@ export default async function WeddingDetailPage({ params }: Props) {
 
         {others.length > 0 && (
           <section className="mt-20 border-t border-border pt-12">
-            <h2 className="font-display text-4xl text-moss-deep">
+            <h2 className="font-display text-4xl text-moss-deep sm:text-5xl">
               Další svatby
             </h2>
             <div className="mt-8 grid gap-6 sm:grid-cols-2">
@@ -134,9 +134,9 @@ export default async function WeddingDetailPage({ params }: Props) {
                       sizes="(max-width:768px) 100vw, 50vw"
                     />
                   </div>
-                  <p className="mt-3 font-display text-2xl text-moss-deep">
+                  <h3 className="mt-3 font-display text-2xl text-moss-deep sm:text-3xl">
                     {w.title}
-                  </p>
+                  </h3>
                 </Link>
               ))}
             </div>

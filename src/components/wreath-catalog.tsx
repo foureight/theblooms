@@ -70,12 +70,12 @@ export function WreathCatalog() {
               </div>
               <div className="mt-4 flex items-start justify-between gap-3">
                 <div>
-                  <h2 className="font-display text-2xl text-moss-deep">
+                  <h3 className="font-display text-2xl text-moss-deep sm:text-3xl">
                     {w.name}
-                  </h2>
-                  <p className="mt-1 text-xs tracking-[0.12em] uppercase text-muted-foreground">
+                  </h3>
+                  <h4 className="mt-1 text-[10px] font-normal tracking-[0.12em] uppercase text-muted-foreground sm:text-xs">
                     {w.season} · {w.size}
-                  </p>
+                  </h4>
                 </div>
                 <p className="text-sm font-medium">{formatPrice(w.price)}</p>
               </div>

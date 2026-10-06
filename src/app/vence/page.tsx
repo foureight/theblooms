@@ -122,6 +122,7 @@ export default function VencePage() {
         </p>
       </FadeIn>
       <div className="mt-10 sm:mt-12">
+        <h2 className="sr-only">Nabídka věnců</h2>
         <WreathCatalog />
       </div>
       <FaqSection faqs={faqs} />

@@ -66,12 +66,12 @@ export function DecorationCarousel({ items }: Props) {
               sizes="(max-width:640px) 78vw, (max-width:1024px) 46vw, 22vw"
             />
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-moss-deep/80 via-moss-deep/35 to-transparent p-3 sm:p-4">
-              <p className="text-sm tracking-wide text-white sm:text-base">
+              <h3 className="text-sm font-normal tracking-wide text-white sm:text-base">
                 {d.title}
-              </p>
-              <p className="mt-1 text-[10px] tracking-[0.14em] uppercase text-white/75 sm:text-[11px]">
+              </h3>
+              <h4 className="mt-1 text-[10px] font-normal tracking-[0.14em] uppercase text-white/75 sm:text-[11px]">
                 {d.variants.length} variant · vybrat
-              </p>
+              </h4>
             </div>
           </Link>
         ))}

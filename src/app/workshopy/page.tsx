@@ -151,13 +151,13 @@ export default function WorkshopyPage() {
             <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
               Formáty
             </p>
-            <h2 className="mt-2 font-display text-5xl text-moss-deep">
+            <h2 className="mt-2 font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
               Co spolu tvoříme
             </h2>
             <div className="mt-10 grid gap-10 md:grid-cols-3">
               {formats.map((item) => (
                 <div key={item.title} className="border-t border-bloom/40 pt-5">
-                  <h3 className="text-base font-medium tracking-wide text-foreground">
+                  <h3 className="font-display text-xl text-moss-deep sm:text-2xl">
                     {item.title}
                   </h3>
                   <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -184,7 +184,7 @@ export default function WorkshopyPage() {
               <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
                 Co je v ceně
               </p>
-              <h2 className="mt-2 font-display text-5xl text-moss-deep">
+              <h2 className="mt-2 font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
                 Přivezu vše potřebné
               </h2>
               <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground">
@@ -210,7 +210,7 @@ export default function WorkshopyPage() {
             <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
               Kde
             </p>
-            <h2 className="mt-2 font-display text-5xl text-moss-deep">
+            <h2 className="mt-2 font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
               Přijedu za vámi
             </h2>
             <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
@@ -220,9 +220,9 @@ export default function WorkshopyPage() {
             <ul className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
               {places.map((place) => (
                 <li key={place.title} className="border-t border-bloom/40 pt-4">
-                  <p className="text-sm font-medium tracking-wide text-foreground">
+                  <h3 className="font-display text-xl text-moss-deep sm:text-2xl">
                     {place.title}
-                  </p>
+                  </h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                     {place.text}
                   </p>
@@ -236,9 +236,9 @@ export default function WorkshopyPage() {
 
         <FadeIn delay={140}>
           <section className="mt-20 border-t border-bloom/30 pt-12">
-            <p className="font-display text-4xl text-moss-deep sm:text-5xl text-balance">
+            <h2 className="font-display text-4xl text-moss-deep text-balance sm:text-5xl md:text-6xl">
               Napište, pro koho workshop plánujete
-            </p>
+            </h2>
             <p className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground">
               Počet lidí, termín, místo a jestli chcete kytice, věnce, nebo něco
               mezi tím. Domluvíme zbytek společně.
