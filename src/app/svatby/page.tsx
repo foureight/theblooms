@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { CtaLink } from "@/components/cta-link";
+import { DecorationCarousel } from "@/components/decoration-carousel";
 import { FadeIn } from "@/components/fade-in";
 import { decorations, weddings } from "@/data/weddings";
 
@@ -71,23 +72,8 @@ export default function SvatbyPage() {
             svíčky, nádoby, brány, textil a další.
           </p>
         </FadeIn>
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {decorations.map((d, i) => (
-            <FadeIn key={d.title} delay={i * 60}>
-              <div className="relative aspect-[3/4] overflow-hidden">
-                <Image
-                  src={d.image}
-                  alt={d.title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width:768px) 50vw, 25vw"
-                />
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-moss-deep/70 to-transparent p-4">
-                  <p className="text-sm tracking-wide text-white">{d.title}</p>
-                </div>
-              </div>
-            </FadeIn>
-          ))}
+        <div className="mt-10">
+          <DecorationCarousel items={decorations} />
         </div>
       </section>
     </div>

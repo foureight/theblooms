@@ -102,4 +102,29 @@ export const decorations = [
     image:
       "https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?w=1200&q=80",
   },
+  {
+    title: "Stolní aranžmá",
+    image:
+      "https://images.unsplash.com/photo-1478144592103-25e218a50043?w=1200&q=80",
+  },
+  {
+    title: "Instalace v prostoru",
+    image:
+      "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80",
+  },
+  {
+    title: "Detaily a doplňky",
+    image:
+      "https://images.unsplash.com/photo-1487070183336-b863922373d4?w=1200&q=80",
+  },
+  {
+    title: "Sezónní prvky",
+    image:
+      "https://images.unsplash.com/photo-1509927083803-4bd519298ac4?w=1200&q=80",
+  },
+  {
+    title: "Květinové detaily",
+    image:
+      "https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=1200&q=80",
+  },
 ];
