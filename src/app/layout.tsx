@@ -17,12 +17,14 @@ const instrument = Instrument_Serif({
   weight: "400",
 });
 
-/** Closest free stand-in for Acumin Pro Wide (brand name + Alena) */
+/** Fallback when Adobe Fonts kit is not configured */
 const encodeExpanded = Encode_Sans_Expanded({
-  variable: "--font-name",
+  variable: "--font-name-fallback",
   subsets: ["latin", "latin-ext"],
   weight: ["400", "500", "600", "700", "800"],
 });
+
+const typekitId = process.env.NEXT_PUBLIC_TYPEKIT_ID?.trim();
 
 export const metadata: Metadata = {
   title: {
@@ -39,6 +41,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="cs">
+      <head>
+        {typekitId ? (
+          <>
+            <link rel="preconnect" href="https://use.typekit.net" />
+            <link rel="preconnect" href="https://p.typekit.net" crossOrigin="" />
+            {/* Adobe Fonts — Acumin Pro Wide Regular from Typekit web project */}
+            <link
+              rel="stylesheet"
+              href={`https://use.typekit.net/${typekitId}.css`}
+            />
+          </>
+        ) : null}
+      </head>
       <body
         className={`${figtree.variable} ${instrument.variable} ${encodeExpanded.variable} antialiased`}
       >

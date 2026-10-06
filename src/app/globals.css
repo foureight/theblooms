@@ -9,8 +9,8 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
   --font-serif: var(--font-serif);
-  --font-brand: var(--font-name);
-  --font-name: var(--font-name);
+  --font-brand: "acumin-pro-wide", var(--font-name-fallback);
+  --font-name: "acumin-pro-wide", var(--font-name-fallback);
   --font-mono: var(--font-mono);
   --font-heading: var(--font-serif);
   --color-bloom: var(--bloom);
@@ -123,10 +123,23 @@
     letter-spacing: -0.02em;
   }
   .font-brand {
-    font-family: var(--font-name), var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    font-family:
+      "acumin-pro-wide",
+      var(--font-name-fallback),
+      var(--font-sans),
+      ui-sans-serif,
+      system-ui,
+      sans-serif;
   }
   .font-name {
-    font-family: var(--font-name), var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    font-family:
+      "acumin-pro-wide",
+      var(--font-name-fallback),
+      var(--font-sans),
+      ui-sans-serif,
+      system-ui,
+      sans-serif;
+    font-weight: 400;
     letter-spacing: 0.02em;
   }
 }

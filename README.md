@@ -27,4 +27,14 @@ Poptávky se logují na server (`/api/inquiry`) — e-mailová služba a platebn
 
 Kontakty (z vizitky): Alena Šmejkalová · theblooms@chtel.biz · +420 775 125 224 · Instagram @thebloomscz
 
-Typografie: original brand používá **Acumin Pro Wide** (Adobe). Na webu je volná náhrada **Encode Sans Expanded** pro jméno a značku; logo PNG je vystřižené z vizitky.
+Typografie: značka používá **Acumin Pro Wide Regular** (Adobe Fonts).
+
+1. V [Adobe Fonts](https://fonts.adobe.com/) vytvoř Web Project a přidej **Acumin Pro Wide** (Regular).
+2. Zkopíruj kit ID z embed odkazu `https://use.typekit.net/XXXXXXX.css` (ta část `XXXXXXX`).
+3. Do `.env.local` dej:
+
+```bash
+NEXT_PUBLIC_TYPEKIT_ID=xxxxxxx
+```
+
+Bez kit ID web padá na volnou náhradu Encode Sans Expanded. Fontové soubory z Typekitu nestahuj — licence vyžaduje CDN embed.
