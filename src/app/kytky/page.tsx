@@ -2,8 +2,14 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { CtaLink } from "@/components/cta-link";
 import { FadeIn } from "@/components/fade-in";
+import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
 import { site } from "@/data/site";
+import {
+  breadcrumbJsonLd,
+  faqJsonLd,
+  serviceJsonLd,
+} from "@/lib/seo";
 
 const pageTitle = "Kytky na míru — květiny do domu, firmy i na event";
 const pageDescription =
@@ -84,94 +90,18 @@ const faqs = [
 ];
 
 const jsonLd = [
-  {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Úvod",
-        item: "https://theblooms.cz/",
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Kytky",
-        item: "https://theblooms.cz/kytky",
-      },
-    ],
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "Service",
+  breadcrumbJsonLd([
+    { name: "Úvod", path: "/" },
+    { name: "Kytky", path: "/kytky" },
+  ]),
+  serviceJsonLd({
     name: "Kytky na míru",
-    serviceType: "Floristická zakázka",
     description: pageDescription,
-    provider: {
-      "@type": "Florist",
-      name: site.name,
-      alternateName: "THE BLOOMS floristické studio",
-      url: "https://theblooms.cz",
-      email: site.email,
-      telephone: site.phone,
-      image: "https://theblooms.cz/theblooms.svg",
-      founder: {
-        "@type": "Person",
-        name: site.owner,
-      },
-      address: {
-        "@type": "PostalAddress",
-        addressCountry: "CZ",
-      },
-      areaServed: {
-        "@type": "Country",
-        name: "Česko",
-      },
-      sameAs: [site.instagram],
-    },
-    areaServed: {
-      "@type": "Country",
-      name: "Česko",
-    },
-    offers: {
-      "@type": "Offer",
-      priceCurrency: "CZK",
-      price: "2000",
-      priceSpecification: {
-        "@type": "PriceSpecification",
-        priceCurrency: "CZK",
-        minPrice: "2000",
-        description: "Orientační cena od 2 000 Kč podle rozsahu zakázky",
-      },
-      availability: "https://schema.org/InStock",
-      url: "https://theblooms.cz/kytky",
-    },
-    hasOfferCatalog: {
-      "@type": "OfferCatalog",
-      name: "Květinové služby THE BLOOMS",
-      itemListElement: services.map((s) => ({
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Service",
-          name: s.title,
-          description: s.text,
-        },
-      })),
-    },
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqs.map((faq) => ({
-      "@type": "Question",
-      name: faq.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: faq.answer,
-      },
-    })),
-  },
+    path: "/kytky",
+    serviceType: "Floristická zakázka",
+    minPrice: "2000",
+  }),
+  faqJsonLd(faqs),
 ];
 
 export default function KytkyPage() {
@@ -336,34 +266,7 @@ export default function KytkyPage() {
           </section>
         </FadeIn>
 
-        <FadeIn delay={140}>
-          <section
-            className="mt-20 border-t border-border pt-12"
-            aria-labelledby="kytky-faq"
-          >
-            <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
-              Časté otázky
-            </p>
-            <h2
-              id="kytky-faq"
-              className="mt-2 font-display text-5xl text-moss-deep"
-            >
-              FAQ
-            </h2>
-            <div className="mt-10 max-w-3xl space-y-8">
-              {faqs.map((faq) => (
-                <div key={faq.question} className="border-t border-bloom/30 pt-5">
-                  <h3 className="text-base font-medium tracking-wide text-foreground">
-                    {faq.question}
-                  </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                    {faq.answer}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-        </FadeIn>
+        <FaqSection faqs={faqs} />
 
         <FadeIn delay={160}>
           <section className="mt-20 border-t border-bloom/30 pt-12">

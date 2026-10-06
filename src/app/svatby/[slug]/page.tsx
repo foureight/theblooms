@@ -3,7 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CtaLink } from "@/components/cta-link";
+import { JsonLd } from "@/components/json-ld";
 import { getWedding, weddings } from "@/data/weddings";
+import { site } from "@/data/site";
+import {
+  absoluteUrl,
+  breadcrumbJsonLd,
+  floristOrganization,
+} from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -16,8 +23,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const wedding = getWedding(slug);
   if (!wedding) return { title: "Svatba" };
   return {
-    title: wedding.title,
+    title: `${wedding.title} — svatební floristika`,
     description: wedding.summary,
+    alternates: { canonical: `/svatby/${wedding.slug}` },
+    openGraph: {
+      title: `${wedding.title} · ${site.name}`,
+      description: wedding.summary,
+      type: "article",
+      locale: "cs_CZ",
+      images: [{ url: wedding.cover }],
+    },
   };
 }
 
@@ -28,12 +43,36 @@ export default async function WeddingDetailPage({ params }: Props) {
 
   const others = weddings.filter((w) => w.slug !== slug).slice(0, 2);
 
+  const jsonLd = [
+    breadcrumbJsonLd([
+      { name: "Úvod", path: "/" },
+      { name: "Svatby", path: "/svatby" },
+      { name: wedding.title, path: `/svatby/${wedding.slug}` },
+    ]),
+    {
+      "@context": "https://schema.org",
+      "@type": "CreativeWork",
+      name: wedding.title,
+      description: wedding.summary,
+      url: absoluteUrl(`/svatby/${wedding.slug}`),
+      image: wedding.images,
+      creator: floristOrganization(),
+      about: {
+        "@type": "Thing",
+        name: "Svatební floristika",
+      },
+      contentLocation: wedding.place,
+      keywords: ["svatba", wedding.season, "floristika", site.name].join(", "),
+    },
+  ];
+
   return (
     <div>
+      <JsonLd data={jsonLd} />
       <div className="relative h-[55svh] min-h-[360px] w-full overflow-hidden">
         <Image
           src={wedding.cover}
-          alt={wedding.title}
+          alt={`Svatební floristika ${wedding.title} — ${wedding.place}`}
           fill
           priority
           className="object-cover"
@@ -53,6 +92,10 @@ export default async function WeddingDetailPage({ params }: Props) {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <p className="max-w-2xl text-lg leading-relaxed text-muted-foreground">
           {wedding.summary}
+        </p>
+        <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
+          Ukázka realizace studia {site.name}. Podobný floristický a dekorační
+          koncept domluvíme přes poptávku — podle vašeho data, místa a stylu.
         </p>
         <CtaLink href="/kontakt?typ=svatba" className="mt-8">
           Chci podobnou realizaci

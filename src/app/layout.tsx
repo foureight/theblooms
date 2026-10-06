@@ -4,6 +4,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { CartProvider } from "@/lib/cart";
 import { site } from "@/data/site";
+import { siteUrl } from "@/lib/seo";
 import "./globals.css";
 
 /**
@@ -20,11 +21,17 @@ const encodeExpanded = Encode_Sans_Expanded({
 const typekitId = process.env.NEXT_PUBLIC_TYPEKIT_ID?.trim() || "zwe5oqo";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: `${site.name} — floristické studio`,
     template: `%s · ${site.name}`,
   },
   description: site.tagline,
+  openGraph: {
+    type: "website",
+    locale: "cs_CZ",
+    siteName: site.name,
+  },
 };
 
 export default function RootLayout({

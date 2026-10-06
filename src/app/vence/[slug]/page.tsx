@@ -3,7 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AddToCartButton } from "@/components/add-to-cart-button";
+import { JsonLd } from "@/components/json-ld";
+import { site } from "@/data/site";
 import { formatPrice, getWreath, wreaths } from "@/data/wreaths";
+import {
+  absoluteUrl,
+  breadcrumbJsonLd,
+  floristOrganization,
+} from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -16,8 +23,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const wreath = getWreath(slug);
   if (!wreath) return { title: "Věnec" };
   return {
-    title: wreath.name,
-    description: wreath.description,
+    title: `${wreath.name} — ${formatPrice(wreath.price)}`,
+    description: `${wreath.description} Sezóna: ${wreath.season}. Rozměr ${wreath.size}.`,
+    alternates: { canonical: `/vence/${wreath.slug}` },
+    openGraph: {
+      title: `${wreath.name} · ${site.name}`,
+      description: wreath.description,
+      type: "website",
+      locale: "cs_CZ",
+      images: [{ url: wreath.image }],
+    },
   };
 }
 
@@ -26,8 +41,40 @@ export default async function WreathDetailPage({ params }: Props) {
   const wreath = getWreath(slug);
   if (!wreath) notFound();
 
+  const jsonLd = [
+    breadcrumbJsonLd([
+      { name: "Úvod", path: "/" },
+      { name: "Věnce", path: "/vence" },
+      { name: wreath.name, path: `/vence/${wreath.slug}` },
+    ]),
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: wreath.name,
+      description: wreath.description,
+      image: [wreath.image],
+      sku: wreath.slug,
+      brand: { "@type": "Brand", name: site.name },
+      category: `Sezónní věnec — ${wreath.season}`,
+      size: wreath.size,
+      url: absoluteUrl(`/vence/${wreath.slug}`),
+      manufacturer: floristOrganization(),
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "CZK",
+        price: String(wreath.price),
+        availability: wreath.available
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+        url: absoluteUrl(`/vence/${wreath.slug}`),
+        seller: floristOrganization(),
+      },
+    },
+  ];
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      <JsonLd data={jsonLd} />
       <Link
         href="/vence"
         className="text-xs tracking-[0.16em] uppercase text-muted-foreground hover:text-foreground"
@@ -38,7 +85,7 @@ export default async function WreathDetailPage({ params }: Props) {
         <div className="relative aspect-square overflow-hidden bg-stone">
           <Image
             src={wreath.image}
-            alt={wreath.name}
+            alt={`${wreath.name} — ${wreath.season}, ${wreath.size}`}
             fill
             priority
             className="object-cover"

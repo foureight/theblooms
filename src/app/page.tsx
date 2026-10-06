@@ -1,9 +1,85 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { CtaLink } from "@/components/cta-link";
 import { FadeIn } from "@/components/fade-in";
+import { FaqSection } from "@/components/faq-section";
+import { JsonLd } from "@/components/json-ld";
 import { weddings } from "@/data/weddings";
 import { wreaths, formatPrice } from "@/data/wreaths";
+import { site } from "@/data/site";
+import {
+  faqJsonLd,
+  floristOrganization,
+  siteUrl,
+} from "@/lib/seo";
+
+const pageDescription =
+  "THE BLOOMS — floristické studio Aleny Šmejkalové pro svatby, větší květinové realizace a sezónní věnce. Osobní práce v dílně, věnce koupíte online.";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: `${site.name} — floristické studio pro svatby a věnce`,
+  },
+  description: pageDescription,
+  keywords: [
+    "floristické studio",
+    "svatební floristika",
+    "věnce",
+    "kytky na míru",
+    "THE BLOOMS",
+    "Alena Šmejkalová",
+  ],
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: `${site.name} — floristické studio`,
+    description: pageDescription,
+    type: "website",
+    locale: "cs_CZ",
+    url: siteUrl,
+  },
+};
+
+const faqs = [
+  {
+    question: "Je THE BLOOMS klasické květinářství?",
+    answer:
+      "Ne. Jde o floristické studio Aleny Šmejkalové. Svatby, větší kytky a eventy vznikají na objednávku přes poptávku; sezónní věnce koupíte v e-shopu.",
+  },
+  {
+    question: "Co si můžu koupit online?",
+    answer:
+      "Online jsou sezónní věnce — s fotografií, cenou, rozměrem a dostupností. Ostatní služby řešíme individuálně.",
+  },
+  {
+    question: "Jak poptám svatbu nebo kytky?",
+    answer:
+      "Přes stránku Kontakt. U svatby uveďte datum a místo, u kytek příležitost a představu. Ozvu se s dalšími detaily.",
+  },
+  {
+    question: "Děláte i workshopy?",
+    answer:
+      "Ano. Květinové a věncové workshopy — přijedu domů, do firmy nebo na akci a přivezu vše potřebné.",
+  },
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${siteUrl}/#website`,
+    name: site.name,
+    url: siteUrl,
+    description: pageDescription,
+    inLanguage: "cs-CZ",
+    publisher: { "@id": `${siteUrl}/#organization` },
+  },
+  {
+    "@context": "https://schema.org",
+    ...floristOrganization(),
+  },
+  faqJsonLd(faqs),
+];
 
 export default function HomePage() {
   const featuredWeddings = weddings.slice(0, 3);
@@ -11,6 +87,7 @@ export default function HomePage() {
 
   return (
     <>
+      <JsonLd data={jsonLd} />
       <section className="relative min-h-[100svh] overflow-hidden grain">
         <Image
           src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=2000&q=85"
@@ -244,6 +321,10 @@ export default function HomePage() {
           </div>
         </FadeIn>
       </section>
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <FaqSection faqs={faqs} />
+      </div>
 
       <section className="border-t border-bloom/30">
         <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:py-28">

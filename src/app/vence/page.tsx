@@ -1,16 +1,110 @@
 import type { Metadata } from "next";
 import { FadeIn } from "@/components/fade-in";
+import { FaqSection } from "@/components/faq-section";
+import { JsonLd } from "@/components/json-ld";
 import { WreathCatalog } from "@/components/wreath-catalog";
+import { site } from "@/data/site";
+import { wreaths } from "@/data/wreaths";
+import {
+  absoluteUrl,
+  breadcrumbJsonLd,
+  faqJsonLd,
+  floristOrganization,
+} from "@/lib/seo";
+
+const pageDescription =
+  "Sezónní věnce THE BLOOMS — jarní, letní, podzimní i adventní. Fotografie, cena, rozměr a dostupnost. Kupte věnec online od floristky Aleny Šmejkalové.";
 
 export const metadata: Metadata = {
-  title: "Věnce",
-  description:
-    "Sezónní věnce THE BLOOMS — jarní, podzimní i adventní. Fotografie, cena, rozměr a nákup online.",
+  title: "Sezónní věnce — e-shop",
+  description: pageDescription,
+  keywords: [
+    "věnce",
+    "adventní věnec",
+    "jarní věnec",
+    "podzimní věnec",
+    "věnec na dveře",
+    "THE BLOOMS",
+    "koupit věnec",
+  ],
+  alternates: { canonical: "/vence" },
+  openGraph: {
+    title: `Sezónní věnce · ${site.name}`,
+    description: pageDescription,
+    type: "website",
+    locale: "cs_CZ",
+  },
 };
+
+const faqs = [
+  {
+    question: "Jak se věnce objednávají?",
+    answer:
+      "Věnce jsou jediná část nabídky THE BLOOMS, kterou koupíte přímo na webu. Vyberete věnec, přidáte do košíku a dokončíte objednávku.",
+  },
+  {
+    question: "Mění se nabídka podle sezóny?",
+    answer:
+      "Ano. Věnce připravuji sezónně — jaro, léto, podzim i advent. U každého věnce vidíte fotografii, cenu, rozměr a aktuální dostupnost.",
+  },
+  {
+    question: "Jsou adventní věnce dostupné celý rok?",
+    answer:
+      "Ne. Adventní věnce jsou sezónní nabídka a bývají dostupné od listopadu. Mimo sezónu je u nich uvedená nedostupnost.",
+  },
+  {
+    question: "Děláte i věnce na míru?",
+    answer:
+      "Hotové věnce jsou v e-shopu. Individuální přání nebo větší množství řešíme přes poptávku v kontaktu.",
+  },
+];
+
+const jsonLd = [
+  breadcrumbJsonLd([
+    { name: "Úvod", path: "/" },
+    { name: "Věnce", path: "/vence" },
+  ]),
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Sezónní věnce THE BLOOMS",
+    description: pageDescription,
+    url: absoluteUrl("/vence"),
+    about: floristOrganization(),
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: wreaths.length,
+      itemListElement: wreaths.map((w, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        item: {
+          "@type": "Product",
+          name: w.name,
+          description: w.description,
+          image: w.image,
+          url: absoluteUrl(`/vence/${w.slug}`),
+          sku: w.slug,
+          brand: { "@type": "Brand", name: site.name },
+          offers: {
+            "@type": "Offer",
+            priceCurrency: "CZK",
+            price: String(w.price),
+            availability: w.available
+              ? "https://schema.org/InStock"
+              : "https://schema.org/OutOfStock",
+            url: absoluteUrl(`/vence/${w.slug}`),
+          },
+        },
+      })),
+    },
+  },
+  faqJsonLd(faqs),
+];
 
 export default function VencePage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      <JsonLd data={jsonLd} />
       <FadeIn>
         <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
           E-shop
@@ -22,10 +116,15 @@ export default function VencePage() {
           Nabídka se mění podle sezóny. Každý věnec má fotografii, cenu, rozměr
           a dostupnost — vyberete a koupíte přímo zde.
         </p>
+        <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
+          Věnce jsou hotové floristické výrobky studia {site.name}. Ostatní
+          služby (svatby, kytky, eventy, workshopy) řešíme přes poptávku.
+        </p>
       </FadeIn>
       <div className="mt-12">
         <WreathCatalog />
       </div>
+      <FaqSection faqs={faqs} />
     </div>
   );
 }

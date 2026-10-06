@@ -4,17 +4,100 @@ import Link from "next/link";
 import { CtaLink } from "@/components/cta-link";
 import { DecorationCarousel } from "@/components/decoration-carousel";
 import { FadeIn } from "@/components/fade-in";
+import { FaqSection } from "@/components/faq-section";
+import { JsonLd } from "@/components/json-ld";
 import { decorations, weddings } from "@/data/weddings";
+import { site } from "@/data/site";
+import {
+  absoluteUrl,
+  breadcrumbJsonLd,
+  faqJsonLd,
+  floristOrganization,
+  serviceJsonLd,
+} from "@/lib/seo";
+
+const pageDescription =
+  "Svatební floristika THE BLOOMS: celý květinový a dekorační koncept svatby — kytice, obřad, hostina, instalace a vlastní inventář. Poptávka u Aleny Šmejkalové.";
 
 export const metadata: Metadata = {
-  title: "Svatby",
-  description:
-    "Celý floristický a dekorační koncept svatby — kytice, obřad, hostina, instalace a vlastní inventář dekorací.",
+  title: "Svatební floristika a dekorace",
+  description: pageDescription,
+  keywords: [
+    "svatební floristika",
+    "svatební dekorace",
+    "květiny na svatbu",
+    "svatební kytice",
+    "obřadní brána",
+    "THE BLOOMS",
+    "Alena Šmejkalová",
+  ],
+  alternates: { canonical: "/svatby" },
+  openGraph: {
+    title: `Svatební floristika · ${site.name}`,
+    description: pageDescription,
+    type: "website",
+    locale: "cs_CZ",
+  },
 };
+
+const faqs = [
+  {
+    question: "Co všechno řešíte u svatby?",
+    answer:
+      "Celý floristický a dekorační koncept: svatební kytici, obřadní instalace, stoly, brány, vázy, svícny, textil a další dekorace z vlastního inventáře — nebo realizaci podle vaší představy.",
+  },
+  {
+    question: "Jak probíhá poptávka svatby?",
+    answer:
+      "Přes kontaktní formulář napište datum, místo a základní představu. Ozvu se s dalšími otázkami a návrhem rozsahu. Objednání neprobíhá přes e-shop.",
+  },
+  {
+    question: "Máte vlastní inventář dekorací?",
+    answer:
+      "Ano. V rámci svatby můžu nabídnout vázy, svícny, svíčky, nádoby, brány, textil a další kusy z vlastního inventáře.",
+  },
+  {
+    question: "Kde THE BLOOMS svatby realizuje?",
+    answer:
+      "Floristické studio THE BLOOMS působí v České republice. Konkrétní lokalitu a logistiku domlouváme individuálně podle místa svatby.",
+  },
+];
+
+const jsonLd = [
+  breadcrumbJsonLd([
+    { name: "Úvod", path: "/" },
+    { name: "Svatby", path: "/svatby" },
+  ]),
+  serviceJsonLd({
+    name: "Svatební floristika a dekorace",
+    description: pageDescription,
+    path: "/svatby",
+    serviceType: "Svatební floristika",
+  }),
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Svatební realizace THE BLOOMS",
+    url: absoluteUrl("/svatby"),
+    isPartOf: { "@id": `${absoluteUrl("/")}/#website` },
+    about: floristOrganization(),
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: weddings.map((w, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: absoluteUrl(`/svatby/${w.slug}`),
+        name: w.title,
+      })),
+    },
+  },
+  faqJsonLd(faqs),
+];
 
 export default function SvatbyPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      <JsonLd data={jsonLd} />
       <FadeIn>
         <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
           Hlavní činnost
@@ -26,6 +109,10 @@ export default function SvatbyPage() {
           Navrhnu celý floristický a dekorační koncept — nebo vyjdu z vaší
           představy a zrealizuji ji. Nejen květiny: brány, stoly, instalace,
           vázy, svícny, textil a další dekorace z vlastního inventáře.
+        </p>
+        <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
+          Za studiem {site.name} stojí floristka {site.owner}. Každá svatba je
+          individuální poptávka — bez balíčků z katalogu a bez kamenné prodejny.
         </p>
         <CtaLink href="/kontakt?typ=svatba" className="mt-8">
           Poptat svatbu
@@ -39,7 +126,7 @@ export default function SvatbyPage() {
               <div className="relative aspect-[4/5] overflow-hidden">
                 <Image
                   src={w.cover}
-                  alt={w.title}
+                  alt={`Svatební floristika ${w.title} — ${w.place}`}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width:768px) 100vw, 50vw"
@@ -76,6 +163,23 @@ export default function SvatbyPage() {
           <DecorationCarousel items={decorations} />
         </div>
       </section>
+
+      <FaqSection faqs={faqs} />
+
+      <FadeIn>
+        <section className="mt-20 border-t border-bloom/30 pt-12">
+          <p className="font-display text-4xl text-moss-deep sm:text-5xl text-balance">
+            Domluvíme vaši svatbu
+          </p>
+          <p className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground">
+            Napište datum, místo a představu. Ozvu se a společně nastavíme rozsah
+            floristky i dekorací.
+          </p>
+          <CtaLink href="/kontakt?typ=svatba" className="mt-8">
+            Poptat svatbu
+          </CtaLink>
+        </section>
+      </FadeIn>
     </div>
   );
 }

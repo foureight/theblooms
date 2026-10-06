@@ -2,12 +2,74 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { CtaLink } from "@/components/cta-link";
 import { FadeIn } from "@/components/fade-in";
+import { FaqSection } from "@/components/faq-section";
+import { JsonLd } from "@/components/json-ld";
+import { site } from "@/data/site";
+import {
+  breadcrumbJsonLd,
+  faqJsonLd,
+  serviceJsonLd,
+} from "@/lib/seo";
+
+const pageDescription =
+  "Květinové a věncové workshopy THE BLOOMS — přijedu domů, do firmy nebo na akci. Přivezu květiny, materiál i nástroje. Domluvte workshop s Alenou Šmejkalovou.";
 
 export const metadata: Metadata = {
-  title: "Workshopy",
-  description:
-    "Květinové a věncové workshopy — přijedu domů, do firmy nebo na akci. Přivezu květiny, materiál i nástroje.",
+  title: "Květinové a věncové workshopy",
+  description: pageDescription,
+  keywords: [
+    "květinový workshop",
+    "věncový workshop",
+    "floristický workshop",
+    "team building květiny",
+    "workshop doma",
+    "THE BLOOMS",
+  ],
+  alternates: { canonical: "/workshopy" },
+  openGraph: {
+    title: `Workshopy · ${site.name}`,
+    description: pageDescription,
+    type: "website",
+    locale: "cs_CZ",
+  },
 };
+
+const faqs = [
+  {
+    question: "Kde workshop probíhá?",
+    answer:
+      "Přijedu za vámi — domů, do firmy, na soukromou akci nebo firemní event. Vy zajistíte místo a účastníky, já přivezu materiál i program.",
+  },
+  {
+    question: "Co je v ceně workshopu?",
+    answer:
+      "Květiny a sezónní materiál, nástroje, vedení workshopu a tipy, jak o hotovou práci pečovat. Domluvíme počet lidí, téma a délku.",
+  },
+  {
+    question: "Jaké formáty nabízíte?",
+    answer:
+      "Květinové workshopy (kytice a aranžmá), věncové workshopy a firemní / týmové workshopy jako team building nebo zážitek pro klienty.",
+  },
+  {
+    question: "Jak workshop objednám?",
+    answer:
+      "Přes kontaktní formulář — napište počet lidí, termín, místo a jestli chcete kytice, věnce, nebo kombinaci. Domluvíme zbytek.",
+  },
+];
+
+const jsonLd = [
+  breadcrumbJsonLd([
+    { name: "Úvod", path: "/" },
+    { name: "Workshopy", path: "/workshopy" },
+  ]),
+  serviceJsonLd({
+    name: "Květinové a věncové workshopy",
+    description: pageDescription,
+    path: "/workshopy",
+    serviceType: "Floristický workshop",
+  }),
+  faqJsonLd(faqs),
+];
 
 const formats = [
   {
@@ -53,6 +115,7 @@ const places = [
 export default function WorkshopyPage() {
   return (
     <div>
+      <JsonLd data={jsonLd} />
       <div className="relative h-[45svh] min-h-[280px] overflow-hidden">
         <Image
           src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=1800&q=80"
@@ -168,6 +231,8 @@ export default function WorkshopyPage() {
             </ul>
           </section>
         </FadeIn>
+
+        <FaqSection faqs={faqs} />
 
         <FadeIn delay={140}>
           <section className="mt-20 border-t border-bloom/30 pt-12">
