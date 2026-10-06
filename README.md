@@ -27,10 +27,8 @@ Poptávky se logují na server (`/api/inquiry`) — e-mailová služba a platebn
 
 Kontakty (z vizitky): Alena Šmejkalová · theblooms@chtel.biz · +420 775 125 224 · Instagram @thebloomscz
 
-Typografie:
-- Czech text → **Encode Sans Expanded** (latin-ext) — Typekit kit `zwe5oqo` zatím nemá CE znaky (Š/č/ř/ě/ů/ž)
-- Wordmark THE BLOOMS → **Acumin Pro Wide** Extra Bold Italic (ASCII)
+Typografie: celý web na **Acumin Pro Wide** (Adobe Fonts kit `zwe5oqo`, včetně češtiny).
 
-Až v Adobe Fonts u kitu zapneš jazyk **Czech** / character set **All Characters**, můžeme Acumin vrátit i na tělo webu.
-
-SVG loga: pošli do chatu nebo do `public/brand/`.
+- text / jméno Aleny → Regular (400)
+- wordmark BLOOMS → Extra Bold Italic (800)
+- fallback → Encode Sans Expanded
