@@ -45,15 +45,10 @@ export function BloomWordmarkLive({
   return (
     <span className={cn("inline-flex items-center gap-3 sm:gap-4", className)}>
       <span className="inline-flex items-baseline gap-[0.3em] leading-none">
-        <span
-          className={cn(
-            "font-name translate-y-[-0.12em] text-[0.38em] font-normal tracking-[0.12em]",
-            theClass,
-          )}
-        >
+        <span className="font-brand translate-y-[-0.12em] text-[0.38em] font-normal tracking-[0.12em] text-white">
           THE
         </span>
-        <span className="font-name text-[1em] font-extrabold tracking-[-0.02em] text-bloom italic">
+        <span className="font-brand text-[1em] font-extrabold tracking-[-0.02em] text-bloom italic">
           BLOOMS
         </span>
       </span>

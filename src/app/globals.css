@@ -7,12 +7,13 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "acumin-pro-wide", var(--font-name-fallback), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "acumin-pro-wide", var(--font-name-fallback), ui-sans-serif, system-ui, sans-serif;
+  /* Body/UI: Encode (latin-ext) — Acumin kit currently lacks Czech glyphs */
+  --font-sans: var(--font-name-fallback), "acumin-pro-wide", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-name-fallback), "acumin-pro-wide", ui-sans-serif, system-ui, sans-serif;
   --font-brand: "acumin-pro-wide", var(--font-name-fallback), ui-sans-serif, system-ui, sans-serif;
-  --font-name: "acumin-pro-wide", var(--font-name-fallback), ui-sans-serif, system-ui, sans-serif;
+  --font-name: var(--font-name-fallback), "acumin-pro-wide", ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono);
-  --font-heading: "acumin-pro-wide", var(--font-name-fallback), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-name-fallback), "acumin-pro-wide", ui-sans-serif, system-ui, sans-serif;
   --color-bloom: var(--bloom);
   --color-bloom-deep: var(--bloom-deep);
   --color-moss: var(--bloom);
@@ -59,7 +60,6 @@
 }
 
 :root {
-  /* Brand from business card: mint #75b899 on white/black */
   --background: #f7faf8;
   --foreground: #141814;
   --ink: #141814;
@@ -105,12 +105,7 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
-    font-family:
-      "acumin-pro-wide",
-      var(--font-name-fallback),
-      ui-sans-serif,
-      system-ui,
-      sans-serif;
+    font-family: var(--font-sans);
     font-weight: 400;
     letter-spacing: 0.01em;
     background-image:
@@ -126,25 +121,16 @@
   h2,
   h3,
   .font-display {
-    font-family:
-      "acumin-pro-wide",
-      var(--font-name-fallback),
-      ui-sans-serif,
-      system-ui,
-      sans-serif;
+    font-family: var(--font-heading);
     font-weight: 400;
     letter-spacing: 0.01em;
   }
-  .font-brand,
-  .font-name {
-    font-family:
-      "acumin-pro-wide",
-      var(--font-name-fallback),
-      ui-sans-serif,
-      system-ui,
-      sans-serif;
+  /* ASCII brand only — safe for current Typekit subset */
+  .font-brand {
+    font-family: var(--font-brand);
   }
   .font-name {
+    font-family: var(--font-name);
     font-weight: 400;
     letter-spacing: 0.02em;
   }

@@ -6,14 +6,18 @@ import { CartProvider } from "@/lib/cart";
 import { site } from "@/data/site";
 import "./globals.css";
 
-/** Fallback when Typekit is blocked / offline */
+/**
+ * Primary UI font with full Czech (latin-ext).
+ * Typekit Acumin Pro Wide kit zwe5oqo is currently subset without CE glyphs
+ * (Š/č/ř/ě/ů/ž…) — so Acumin is used only for ASCII brand wordmark.
+ */
 const encodeExpanded = Encode_Sans_Expanded({
   variable: "--font-name-fallback",
   subsets: ["latin", "latin-ext"],
   weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
 });
 
-/** Adobe Fonts kit — Acumin Pro Wide */
 const typekitId = process.env.NEXT_PUBLIC_TYPEKIT_ID?.trim() || "zwe5oqo";
 
 export const metadata: Metadata = {
