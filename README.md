@@ -27,6 +27,18 @@ Poptávky se logují na server (`/api/inquiry`) — e-mailová služba a platebn
 
 SEO / GEO / AIO: stránky mají rozšířené texty, FAQ a JSON-LD (`Service`, `FAQPage`, `BreadcrumbList`, u věnců `Product`). Canonical URL nastavte přes `NEXT_PUBLIC_SITE_URL` (výchozí `https://theblooms.cz`).
 
+## Nasazení (Zerops)
+
+V kořeni je `zerops.yml` (Node.js 22, Next.js SSR, port 3000).
+
+1. V Zerops vytvořte projekt a službu **Node.js @22** (hostname `app`).
+2. Napojte Git repo → pipeline trigger na branch `main`, setup `app`.
+3. V runtime secrets nastavte `CAPTCHA_SECRET` (náhodný dlouhý string).
+4. Public HTTP access + vlastní doména (DNS A/CNAME dle Zerops).
+5. Ověřte `NEXT_PUBLIC_SITE_URL` v `zerops.yml` (výchozí `https://theblooms.cz`).
+
+Lokálně: `npm run dev` (port 43123). Produkce: `npm run build && npm run start` (port 3000).
+
 Kontakty (z vizitky): Alena Šmejkalová · theblooms@chtel.biz · +420 775 125 224 · Instagram @thebloomscz
 
 Typografie: celý web na **Acumin Pro Wide** (Adobe Fonts kit `zwe5oqo`, včetně češtiny).

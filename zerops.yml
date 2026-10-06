@@ -1,0 +1,26 @@
+# THE BLOOMS — Next.js SSR na Zerops
+# Docs: https://docs.zerops.io/zerops-yaml/specification
+zerops:
+  - setup: app
+    build:
+      base: nodejs@22
+      buildCommands:
+        - npm ci
+        - npm run build
+      deployFiles: ./
+    run:
+      base: nodejs@22
+      ports:
+        - port: 3000
+          httpSupport: true
+      envVariables:
+        NODE_ENV: production
+        # Veřejná kanonická URL webu (SEO / Open Graph)
+        NEXT_PUBLIC_SITE_URL: https://theblooms.cz
+        # Adobe Fonts kit (volitelné — v kódu je fallback zwe5oqo)
+        NEXT_PUBLIC_TYPEKIT_ID: zwe5oqo
+      start: npm run start
+      healthCheck:
+        httpGet:
+          port: 3000
+          path: /
