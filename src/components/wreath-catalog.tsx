@@ -9,6 +9,14 @@ import { cn } from "@/lib/utils";
 
 const seasons = ["Vše", "Jaro", "Léto", "Podzim", "Advent"] as const;
 
+const seasonActive: Record<(typeof seasons)[number], string> = {
+  Vše: "bg-moss-deep text-primary-foreground",
+  Jaro: "bg-bloom-yellow text-foreground",
+  Léto: "bg-bloom text-white",
+  Podzim: "bg-bloom-orange text-white",
+  Advent: "bg-bloom-pink text-white",
+};
+
 export function WreathCatalog() {
   const [season, setSeason] = useState<(typeof seasons)[number]>("Vše");
 
@@ -28,7 +36,7 @@ export function WreathCatalog() {
             className={cn(
               "px-4 py-2 text-xs tracking-[0.16em] uppercase transition-colors",
               season === s
-                ? "bg-moss-deep text-primary-foreground"
+                ? seasonActive[s]
                 : "bg-muted text-muted-foreground hover:text-foreground",
             )}
           >
