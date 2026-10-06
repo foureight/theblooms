@@ -22,7 +22,7 @@ export default function HomePage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/20" />
         <div className="relative mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-end px-4 pb-16 pt-28 sm:px-6 lg:px-8 lg:pb-24">
-          <h1 className="reveal max-w-3xl font-sans text-3xl font-normal tracking-wide text-white/90 sm:text-4xl md:text-5xl md:leading-tight">
+          <h1 className="reveal max-w-3xl font-sans text-4xl font-bold tracking-wide text-white sm:text-5xl md:text-6xl md:leading-[1.05]">
             Floristické studio pro svatby, větší květinové realizace a věnce
           </h1>
           <p className="reveal reveal-delay-1 mt-3 max-w-lg text-base leading-relaxed text-white/70">
