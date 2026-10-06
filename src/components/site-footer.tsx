@@ -72,9 +72,8 @@ export function SiteFooter() {
           <p className="text-sm">
             © {new Date().getFullYear()} THE BLOOMS – {site.owner}
           </p>
-          <p className="text-xs leading-relaxed text-muted-foreground sm:text-right">
-            Design, programming a SEO / GEO
-            <br />
+          <p className="text-xs text-muted-foreground sm:text-right">
+            Design, programming a SEO / GEO{" "}
             <a
               href="https://forejt.net"
               target="_blank"
