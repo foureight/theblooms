@@ -32,7 +32,7 @@ export default function HomePage() {
           <div className="reveal reveal-delay-2 mt-8 flex flex-wrap gap-3">
             <CtaLink
               href="/svatby"
-              className="bg-[#3d6ea8] text-white hover:bg-[#2f5a8c]"
+              className="bg-bloom text-white hover:bg-bloom-deep"
             >
               Svatby
             </CtaLink>
