@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { BloomLogo } from "@/components/bloom-logo";
 import { CtaLink } from "@/components/cta-link";
 import { FadeIn } from "@/components/fade-in";
 import { site } from "@/data/site";
@@ -33,9 +32,6 @@ export default function AboutPage() {
           <h1 className="mt-3 font-name text-5xl font-medium tracking-wide text-foreground sm:text-6xl md:text-7xl">
             {site.owner}
           </h1>
-          <div className="mt-4">
-            <BloomLogo variant="wordmark" className="h-8 w-auto sm:h-10" />
-          </div>
           <div className="mt-8 space-y-5 text-base leading-relaxed text-muted-foreground sm:text-lg">
             <p>
               Za {site.name} stojím já — {site.owner}. Pracuji ve vlastní dílně
