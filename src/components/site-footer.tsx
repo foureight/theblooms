@@ -4,7 +4,7 @@ import { nav, site } from "@/data/site";
 
 export function SiteFooter() {
   return (
-    <footer className="mt-24 bg-bloom text-white">
+    <footer className="mt-0 bg-bloom text-white">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
         <div>
           <BloomLogo tone="white" className="h-8 w-auto" />

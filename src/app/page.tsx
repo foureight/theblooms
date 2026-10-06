@@ -245,21 +245,23 @@ export default function HomePage() {
         </FadeIn>
       </section>
 
-      <section className="mx-auto max-w-3xl px-4 pb-24 text-center sm:px-6">
-        <FadeIn>
-          <p className="font-display text-5xl text-moss-deep sm:text-6xl text-balance">
-            „Jo, přesně tohle chci.“
-          </p>
-          <p className="mt-4 text-base text-muted-foreground">
-            Podívejte se na realizace, nebo mi rovnou napište.
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <CtaLink href="/o-mne" variant="outline">
-              O mně
+      <section className="border-t border-bloom/30">
+        <div className="mx-auto flex max-w-7xl flex-col gap-12 px-4 py-20 sm:px-6 md:flex-row md:items-end md:justify-between md:gap-16 lg:px-8 lg:py-28">
+          <FadeIn className="max-w-2xl border-l-4 border-bloom pl-6 sm:pl-8">
+            <p className="font-display text-5xl leading-[1.05] text-moss-deep sm:text-6xl md:text-7xl text-balance">
+              „Jo, přesně tohle chci.“
+            </p>
+            <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground">
+              Podívejte se na realizace, nebo mi rovnou napište.
+            </p>
+          </FadeIn>
+          <FadeIn delay={100} className="flex shrink-0 flex-wrap gap-3 md:pb-2">
+            <CtaLink href="/svatby" variant="outline">
+              Realizace
             </CtaLink>
-            <CtaLink href="/kontakt">Kontakt</CtaLink>
-          </div>
-        </FadeIn>
+            <CtaLink href="/kontakt">Napsat</CtaLink>
+          </FadeIn>
+        </div>
       </section>
     </>
   );
