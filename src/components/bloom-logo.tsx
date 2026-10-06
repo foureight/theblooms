@@ -3,30 +3,38 @@ import { cn } from "@/lib/utils";
 
 type Props = {
   className?: string;
-  variant?: "full" | "wordmark" | "flower";
+  variant?: "full" | "flower";
   priority?: boolean;
 };
 
-/** Official THE BLOOMS logo assets (from brand file) */
-const assets = {
-  full: { src: "/logo-full.png", alt: "THE BLOOMS", w: 300, h: 46 },
-  wordmark: { src: "/logo-wordmark.png", alt: "THE BLOOMS", w: 246, h: 34 },
-  flower: { src: "/logo-flower.png", alt: "", w: 54, h: 46 },
-} as const;
-
+/** Official vector lockup from brand PDF */
 export function BloomLogo({
   className,
   variant = "full",
   priority = false,
 }: Props) {
-  const asset = assets[variant];
+  if (variant === "flower") {
+    return (
+      <Image
+        src="/logo-flower.png"
+        alt=""
+        width={54}
+        height={46}
+        className={cn("h-auto w-auto", className)}
+        aria-hidden
+      />
+    );
+  }
+
   return (
-    <Image
-      src={asset.src}
-      alt={asset.alt}
-      width={asset.w}
-      height={asset.h}
-      priority={priority}
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/logo-full.svg"
+      alt="THE BLOOMS"
+      width={553}
+      height={85}
+      decoding={priority ? "sync" : "async"}
+      fetchPriority={priority ? "high" : "auto"}
       className={cn("h-auto w-auto", className)}
     />
   );
