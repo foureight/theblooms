@@ -62,18 +62,6 @@ export default function HomePage() {
           <div className="mt-8 grid gap-10 md:grid-cols-2">
             <div className="border-t border-moss/30 pt-6">
               <h2 className="font-display text-3xl text-moss-deep sm:text-4xl">
-                Věnce
-              </h2>
-              <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
-                Hotové sezónní věnce — vyberete, přidáte do košíku a koupíte
-                přímo na webu.
-              </p>
-              <CtaLink href="/vence" variant="ghost" className="mt-5 px-0">
-                Do e-shopu →
-              </CtaLink>
-            </div>
-            <div className="border-t border-moss/30 pt-6">
-              <h2 className="font-display text-3xl text-moss-deep sm:text-4xl">
                 Svatby · kytky · eventy
               </h2>
               <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
@@ -82,6 +70,18 @@ export default function HomePage() {
               </p>
               <CtaLink href="/kontakt" variant="ghost" className="mt-5 px-0">
                 Poslat poptávku →
+              </CtaLink>
+            </div>
+            <div className="border-t border-moss/30 pt-6">
+              <h2 className="font-display text-3xl text-moss-deep sm:text-4xl">
+                Věnce
+              </h2>
+              <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
+                Hotové sezónní věnce — vyberete, přidáte do košíku a koupíte
+                přímo na webu.
+              </p>
+              <CtaLink href="/vence" variant="ghost" className="mt-5 px-0">
+                Do e-shopu →
               </CtaLink>
             </div>
           </div>

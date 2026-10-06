@@ -31,7 +31,7 @@ export function BloomLogo({
   );
 }
 
-/** Live wordmark in Acumin Pro Wide (Typekit) — for dark heroes etc. */
+/** Live wordmark in Acumin Pro Wide — ASCII only (safe for Typekit subset) */
 export function BloomWordmarkLive({
   className,
   showMark = true,
@@ -41,11 +41,15 @@ export function BloomWordmarkLive({
   showMark?: boolean;
   tone?: "dark" | "light";
 }) {
-  const theClass = tone === "dark" ? "text-white" : "text-foreground";
   return (
     <span className={cn("inline-flex items-center gap-3 sm:gap-4", className)}>
       <span className="inline-flex items-baseline gap-[0.3em] leading-none">
-        <span className="font-brand translate-y-[-0.12em] text-[0.38em] font-normal tracking-[0.12em] text-white">
+        <span
+          className={cn(
+            "font-brand translate-y-[-0.12em] text-[0.38em] font-normal tracking-[0.12em]",
+            tone === "dark" ? "text-white" : "text-foreground",
+          )}
+        >
           THE
         </span>
         <span className="font-brand text-[1em] font-extrabold tracking-[-0.02em] text-bloom italic">
