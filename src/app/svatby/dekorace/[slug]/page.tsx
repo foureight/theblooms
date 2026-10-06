@@ -65,7 +65,7 @@ export default async function DecorationDetailPage({ params }: Props) {
   return (
     <div>
       <JsonLd data={jsonLd} />
-      <div className="relative h-[45svh] min-h-[280px] overflow-hidden">
+      <div className="relative h-[38svh] min-h-[220px] overflow-hidden sm:h-[45svh] sm:min-h-[280px]">
         <Image
           src={category.image}
           alt={category.title}
@@ -75,19 +75,19 @@ export default async function DecorationDetailPage({ params }: Props) {
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-moss-deep/40" />
-        <div className="absolute inset-x-0 bottom-0 mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-          <p className="text-xs tracking-[0.22em] uppercase text-white/70">
+        <div className="absolute inset-x-0 bottom-0 mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
+          <p className="text-[10px] tracking-[0.22em] uppercase text-white/70 sm:text-xs">
             Inventář · Dekorace
           </p>
-          <h1 className="mt-2 font-display text-6xl text-white sm:text-7xl">
+          <h1 className="mt-2 font-display text-4xl leading-none text-white sm:text-6xl md:text-7xl">
             {category.title}
           </h1>
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
         <FadeIn>
-          <p className="max-w-2xl text-lg leading-relaxed text-muted-foreground">
+          <p className="max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
             {category.description}
           </p>
           <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
@@ -95,7 +95,7 @@ export default async function DecorationDetailPage({ params }: Props) {
             zvolit více kusů najednou.
           </p>
         </FadeIn>
-        <div className="mt-10">
+        <div className="mt-8 sm:mt-10">
           <DecorationVariantPicker category={category} />
         </div>
       </div>

@@ -41,7 +41,7 @@ export function DecorationCarousel({ items }: Props) {
     const el = scrollerRef.current;
     if (!el) return;
     const card = el.querySelector<HTMLElement>("[data-deco-card]");
-    const step = card ? card.offsetWidth + 20 : el.clientWidth * 0.7;
+    const step = card ? card.offsetWidth + 16 : el.clientWidth * 0.85;
     el.scrollBy({ left: dir * step, behavior: "smooth" });
   }
 
@@ -49,25 +49,27 @@ export function DecorationCarousel({ items }: Props) {
     <div className="relative">
       <div
         ref={scrollerRef}
-        className="flex gap-5 overflow-x-auto scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-4 pb-3 sm:-mx-6 sm:gap-5 sm:px-6 lg:mx-0 lg:px-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {items.map((d) => (
           <Link
             key={d.slug}
             href={`/svatby/dekorace/${d.slug}`}
             data-deco-card
-            className="group relative aspect-[3/4] w-[72vw] max-w-[280px] shrink-0 overflow-hidden sm:w-[42vw] lg:w-[22vw] lg:max-w-none"
+            className="group relative aspect-[3/4] w-[78vw] max-w-[300px] shrink-0 snap-center overflow-hidden sm:w-[46vw] sm:snap-start lg:w-[min(22vw,260px)] lg:max-w-none"
           >
             <Image
               src={d.image}
               alt={d.title}
               fill
               className="object-cover transition-transform duration-700 group-hover:scale-105"
-              sizes="(max-width:768px) 72vw, (max-width:1024px) 42vw, 22vw"
+              sizes="(max-width:640px) 78vw, (max-width:1024px) 46vw, 22vw"
             />
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-moss-deep/75 to-transparent p-4">
-              <p className="text-sm tracking-wide text-white">{d.title}</p>
-              <p className="mt-1 text-[11px] tracking-[0.14em] uppercase text-white/70">
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-moss-deep/80 via-moss-deep/35 to-transparent p-3 sm:p-4">
+              <p className="text-sm tracking-wide text-white sm:text-base">
+                {d.title}
+              </p>
+              <p className="mt-1 text-[10px] tracking-[0.14em] uppercase text-white/75 sm:text-[11px]">
                 {d.variants.length} variant · vybrat
               </p>
             </div>
@@ -75,34 +77,36 @@ export function DecorationCarousel({ items }: Props) {
         ))}
       </div>
 
-      <button
-        type="button"
-        aria-label="Předchozí dekorace"
-        disabled={!canPrev}
-        onClick={() => scrollByDir(-1)}
-        className={cn(
-          "absolute top-1/2 left-0 z-10 inline-flex size-11 -translate-y-1/2 items-center justify-center border border-bloom-deep/25 bg-background/90 text-moss-deep shadow-sm backdrop-blur-sm transition-colors",
-          canPrev
-            ? "hover:border-bloom-deep hover:bg-background"
-            : "pointer-events-none opacity-0",
-        )}
-      >
-        <ChevronLeft className="size-5" />
-      </button>
-      <button
-        type="button"
-        aria-label="Další dekorace"
-        disabled={!canNext}
-        onClick={() => scrollByDir(1)}
-        className={cn(
-          "absolute top-1/2 right-0 z-10 inline-flex size-11 -translate-y-1/2 items-center justify-center border border-bloom-deep/25 bg-background/90 text-moss-deep shadow-sm backdrop-blur-sm transition-colors",
-          canNext
-            ? "hover:border-bloom-deep hover:bg-background"
-            : "pointer-events-none opacity-0",
-        )}
-      >
-        <ChevronRight className="size-5" />
-      </button>
+      <div className="mt-4 flex items-center justify-end gap-2 lg:mt-0">
+        <button
+          type="button"
+          aria-label="Předchozí dekorace"
+          disabled={!canPrev}
+          onClick={() => scrollByDir(-1)}
+          className={cn(
+            "inline-flex size-11 items-center justify-center border border-bloom-deep/25 bg-background text-moss-deep transition-colors lg:absolute lg:top-1/2 lg:left-0 lg:z-10 lg:-translate-y-1/2 lg:bg-background/90 lg:shadow-sm lg:backdrop-blur-sm",
+            canPrev
+              ? "hover:border-bloom-light hover:text-bloom-light"
+              : "cursor-default opacity-35",
+          )}
+        >
+          <ChevronLeft className="size-5" />
+        </button>
+        <button
+          type="button"
+          aria-label="Další dekorace"
+          disabled={!canNext}
+          onClick={() => scrollByDir(1)}
+          className={cn(
+            "inline-flex size-11 items-center justify-center border border-bloom-deep/25 bg-background text-moss-deep transition-colors lg:absolute lg:top-1/2 lg:right-0 lg:z-10 lg:-translate-y-1/2 lg:bg-background/90 lg:shadow-sm lg:backdrop-blur-sm",
+            canNext
+              ? "hover:border-bloom-light hover:text-bloom-light"
+              : "cursor-default opacity-35",
+          )}
+        >
+          <ChevronRight className="size-5" />
+        </button>
+      </div>
     </div>
   );
 }

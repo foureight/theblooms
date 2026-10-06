@@ -15,22 +15,25 @@ export function FaqSection({
   return (
     <FadeIn>
       <section
-        className="mt-20 border-t border-border pt-12"
+        className="mt-14 border-t border-border pt-10 sm:mt-20 sm:pt-12"
         aria-labelledby={id}
       >
-        <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
+        <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
           Časté otázky
         </p>
-        <h2 id={id} className="mt-2 font-display text-5xl text-moss-deep">
+        <h2
+          id={id}
+          className="mt-2 font-display text-4xl text-moss-deep sm:text-5xl"
+        >
           {title}
         </h2>
-        <div className="mt-10 max-w-3xl space-y-8">
+        <div className="mt-8 max-w-3xl space-y-6 sm:mt-10 sm:space-y-8">
           {faqs.map((faq) => (
-            <div key={faq.question} className="border-t border-bloom/30 pt-5">
-              <h3 className="text-base font-medium tracking-wide text-foreground">
+            <div key={faq.question} className="border-t border-bloom/30 pt-4 sm:pt-5">
+              <h3 className="text-sm font-medium tracking-wide text-foreground sm:text-base">
                 {faq.question}
               </h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:mt-3">
                 {faq.answer}
               </p>
             </div>
