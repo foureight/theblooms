@@ -16,6 +16,9 @@
   --font-heading: "acumin-pro-wide", var(--font-name-fallback), ui-sans-serif, system-ui, sans-serif;
   --color-bloom: var(--bloom);
   --color-bloom-deep: var(--bloom-deep);
+  --color-bloom-pink: var(--bloom-pink);
+  --color-bloom-orange: var(--bloom-orange);
+  --color-bloom-yellow: var(--bloom-yellow);
   --color-moss: var(--bloom);
   --color-moss-deep: var(--bloom-deep);
   --color-blush: var(--blush);
@@ -111,8 +114,8 @@
     line-height: 1.65;
     letter-spacing: 0.01em;
     background-image:
-      radial-gradient(ellipse 70% 45% at 0% 0%, rgb(117 184 153 / 14%), transparent),
-      radial-gradient(ellipse 50% 35% at 100% 0%, rgb(117 184 153 / 8%), transparent),
+      radial-gradient(ellipse 70% 45% at 0% 0%, rgb(93 186 151 / 14%), transparent),
+      radial-gradient(ellipse 50% 35% at 100% 0%, rgb(93 186 151 / 8%), transparent),
       linear-gradient(180deg, #f7faf8 0%, #f2f6f3 50%, #f7faf8 100%);
     background-attachment: fixed;
   }
