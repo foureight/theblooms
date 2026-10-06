@@ -29,7 +29,7 @@ export function BloomLogo({
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src="/logo-full.svg"
+      src="/logo-full.svg?v=2"
       alt="THE BLOOMS"
       width={553}
       height={85}
