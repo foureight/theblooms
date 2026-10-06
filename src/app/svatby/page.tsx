@@ -96,90 +96,105 @@ const jsonLd = [
 
 export default function SvatbyPage() {
   return (
-    <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+    <div>
       <JsonLd data={jsonLd} />
-      <FadeIn>
-        <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
-          Hlavní činnost
-        </p>
-        <h1 className="mt-3 font-display text-6xl text-moss-deep sm:text-7xl">
-          Svatby
-        </h1>
-        <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-lg">
-          Navrhnu celý floristický a dekorační koncept — nebo vyjdu z vaší
-          představy a zrealizuji ji. Nejen květiny: brány, stoly, instalace,
-          vázy, svícny, textil a další dekorace z vlastního inventáře.
-        </p>
-        <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
-          Za studiem {site.name} stojí floristka {site.owner}. Každá svatba je
-          individuální poptávka — bez balíčků z katalogu a bez kamenné prodejny.
-        </p>
-        <CtaLink href="/kontakt?typ=svatba" className="mt-8">
-          Poptat svatbu
-        </CtaLink>
-      </FadeIn>
 
-      <div className="mt-16 grid gap-8 sm:grid-cols-2">
-        {weddings.map((w, i) => (
-          <FadeIn key={w.slug} delay={(i % 2) * 80}>
-            <Link href={`/svatby/${w.slug}`} className="group block">
-              <div className="relative aspect-[4/5] overflow-hidden">
-                <Image
-                  src={w.cover}
-                  alt={`Svatební floristika ${w.title} — ${w.place}`}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="(max-width:768px) 100vw, 50vw"
-                />
-              </div>
-              <div className="mt-4 flex items-baseline justify-between">
-                <h2 className="font-display text-4xl text-moss-deep">
-                  {w.title}
-                </h2>
-                <span className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
-                  {w.season}
-                </span>
-              </div>
-              <p className="mt-1 text-sm text-muted-foreground">{w.place}</p>
-            </Link>
-          </FadeIn>
-        ))}
+      <div className="relative h-[45svh] min-h-[280px] overflow-hidden">
+        <Image
+          src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1800&q=80"
+          alt="Svatební floristika a dekorace THE BLOOMS"
+          fill
+          priority
+          className="object-cover"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-moss-deep/40" />
+        <div className="absolute inset-x-0 bottom-0 mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
+          <h1 className="font-display text-6xl text-white sm:text-7xl">
+            Svatby
+          </h1>
+        </div>
       </div>
 
-      <section className="mt-24">
+      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <FadeIn>
-          <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
-            Inventář
+          <p className="max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-lg">
+            Navrhnu celý floristický a dekorační koncept — nebo vyjdu z vaší
+            představy a zrealizuji ji. Nejen květiny: brány, stoly, instalace,
+            vázy, svícny, textil a další dekorace z vlastního inventáře.
           </p>
-          <h2 className="mt-2 font-display text-5xl text-moss-deep">
-            Dekorace
-          </h2>
-          <p className="mt-3 max-w-xl text-sm text-muted-foreground">
-            Vlastní inventář, který můžu nabídnout v rámci svatby: vázy, svícny,
-            svíčky, nádoby, brány, textil a další.
-          </p>
-        </FadeIn>
-        <div className="mt-10">
-          <DecorationCarousel items={decorations} />
-        </div>
-      </section>
-
-      <FaqSection faqs={faqs} />
-
-      <FadeIn>
-        <section className="mt-20 border-t border-bloom/30 pt-12">
-          <p className="font-display text-4xl text-moss-deep sm:text-5xl text-balance">
-            Domluvíme vaši svatbu
-          </p>
-          <p className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground">
-            Napište datum, místo a představu. Ozvu se a společně nastavíme rozsah
-            floristky i dekorací.
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
+            Za studiem {site.name} stojí floristka {site.owner}. Každá svatba je
+            individuální poptávka — bez balíčků z katalogu a bez kamenné
+            prodejny.
           </p>
           <CtaLink href="/kontakt?typ=svatba" className="mt-8">
             Poptat svatbu
           </CtaLink>
+        </FadeIn>
+
+        <div className="mt-16 grid gap-8 sm:grid-cols-2">
+          {weddings.map((w, i) => (
+            <FadeIn key={w.slug} delay={(i % 2) * 80}>
+              <Link href={`/svatby/${w.slug}`} className="group block">
+                <div className="relative aspect-[4/5] overflow-hidden">
+                  <Image
+                    src={w.cover}
+                    alt={`Svatební floristika ${w.title} — ${w.place}`}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="(max-width:768px) 100vw, 50vw"
+                  />
+                </div>
+                <div className="mt-4 flex items-baseline justify-between">
+                  <h2 className="font-display text-4xl text-moss-deep">
+                    {w.title}
+                  </h2>
+                  <span className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
+                    {w.season}
+                  </span>
+                </div>
+                <p className="mt-1 text-sm text-muted-foreground">{w.place}</p>
+              </Link>
+            </FadeIn>
+          ))}
+        </div>
+
+        <section className="mt-24">
+          <FadeIn>
+            <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
+              Inventář
+            </p>
+            <h2 className="mt-2 font-display text-5xl text-moss-deep">
+              Dekorace
+            </h2>
+            <p className="mt-3 max-w-xl text-sm text-muted-foreground">
+              Vlastní inventář, který můžu nabídnout v rámci svatby: vázy,
+              svícny, svíčky, nádoby, brány, textil a další.
+            </p>
+          </FadeIn>
+          <div className="mt-10">
+            <DecorationCarousel items={decorations} />
+          </div>
         </section>
-      </FadeIn>
+
+        <FaqSection faqs={faqs} />
+
+        <FadeIn>
+          <section className="mt-20 border-t border-bloom/30 pt-12">
+            <p className="font-display text-4xl text-moss-deep sm:text-5xl text-balance">
+              Domluvíme vaši svatbu
+            </p>
+            <p className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground">
+              Napište datum, místo a představu. Ozvu se a společně nastavíme
+              rozsah floristky i dekorací.
+            </p>
+            <CtaLink href="/kontakt?typ=svatba" className="mt-8">
+              Poptat svatbu
+            </CtaLink>
+          </section>
+        </FadeIn>
+      </div>
     </div>
   );
 }
