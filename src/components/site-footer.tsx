@@ -4,7 +4,7 @@ import { nav, site } from "@/data/site";
 
 export function SiteFooter() {
   return (
-    <footer className="mt-24 bg-bloom-pink text-white">
+    <footer className="mt-24 bg-bloom text-white">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
         <div>
           <div className="inline-block rounded-sm bg-white px-3 py-2">
@@ -13,13 +13,13 @@ export function SiteFooter() {
           <p className="mt-4 font-name text-lg font-medium tracking-wide text-white">
             {site.owner}
           </p>
-          <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/80">
+          <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/85">
             Floristické studio. Svatby, větší květinové zakázky, věnce a
             workshopy — osobně a na míru.
           </p>
         </div>
         <div>
-          <p className="text-xs tracking-[0.2em] uppercase text-white/65">
+          <p className="text-xs tracking-[0.2em] uppercase text-white/70">
             Menu
           </p>
           <ul className="mt-4 space-y-2">
@@ -36,7 +36,7 @@ export function SiteFooter() {
           </ul>
         </div>
         <div>
-          <p className="text-xs tracking-[0.2em] uppercase text-white/65">
+          <p className="text-xs tracking-[0.2em] uppercase text-white/70">
             Kontakt
           </p>
           <ul className="mt-4 space-y-2 text-sm text-white/90">
@@ -66,8 +66,34 @@ export function SiteFooter() {
           </ul>
         </div>
       </div>
-      <div className="border-t border-white/20 px-4 py-5 text-center text-xs text-white/60">
-        © {new Date().getFullYear()} {site.name}
+
+      <div className="bg-white text-foreground">
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-3 px-4 py-4 sm:flex-row sm:justify-between sm:gap-6 lg:px-8">
+          <p className="order-1 text-center text-sm sm:flex-1 sm:text-left md:text-center">
+            © {new Date().getFullYear()} THE BLOOMS – {site.owner}
+          </p>
+          <p className="order-2 text-center text-xs leading-relaxed text-muted-foreground sm:text-right">
+            Design, programming a SEO / GEO
+            <br />
+            <a
+              href="https://forejt.net"
+              target="_blank"
+              rel="noreferrer"
+              className="underline-offset-2 hover:text-foreground hover:underline"
+            >
+              forejt.net
+            </a>
+            {", "}
+            <a
+              href="https://seo-radar.com"
+              target="_blank"
+              rel="noreferrer"
+              className="underline-offset-2 hover:text-foreground hover:underline"
+            >
+              seo-radar.com
+            </a>
+          </p>
+        </div>
       </div>
     </footer>
   );
