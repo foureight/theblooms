@@ -1,0 +1,104 @@
+import type { Metadata } from "next";
+import Image from "next/image";
+import { notFound } from "next/navigation";
+import { DecorationVariantPicker } from "@/components/decoration-variant-picker";
+import { FadeIn } from "@/components/fade-in";
+import { JsonLd } from "@/components/json-ld";
+import { decorations, getDecoration } from "@/data/weddings";
+import { site } from "@/data/site";
+import { absoluteUrl, breadcrumbJsonLd } from "@/lib/seo";
+
+type Props = { params: Promise<{ slug: string }> };
+
+export function generateStaticParams() {
+  return decorations.map((d) => ({ slug: d.slug }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const category = getDecoration(slug);
+  if (!category) return { title: "Dekorace" };
+  return {
+    title: `${category.title} — inventář dekorací`,
+    description: category.description,
+    alternates: { canonical: `/svatby/dekorace/${category.slug}` },
+    openGraph: {
+      title: `${category.title} · ${site.name}`,
+      description: category.description,
+      images: [{ url: category.image }],
+      locale: "cs_CZ",
+    },
+  };
+}
+
+export default async function DecorationDetailPage({ params }: Props) {
+  const { slug } = await params;
+  const category = getDecoration(slug);
+  if (!category) notFound();
+
+  const jsonLd = [
+    breadcrumbJsonLd([
+      { name: "Úvod", path: "/" },
+      { name: "Svatby", path: "/svatby" },
+      { name: "Dekorace", path: "/svatby#dekorace" },
+      { name: category.title, path: `/svatby/dekorace/${category.slug}` },
+    ]),
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: category.title,
+      description: category.description,
+      url: absoluteUrl(`/svatby/dekorace/${category.slug}`),
+      isPartOf: { "@type": "WebPage", url: absoluteUrl("/svatby") },
+      mainEntity: {
+        "@type": "ItemList",
+        itemListElement: category.variants.map((v, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name: v.name,
+          image: v.image,
+        })),
+      },
+    },
+  ];
+
+  return (
+    <div>
+      <JsonLd data={jsonLd} />
+      <div className="relative h-[45svh] min-h-[280px] overflow-hidden">
+        <Image
+          src={category.image}
+          alt={category.title}
+          fill
+          priority
+          className="object-cover"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-moss-deep/40" />
+        <div className="absolute inset-x-0 bottom-0 mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
+          <p className="text-xs tracking-[0.22em] uppercase text-white/70">
+            Inventář · Dekorace
+          </p>
+          <h1 className="mt-2 font-display text-6xl text-white sm:text-7xl">
+            {category.title}
+          </h1>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+        <FadeIn>
+          <p className="max-w-2xl text-lg leading-relaxed text-muted-foreground">
+            {category.description}
+          </p>
+          <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
+            Kliknutím vyberte varianty, které chcete do poptávky svatby. Můžete
+            zvolit více kusů najednou.
+          </p>
+        </FadeIn>
+        <div className="mt-10">
+          <DecorationVariantPicker category={category} />
+        </div>
+      </div>
+    </div>
+  );
+}

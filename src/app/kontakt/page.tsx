@@ -72,7 +72,7 @@ const jsonLd = [
 ];
 
 type Props = {
-  searchParams: Promise<{ typ?: string }>;
+  searchParams: Promise<{ typ?: string; dekorace?: string }>;
 };
 
 function parseType(raw?: string): InquiryType {
@@ -88,8 +88,11 @@ function parseType(raw?: string): InquiryType {
 }
 
 export default async function KontaktPage({ searchParams }: Props) {
-  const { typ } = await searchParams;
+  const { typ, dekorace } = await searchParams;
   const defaultType = parseType(typ);
+  const defaultMessage = dekorace
+    ? `Mám zájem o dekorace z inventáře — ${dekorace}.`
+    : "";
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
@@ -154,7 +157,10 @@ export default async function KontaktPage({ searchParams }: Props) {
         </FadeIn>
         <FadeIn delay={80}>
           <div className="border border-border/70 bg-card/70 p-6 sm:p-8">
-            <InquiryForm defaultType={defaultType} />
+            <InquiryForm
+              defaultType={defaultType}
+              defaultMessage={defaultMessage}
+            />
           </div>
         </FadeIn>
       </div>

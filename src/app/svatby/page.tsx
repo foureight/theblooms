@@ -160,7 +160,7 @@ export default function SvatbyPage() {
           ))}
         </div>
 
-        <section className="mt-24">
+        <section id="dekorace" className="mt-24 scroll-mt-24">
           <FadeIn>
             <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
               Inventář
@@ -169,8 +169,8 @@ export default function SvatbyPage() {
               Dekorace
             </h2>
             <p className="mt-3 max-w-xl text-sm text-muted-foreground">
-              Vlastní inventář, který můžu nabídnout v rámci svatby: vázy,
-              svícny, svíčky, nádoby, brány, textil a další.
+              Vlastní inventář, který můžu nabídnout v rámci svatby. Rozklikněte
+              kategorii, vyberte varianty a pošlete poptávku.
             </p>
           </FadeIn>
           <div className="mt-10">

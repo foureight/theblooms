@@ -1,17 +1,14 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { DecorationCategory } from "@/data/weddings";
 import { cn } from "@/lib/utils";
 
-export type DecorationItem = {
-  title: string;
-  image: string;
-};
-
 type Props = {
-  items: DecorationItem[];
+  items: DecorationCategory[];
 };
 
 export function DecorationCarousel({ items }: Props) {
@@ -55,22 +52,26 @@ export function DecorationCarousel({ items }: Props) {
         className="flex gap-5 overflow-x-auto scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {items.map((d) => (
-          <figure
-            key={d.title}
+          <Link
+            key={d.slug}
+            href={`/svatby/dekorace/${d.slug}`}
             data-deco-card
-            className="relative aspect-[3/4] w-[72vw] max-w-[280px] shrink-0 overflow-hidden sm:w-[42vw] lg:w-[22vw] lg:max-w-none"
+            className="group relative aspect-[3/4] w-[72vw] max-w-[280px] shrink-0 overflow-hidden sm:w-[42vw] lg:w-[22vw] lg:max-w-none"
           >
             <Image
               src={d.image}
               alt={d.title}
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
               sizes="(max-width:768px) 72vw, (max-width:1024px) 42vw, 22vw"
             />
-            <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-moss-deep/70 to-transparent p-4">
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-moss-deep/75 to-transparent p-4">
               <p className="text-sm tracking-wide text-white">{d.title}</p>
-            </figcaption>
-          </figure>
+              <p className="mt-1 text-[11px] tracking-[0.14em] uppercase text-white/70">
+                {d.variants.length} variant · vybrat
+              </p>
+            </div>
+          </Link>
         ))}
       </div>
 

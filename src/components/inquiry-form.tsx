@@ -17,6 +17,7 @@ import {
 
 type Props = {
   defaultType?: InquiryType;
+  defaultMessage?: string;
 };
 
 type Captcha = {
@@ -24,8 +25,12 @@ type Captcha = {
   question: string;
 };
 
-export function InquiryForm({ defaultType = "svatba" }: Props) {
+export function InquiryForm({
+  defaultType = "svatba",
+  defaultMessage = "",
+}: Props) {
   const [type, setType] = useState<InquiryType>(defaultType);
+  const [message, setMessage] = useState(defaultMessage);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">(
     "idle",
   );
@@ -93,6 +98,7 @@ export function InquiryForm({ defaultType = "svatba" }: Props) {
       setStatus("success");
       form.reset();
       setType(defaultType);
+      setMessage(defaultMessage);
       void loadCaptcha();
     } catch {
       setStatus("error");
@@ -212,6 +218,8 @@ export function InquiryForm({ defaultType = "svatba" }: Props) {
           name="message"
           required
           rows={5}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
           placeholder="Napište mi, co potřebujete…"
         />
       </div>
