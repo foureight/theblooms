@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { FadeIn } from "@/components/fade-in";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
-import { PageHero } from "@/components/page-hero";
 import { WreathCatalog } from "@/components/wreath-catalog";
 import { site } from "@/data/site";
 import { wreaths } from "@/data/wreaths";
@@ -104,31 +103,28 @@ const jsonLd = [
 
 export default function VencePage() {
   return (
-    <div>
+    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
       <JsonLd data={jsonLd} />
-      <PageHero
-        title="Věnce"
-        eyebrow="E-shop"
-        image="https://images.unsplash.com/photo-1508610048659-a06b669e3321?w=1800&q=80"
-        imageAlt="Sezónní věnce THE BLOOMS"
-      />
-
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-        <FadeIn>
-          <p className="max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Nabídka se mění podle sezóny. Každý věnec má fotografii, cenu, rozměr
-            a dostupnost — vyberete a koupíte přímo zde.
-          </p>
-          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-            Věnce jsou hotové floristické výrobky studia {site.name}. Ostatní
-            služby (svatby, kytky, eventy, workshopy) řešíme přes poptávku.
-          </p>
-        </FadeIn>
-        <div className="mt-10 sm:mt-12">
-          <WreathCatalog />
-        </div>
-        <FaqSection faqs={faqs} />
+      <FadeIn>
+        <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
+          E-shop
+        </p>
+        <h1 className="mt-3 font-display text-4xl text-moss-deep sm:text-6xl md:text-7xl">
+          Věnce
+        </h1>
+        <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+          Nabídka se mění podle sezóny. Každý věnec má fotografii, cenu, rozměr
+          a dostupnost — vyberete a koupíte přímo zde.
+        </p>
+        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+          Věnce jsou hotové floristické výrobky studia {site.name}. Ostatní
+          služby (svatby, kytky, eventy, workshopy) řešíme přes poptávku.
+        </p>
+      </FadeIn>
+      <div className="mt-10 sm:mt-12">
+        <WreathCatalog />
       </div>
+      <FaqSection faqs={faqs} />
     </div>
   );
 }

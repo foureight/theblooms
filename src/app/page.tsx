@@ -244,23 +244,37 @@ export default function HomePage() {
       </section>
 
       <section className="border-y border-border/60 bg-card/50">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
           <FadeIn>
-            <div className="flex flex-wrap items-end justify-between gap-4">
+            <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-14">
+              <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[5/4] lg:aspect-[4/5]">
+                <Image
+                  src="https://images.unsplash.com/photo-1508610048659-a06b669e3321?w=1400&q=80"
+                  alt="Sezónní věnec THE BLOOMS"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width:1024px) 100vw, 50vw"
+                />
+              </div>
               <div>
-                <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
+                <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
                   E-shop
                 </p>
-                <h2 className="mt-2 font-display text-5xl text-moss-deep sm:text-6xl">
+                <h2 className="mt-2 font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
                   Sezónní věnce
                 </h2>
+                <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground">
+                  Hotové věnce podle sezóny — s fotografií, cenou, rozměrem a
+                  dostupností. Vyberete a koupíte přímo na webu.
+                </p>
+                <CtaLink href="/vence" className="mt-8">
+                  Do e-shopu
+                </CtaLink>
               </div>
-              <CtaLink href="/vence" variant="outline">
-                Všechny věnce
-              </CtaLink>
             </div>
           </FadeIn>
-          <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+
+          <div className="mt-12 grid gap-6 sm:mt-14 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
             {featuredWreaths.map((w, i) => (
               <FadeIn key={w.slug} delay={i * 80}>
                 <Link href={`/vence/${w.slug}`} className="group block">
