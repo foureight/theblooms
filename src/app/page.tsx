@@ -60,7 +60,7 @@ export default function HomePage() {
             Dva způsoby, jak začít
           </p>
           <div className="mt-8 grid gap-10 md:grid-cols-2">
-            <div className="border-t-2 border-bloom-pink/70 pt-6">
+            <div className="border-t border-bloom/40 pt-6">
               <h2 className="font-display text-5xl text-moss-deep sm:text-6xl">
                 Svatby · kytky · eventy
               </h2>
@@ -72,7 +72,7 @@ export default function HomePage() {
                 Poslat poptávku →
               </CtaLink>
             </div>
-            <div className="border-t-2 border-bloom-yellow pt-6">
+            <div className="border-t border-bloom/40 pt-6">
               <h2 className="font-display text-5xl text-moss-deep sm:text-6xl">
                 Věnce
               </h2>
