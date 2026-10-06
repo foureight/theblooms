@@ -20,11 +20,11 @@ export function CtaLink({
       className={cn(
         "inline-flex items-center justify-center px-6 py-3 text-[11px] font-medium tracking-[0.2em] uppercase transition-all duration-300",
         variant === "solid" &&
-          "bg-moss-deep text-primary-foreground hover:bg-moss",
+          "bg-bloom-deep text-primary-foreground hover:bg-bloom",
         variant === "outline" &&
-          "border border-moss-deep/40 text-moss-deep hover:border-moss-deep hover:bg-moss-deep/5",
+          "border border-bloom-deep/40 text-bloom-deep hover:border-bloom-deep hover:bg-bloom/10",
         variant === "ghost" &&
-          "text-moss-deep underline-offset-4 hover:underline",
+          "text-bloom-deep underline-offset-4 hover:underline",
         className,
       )}
     >

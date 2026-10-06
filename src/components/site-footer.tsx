@@ -1,13 +1,19 @@
 import Link from "next/link";
+import { BloomLogo } from "@/components/bloom-logo";
 import { nav, site } from "@/data/site";
 
 export function SiteFooter() {
   return (
-    <footer className="mt-24 border-t border-border/70 bg-moss-deep text-primary-foreground">
+    <footer className="mt-24 border-t border-border/70 bg-[#1a221c] text-primary-foreground">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
         <div>
-          <p className="font-display text-2xl tracking-[0.14em]">{site.name}</p>
-          <p className="mt-3 max-w-xs text-sm leading-relaxed text-primary-foreground/75">
+          <div className="inline-block rounded-sm bg-white px-3 py-2">
+            <BloomLogo variant="full" className="h-8 w-auto" />
+          </div>
+          <p className="mt-4 font-name text-lg font-medium tracking-wide text-white">
+            {site.owner}
+          </p>
+          <p className="mt-3 max-w-xs text-sm leading-relaxed text-primary-foreground/70">
             Floristické studio. Svatby, větší květinové zakázky, věnce a
             workshopy — osobně a na míru.
           </p>
@@ -40,7 +46,10 @@ export function SiteFooter() {
               </a>
             </li>
             <li>
-              <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="hover:text-white">
+              <a
+                href={`tel:${site.phone.replace(/\s/g, "")}`}
+                className="hover:text-white"
+              >
                 {site.phone}
               </a>
             </li>
@@ -51,7 +60,7 @@ export function SiteFooter() {
                 rel="noreferrer"
                 className="hover:text-white"
               >
-                Instagram
+                @{site.instagramHandle}
               </a>
             </li>
           </ul>

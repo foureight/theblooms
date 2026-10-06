@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { BloomLogo } from "@/components/bloom-logo";
 import { CtaLink } from "@/components/cta-link";
 import { FadeIn } from "@/components/fade-in";
 import { site } from "@/data/site";
@@ -29,14 +30,18 @@ export default function AboutPage() {
           <p className="text-[11px] tracking-[0.22em] uppercase text-muted-foreground">
             Osobně
           </p>
-          <h1 className="mt-3 font-display text-5xl text-moss-deep sm:text-6xl">
-            O mně
+          <h1 className="mt-3 font-name text-4xl font-medium tracking-wide text-foreground sm:text-5xl md:text-6xl">
+            {site.owner}
           </h1>
+          <div className="mt-4">
+            <BloomLogo variant="wordmark" className="h-8 w-auto sm:h-10" />
+          </div>
           <div className="mt-8 space-y-5 text-sm leading-relaxed text-muted-foreground sm:text-base">
             <p>
-              Za {site.name} stojím já. Pracuji ve vlastní dílně — bez kamenné
-              prodejny a bez klasického květinářství. Věnuji se především
-              svatbám, větším květinovým zakázkám, eventům, věncům a workshopům.
+              Za {site.name} stojím já — {site.owner}. Pracuji ve vlastní dílně
+              — bez kamenné prodejny a bez klasického květinářství. Věnuji se
+              především svatbám, větším květinovým zakázkám, eventům, věncům a
+              workshopům.
             </p>
             <p>
               Ráda skládám celý koncept: květiny, prostor, světlo a dekorace.

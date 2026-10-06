@@ -1,9 +1,11 @@
 export const site = {
   name: "THE BLOOMS",
+  owner: "Alena Šmejkalová",
   tagline: "Floristické studio pro svatby, věnce a větší květinové realizace",
-  email: "ahoj@theblooms.cz",
-  phone: "+420 777 000 000",
-  instagram: "https://instagram.com/theblooms",
+  email: "theblooms@chtel.biz",
+  phone: "+420 775 125 224",
+  instagram: "https://instagram.com/thebloomscz",
+  instagramHandle: "thebloomscz",
   location: "Česká republika",
 };
 

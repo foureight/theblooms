@@ -35,9 +35,12 @@ export default async function KontaktPage({ searchParams }: Props) {
           <p className="text-[11px] tracking-[0.22em] uppercase text-muted-foreground">
             Domluvíme se
           </p>
-          <h1 className="mt-3 font-display text-5xl text-moss-deep sm:text-6xl">
+          <h1 className="mt-3 font-display text-5xl text-bloom-deep sm:text-6xl">
             Kontakt
           </h1>
+          <p className="mt-3 font-name text-xl font-medium tracking-wide text-foreground">
+            {site.owner}
+          </p>
           <p className="mt-5 max-w-md text-sm leading-relaxed text-muted-foreground">
             Napište, čeho se poptávka týká. U svatby se rovnou ptám na datum,
             místo a základní představu — ať můžu odpovědět konkrétně.
@@ -48,10 +51,7 @@ export default async function KontaktPage({ searchParams }: Props) {
                 E-mail
               </dt>
               <dd className="mt-1">
-                <a
-                  href={`mailto:${site.email}`}
-                  className="hover:underline"
-                >
+                <a href={`mailto:${site.email}`} className="hover:underline">
                   {site.email}
                 </a>
               </dd>
@@ -80,7 +80,7 @@ export default async function KontaktPage({ searchParams }: Props) {
                   rel="noreferrer"
                   className="hover:underline"
                 >
-                  @theblooms
+                  @{site.instagramHandle}
                 </a>
               </dd>
             </div>

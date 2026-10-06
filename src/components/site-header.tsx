@@ -4,7 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, ShoppingBag, X } from "lucide-react";
-import { nav, site } from "@/data/site";
+import { BloomLogo } from "@/components/bloom-logo";
+import { nav } from "@/data/site";
 import { useCart } from "@/lib/cart";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -15,14 +16,19 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="font-display text-xl tracking-[0.12em] text-moss-deep sm:text-2xl"
+          className="flex items-center"
           onClick={() => setOpen(false)}
+          aria-label="THE BLOOMS — úvod"
         >
-          {site.name}
+          <BloomLogo
+            variant="full"
+            priority
+            className="h-8 w-auto sm:h-9"
+          />
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex">
@@ -36,7 +42,7 @@ export function SiteHeader() {
                 className={cn(
                   "px-3 py-2 text-[11px] font-medium tracking-[0.18em] uppercase transition-colors",
                   active
-                    ? "text-moss-deep"
+                    ? "text-bloom-deep"
                     : "text-muted-foreground hover:text-foreground",
                 )}
               >
@@ -54,7 +60,7 @@ export function SiteHeader() {
           >
             <ShoppingBag className="size-5" />
             {hydrated && count > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full bg-moss-deep text-[10px] text-primary-foreground">
+              <span className="absolute -top-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full bg-bloom text-[10px] text-white">
                 {count}
               </span>
             )}

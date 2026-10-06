@@ -23,4 +23,8 @@ Otevřete [http://127.0.0.1:43123](http://127.0.0.1:43123).
 
 Next.js (App Router), TypeScript, Tailwind CSS, shadcn/ui.
 
-Poptávky se logují na server (`/api/inquiry`) — e-mailová služba a platební brána zatím nejsou napojené. Kontaktní údaje v `src/data/site.ts` jsou placeholdery.
+Poptávky se logují na server (`/api/inquiry`) — e-mailová služba a platební brána zatím nejsou napojené.
+
+Kontakty (z vizitky): Alena Šmejkalová · theblooms@chtel.biz · +420 775 125 224 · Instagram @thebloomscz
+
+Typografie: original brand používá **Acumin Pro Wide** (Adobe). Na webu je volná náhrada **Encode Sans Expanded** pro jméno a značku; logo PNG je vystřižené z vizitky.

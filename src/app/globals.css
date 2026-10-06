@@ -9,10 +9,14 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
   --font-serif: var(--font-serif);
+  --font-brand: var(--font-name);
+  --font-name: var(--font-name);
   --font-mono: var(--font-mono);
   --font-heading: var(--font-serif);
-  --color-moss: var(--moss);
-  --color-moss-deep: var(--moss-deep);
+  --color-bloom: var(--bloom);
+  --color-bloom-deep: var(--bloom-deep);
+  --color-moss: var(--bloom);
+  --color-moss-deep: var(--bloom-deep);
   --color-blush: var(--blush);
   --color-stone: var(--stone);
   --color-ink: var(--ink);
@@ -55,44 +59,44 @@
 }
 
 :root {
-  /* Cool linen + moss editorial — not cream/terracotta */
-  --background: #eef1ec;
-  --foreground: #1a2218;
-  --ink: #1a2218;
-  --moss: #3f5340;
-  --moss-deep: #2a372b;
-  --blush: #c9a8a1;
-  --stone: #d8ddd4;
-  --card: #f6f7f4;
-  --card-foreground: #1a2218;
-  --popover: #f6f7f4;
-  --popover-foreground: #1a2218;
-  --primary: #2a372b;
-  --primary-foreground: #f4f6f2;
-  --secondary: #dce3d6;
-  --secondary-foreground: #1a2218;
-  --muted: #e2e7de;
-  --muted-foreground: #5c6658;
-  --accent: #d8c0ba;
-  --accent-foreground: #2a221f;
+  /* Brand from business card: mint #75b899 on white/black */
+  --background: #f7faf8;
+  --foreground: #141814;
+  --ink: #141814;
+  --bloom: #75b899;
+  --bloom-deep: #4f8f72;
+  --blush: #d4c4be;
+  --stone: #e4ebe6;
+  --card: #ffffff;
+  --card-foreground: #141814;
+  --popover: #ffffff;
+  --popover-foreground: #141814;
+  --primary: #4f8f72;
+  --primary-foreground: #f7faf8;
+  --secondary: #e4ebe6;
+  --secondary-foreground: #141814;
+  --muted: #eaf0ec;
+  --muted-foreground: #5a665e;
+  --accent: #d8eee4;
+  --accent-foreground: #1a2e24;
   --destructive: oklch(0.55 0.2 25);
-  --border: #cfd6c8;
-  --input: #cfd6c8;
-  --ring: #3f5340;
-  --chart-1: #3f5340;
-  --chart-2: #c9a8a1;
-  --chart-3: #6b7a68;
-  --chart-4: #a8b5a4;
-  --chart-5: #2a372b;
-  --radius: 0.4rem;
-  --sidebar: #f6f7f4;
-  --sidebar-foreground: #1a2218;
-  --sidebar-primary: #2a372b;
-  --sidebar-primary-foreground: #f4f6f2;
-  --sidebar-accent: #e2e7de;
-  --sidebar-accent-foreground: #1a2218;
-  --sidebar-border: #cfd6c8;
-  --sidebar-ring: #3f5340;
+  --border: #d2ddd6;
+  --input: #d2ddd6;
+  --ring: #75b899;
+  --chart-1: #75b899;
+  --chart-2: #4f8f72;
+  --chart-3: #a8d0bc;
+  --chart-4: #2f5644;
+  --chart-5: #141814;
+  --radius: 0.35rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #141814;
+  --sidebar-primary: #4f8f72;
+  --sidebar-primary-foreground: #f7faf8;
+  --sidebar-accent: #eaf0ec;
+  --sidebar-accent-foreground: #141814;
+  --sidebar-border: #d2ddd6;
+  --sidebar-ring: #75b899;
 }
 
 @layer base {
@@ -102,9 +106,9 @@
   body {
     @apply bg-background text-foreground antialiased;
     background-image:
-      radial-gradient(ellipse 80% 50% at 10% -10%, rgb(200 168 161 / 18%), transparent),
-      radial-gradient(ellipse 60% 40% at 100% 0%, rgb(63 83 64 / 10%), transparent),
-      linear-gradient(180deg, #eef1ec 0%, #e8ece4 40%, #eef1ec 100%);
+      radial-gradient(ellipse 70% 45% at 0% 0%, rgb(117 184 153 / 14%), transparent),
+      radial-gradient(ellipse 50% 35% at 100% 0%, rgb(117 184 153 / 8%), transparent),
+      linear-gradient(180deg, #f7faf8 0%, #f2f6f3 50%, #f7faf8 100%);
     background-attachment: fixed;
   }
   html {
@@ -117,6 +121,13 @@
     font-family: var(--font-serif), ui-serif, Georgia, serif;
     font-weight: 400;
     letter-spacing: -0.02em;
+  }
+  .font-brand {
+    font-family: var(--font-name), var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  }
+  .font-name {
+    font-family: var(--font-name), var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0.02em;
   }
 }
 
@@ -132,7 +143,7 @@
     pointer-events: none;
     position: absolute;
     inset: 0;
-    opacity: 0.04;
+    opacity: 0.035;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     mix-blend-mode: multiply;
   }
