@@ -124,16 +124,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
         <FadeIn>
-          <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
+          <h2 className="font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
             Dva způsoby, jak začít
-          </p>
+          </h2>
           <div className="mt-8 grid gap-10 md:grid-cols-2">
             <div className="border-t border-bloom/40 pt-6">
-              <h2 className="font-display text-5xl text-moss-deep sm:text-6xl">
+              <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
                 Svatby & kytky
-              </h2>
+              </h3>
               <p className="mt-3 max-w-sm text-base leading-relaxed text-muted-foreground">
                 Větší zakázky, eventy a realizace na míru — napíšete poptávku a
                 domluvíme se společně.
@@ -143,9 +143,9 @@ export default function HomePage() {
               </CtaLink>
             </div>
             <div className="border-t border-bloom/40 pt-6">
-              <h2 className="font-display text-5xl text-moss-deep sm:text-6xl">
+              <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
                 Věnce
-              </h2>
+              </h3>
               <p className="mt-3 max-w-sm text-base leading-relaxed text-muted-foreground">
                 Hotové sezónní věnce — vyberete, přidáte do košíku a koupíte
                 přímo na webu.
@@ -159,26 +159,26 @@ export default function HomePage() {
       </section>
 
       <section className="bg-moss-deep text-primary-foreground">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
           <FadeIn>
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <p className="text-xs tracking-[0.22em] uppercase text-primary-foreground/55">
+                <p className="text-[10px] tracking-[0.22em] uppercase text-primary-foreground/55 sm:text-xs">
                   Realizace
                 </p>
-                <h2 className="mt-2 font-display text-5xl sm:text-6xl">
+                <h2 className="mt-2 font-display text-4xl sm:text-5xl md:text-6xl">
                   Svatby
                 </h2>
               </div>
               <CtaLink
                 href="/svatby"
-                className="bg-transparent border border-white/40 text-white hover:bg-white/10"
+                className="border border-white/40 bg-transparent text-white hover:bg-white/10"
               >
                 Celá galerie
               </CtaLink>
             </div>
           </FadeIn>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-10 grid gap-6 sm:mt-12 sm:grid-cols-2 lg:grid-cols-3">
             {featuredWeddings.map((w, i) => (
               <FadeIn key={w.slug} delay={i * 100}>
                 <Link href={`/svatby/${w.slug}`} className="group block">
@@ -192,12 +192,12 @@ export default function HomePage() {
                     />
                   </div>
                   <div className="mt-4 flex items-baseline justify-between gap-3">
-                    <h3 className="font-display text-3xl">{w.title}</h3>
-                    <span className="text-xs tracking-[0.14em] uppercase text-primary-foreground/55">
+                    <h3 className="font-display text-2xl sm:text-3xl">{w.title}</h3>
+                    <h4 className="text-[10px] font-normal tracking-[0.14em] uppercase text-primary-foreground/55 sm:text-xs">
                       {w.season}
-                    </span>
+                    </h4>
                   </div>
-                  <p className="mt-1 text-base text-primary-foreground/65">
+                  <p className="mt-1 text-sm text-primary-foreground/65 sm:text-base">
                     {w.place}
                   </p>
                 </Link>
@@ -207,9 +207,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
         <FadeIn>
-          <div className="grid items-center gap-10 lg:grid-cols-2">
+          <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-10">
             <div className="relative aspect-[4/5] overflow-hidden">
               <Image
                 src="https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=1400&q=80"
@@ -220,13 +220,13 @@ export default function HomePage() {
               />
             </div>
             <div>
-              <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
+              <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
                 Kytky & eventy
               </p>
-              <h2 className="mt-3 font-display text-6xl text-moss-deep sm:text-7xl">
+              <h2 className="mt-2 font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
                 Květiny na míru
               </h2>
-              <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground">
+              <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground sm:mt-5">
                 Květiny do domu, do firmy, výzdoba eventů i individuální
                 aranžmá. Každá zakázka vzniká podle vaší představy a konkrétní
                 příležitosti, orientačně od 2&nbsp;000&nbsp;Kč. Stačí poslat
@@ -289,12 +289,12 @@ export default function HomePage() {
                   </div>
                   <div className="mt-4 flex items-start justify-between gap-3">
                     <div>
-                      <h3 className="font-display text-2xl text-moss-deep">
+                      <h3 className="font-display text-2xl text-moss-deep sm:text-3xl">
                         {w.name}
                       </h3>
-                      <p className="mt-1 text-sm tracking-[0.12em] uppercase text-muted-foreground">
+                      <h4 className="mt-1 text-[10px] font-normal tracking-[0.12em] uppercase text-muted-foreground sm:text-xs">
                         {w.season} · {w.size}
-                      </p>
+                      </h4>
                     </div>
                     <p className="text-base font-medium">{formatPrice(w.price)}</p>
                   </div>
@@ -305,17 +305,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
         <FadeIn>
-          <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-10">
             <div>
-              <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
+              <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
                 Workshopy
               </p>
-              <h2 className="mt-3 font-display text-6xl text-moss-deep sm:text-7xl">
+              <h2 className="mt-2 font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
                 Přijedu za vámi
               </h2>
-              <p className="mt-5 max-w-lg text-base leading-relaxed text-muted-foreground">
+              <p className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground sm:mt-5">
                 Květinové a věncové workshopy domů, do firmy nebo na akci.
                 Přivezu květiny, materiál i nástroje — vy zajistíte místo a lidi.
               </p>
@@ -341,7 +341,7 @@ export default function HomePage() {
       </div>
 
       <section className="border-t border-bloom/30">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:py-28">
+        <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:py-28">
           <FadeIn>
             <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[5/4] lg:aspect-[4/5]">
               <Image
@@ -354,10 +354,10 @@ export default function HomePage() {
             </div>
           </FadeIn>
           <FadeIn delay={80} className="lg:py-4">
-            <p className="font-display text-5xl leading-[1.05] text-moss-deep sm:text-6xl md:text-7xl text-balance">
+            <h2 className="font-display text-4xl leading-[1.05] text-moss-deep text-balance sm:text-5xl md:text-6xl">
               „Jo, přesně tohle chci.“
-            </p>
-            <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground">
+            </h2>
+            <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground sm:mt-5">
               Podívejte se na realizace, nebo mi rovnou napište.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">

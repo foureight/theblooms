@@ -74,9 +74,9 @@ export function DecorationVariantPicker({ category }: Props) {
                 </span>
               </div>
               <div className="border-t border-border/60 bg-background px-3 py-3 sm:px-4 sm:py-4">
-                <p className="text-sm font-medium tracking-wide text-foreground">
+                <h2 className="text-sm font-medium tracking-wide text-foreground">
                   {variant.name}
-                </p>
+                </h2>
                 <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                   {variant.note}
                 </p>
