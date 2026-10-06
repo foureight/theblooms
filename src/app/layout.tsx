@@ -17,14 +17,15 @@ const instrument = Instrument_Serif({
   weight: "400",
 });
 
-/** Fallback when Adobe Fonts kit is not configured */
+/** Fallback when Adobe Fonts is unavailable */
 const encodeExpanded = Encode_Sans_Expanded({
   variable: "--font-name-fallback",
   subsets: ["latin", "latin-ext"],
   weight: ["400", "500", "600", "700", "800"],
 });
 
-const typekitId = process.env.NEXT_PUBLIC_TYPEKIT_ID?.trim();
+/** Adobe Fonts kit with Acumin Pro Wide (Regular + Bold/Black) */
+const typekitId = process.env.NEXT_PUBLIC_TYPEKIT_ID?.trim() || "zwe5oqo";
 
 export const metadata: Metadata = {
   title: {
@@ -42,17 +43,12 @@ export default function RootLayout({
   return (
     <html lang="cs">
       <head>
-        {typekitId ? (
-          <>
-            <link rel="preconnect" href="https://use.typekit.net" />
-            <link rel="preconnect" href="https://p.typekit.net" crossOrigin="" />
-            {/* Adobe Fonts — Acumin Pro Wide Regular from Typekit web project */}
-            <link
-              rel="stylesheet"
-              href={`https://use.typekit.net/${typekitId}.css`}
-            />
-          </>
-        ) : null}
+        <link rel="preconnect" href="https://use.typekit.net" />
+        <link rel="preconnect" href="https://p.typekit.net" crossOrigin="" />
+        <link
+          rel="stylesheet"
+          href={`https://use.typekit.net/${typekitId}.css`}
+        />
       </head>
       <body
         className={`${figtree.variable} ${instrument.variable} ${encodeExpanded.variable} antialiased`}

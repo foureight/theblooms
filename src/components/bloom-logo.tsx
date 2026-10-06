@@ -3,7 +3,6 @@ import { cn } from "@/lib/utils";
 
 type Props = {
   className?: string;
-  /** Use wordmark only, flower only, or full combo */
   variant?: "full" | "wordmark" | "flower";
   priority?: boolean;
 };
@@ -32,16 +31,42 @@ export function BloomLogo({
   );
 }
 
-/** Text wordmark fallback (Encode Sans Expanded ≈ Acumin Pro Wide) */
-export function BloomWordmarkText({ className }: { className?: string }) {
+/** Live wordmark in Acumin Pro Wide (Typekit) — for dark heroes etc. */
+export function BloomWordmarkLive({
+  className,
+  showMark = true,
+  tone = "dark",
+}: {
+  className?: string;
+  showMark?: boolean;
+  tone?: "dark" | "light";
+}) {
+  const theClass = tone === "dark" ? "text-white" : "text-foreground";
   return (
-    <span className={cn("inline-flex items-baseline gap-[0.28em] leading-none", className)}>
-      <span className="font-name translate-y-[-0.08em] text-[0.42em] font-semibold tracking-[0.08em] text-foreground">
-        THE
+    <span className={cn("inline-flex items-center gap-3 sm:gap-4", className)}>
+      <span className="inline-flex items-baseline gap-[0.3em] leading-none">
+        <span
+          className={cn(
+            "font-name translate-y-[-0.12em] text-[0.38em] font-normal tracking-[0.12em]",
+            theClass,
+          )}
+        >
+          THE
+        </span>
+        <span className="font-name text-[1em] font-extrabold tracking-[-0.02em] text-bloom italic">
+          BLOOMS
+        </span>
       </span>
-      <span className="font-name text-[1em] font-bold tracking-[-0.03em] text-bloom italic">
-        BLOOMS
-      </span>
+      {showMark ? (
+        <Image
+          src="/logo-flower.png"
+          alt=""
+          width={120}
+          height={120}
+          className="h-[0.95em] w-auto"
+          aria-hidden
+        />
+      ) : null}
     </span>
   );
 }

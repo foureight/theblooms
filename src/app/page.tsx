@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { BloomLogo } from "@/components/bloom-logo";
+import { BloomWordmarkLive } from "@/components/bloom-logo";
 import { CtaLink } from "@/components/cta-link";
 import { FadeIn } from "@/components/fade-in";
 import { weddings } from "@/data/weddings";
@@ -23,8 +23,11 @@ export default function HomePage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/20" />
         <div className="relative mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-end px-4 pb-16 pt-28 sm:px-6 lg:px-8 lg:pb-24">
-          <div className="reveal inline-flex max-w-full items-center rounded-sm bg-white/95 px-4 py-3 sm:px-6 sm:py-4">
-            <BloomLogo variant="full" priority className="h-10 w-auto sm:h-14 md:h-16" />
+          <div className="reveal">
+            <BloomWordmarkLive
+              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl"
+              tone="dark"
+            />
           </div>
           <h1 className="reveal reveal-delay-1 mt-6 max-w-xl font-sans text-base font-normal tracking-wide text-white/90 sm:text-lg">
             Floristické studio pro svatby, větší květinové realizace a věnce
