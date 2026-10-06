@@ -225,8 +225,8 @@ export default function HomePage() {
                 Přijedu za vámi
               </h2>
               <p className="mt-5 max-w-lg text-base leading-relaxed text-muted-foreground">
-                Květinové a věncové workshopy domů, do firmy nebo na soukromou
-                akci. Přivezu květiny, materiál i nástroje — vy zajistíte místo.
+                Květinové a věncové workshopy domů, do firmy nebo na akci.
+                Přivezu květiny, materiál i nástroje — vy zajistíte místo a lidi.
               </p>
               <CtaLink href="/workshopy" className="mt-8">
                 Workshopy
