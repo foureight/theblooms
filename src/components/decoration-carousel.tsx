@@ -74,36 +74,34 @@ export function DecorationCarousel({ items }: Props) {
         ))}
       </div>
 
-      <div className="mt-6 flex items-center gap-2">
-        <button
-          type="button"
-          aria-label="Předchozí dekorace"
-          disabled={!canPrev}
-          onClick={() => scrollByDir(-1)}
-          className={cn(
-            "inline-flex size-11 items-center justify-center border border-bloom-deep/30 text-moss-deep transition-colors",
-            canPrev
-              ? "hover:border-bloom-deep hover:bg-bloom/10"
-              : "cursor-default opacity-35",
-          )}
-        >
-          <ChevronLeft className="size-5" />
-        </button>
-        <button
-          type="button"
-          aria-label="Další dekorace"
-          disabled={!canNext}
-          onClick={() => scrollByDir(1)}
-          className={cn(
-            "inline-flex size-11 items-center justify-center border border-bloom-deep/30 text-moss-deep transition-colors",
-            canNext
-              ? "hover:border-bloom-deep hover:bg-bloom/10"
-              : "cursor-default opacity-35",
-          )}
-        >
-          <ChevronRight className="size-5" />
-        </button>
-      </div>
+      <button
+        type="button"
+        aria-label="Předchozí dekorace"
+        disabled={!canPrev}
+        onClick={() => scrollByDir(-1)}
+        className={cn(
+          "absolute top-1/2 left-0 z-10 inline-flex size-11 -translate-y-1/2 items-center justify-center border border-bloom-deep/25 bg-background/90 text-moss-deep shadow-sm backdrop-blur-sm transition-colors",
+          canPrev
+            ? "hover:border-bloom-deep hover:bg-background"
+            : "pointer-events-none opacity-0",
+        )}
+      >
+        <ChevronLeft className="size-5" />
+      </button>
+      <button
+        type="button"
+        aria-label="Další dekorace"
+        disabled={!canNext}
+        onClick={() => scrollByDir(1)}
+        className={cn(
+          "absolute top-1/2 right-0 z-10 inline-flex size-11 -translate-y-1/2 items-center justify-center border border-bloom-deep/25 bg-background/90 text-moss-deep shadow-sm backdrop-blur-sm transition-colors",
+          canNext
+            ? "hover:border-bloom-deep hover:bg-background"
+            : "pointer-events-none opacity-0",
+        )}
+      >
+        <ChevronRight className="size-5" />
+      </button>
     </div>
   );
 }
