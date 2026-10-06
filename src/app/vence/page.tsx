@@ -4,7 +4,11 @@ import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
 import { WreathCatalog } from "@/components/wreath-catalog";
 import { site } from "@/data/site";
-import { wreaths } from "@/data/wreaths";
+import {
+  getCmsContent,
+  mergeWreaths,
+  textFrom,
+} from "@/lib/cms/content";
 import {
   absoluteUrl,
   breadcrumbJsonLd,
@@ -59,49 +63,54 @@ const faqs = [
   },
 ];
 
-const jsonLd = [
-  breadcrumbJsonLd([
-    { name: "Úvod", path: "/" },
-    { name: "Věnce", path: "/vence" },
-  ]),
-  {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    name: "Sezónní věnce THE BLOOMS",
-    description: pageDescription,
-    url: absoluteUrl("/vence"),
-    about: floristOrganization(),
-    mainEntity: {
-      "@type": "ItemList",
-      numberOfItems: wreaths.length,
-      itemListElement: wreaths.map((w, i) => ({
-        "@type": "ListItem",
-        position: i + 1,
-        item: {
-          "@type": "Product",
-          name: w.name,
-          description: w.description,
-          image: w.image,
-          url: absoluteUrl(`/vence/${w.slug}`),
-          sku: w.slug,
-          brand: { "@type": "Brand", name: site.name },
-          offers: {
-            "@type": "Offer",
-            priceCurrency: "CZK",
-            price: String(w.price),
-            availability: w.available
-              ? "https://schema.org/InStock"
-              : "https://schema.org/OutOfStock",
-            url: absoluteUrl(`/vence/${w.slug}`),
-          },
-        },
-      })),
-    },
-  },
-  faqJsonLd(faqs),
-];
+export const dynamic = "force-dynamic";
 
-export default function VencePage() {
+export default async function VencePage() {
+  const cms = await getCmsContent();
+  const wreaths = mergeWreaths(cms);
+
+  const jsonLd = [
+    breadcrumbJsonLd([
+      { name: "Úvod", path: "/" },
+      { name: "Věnce", path: "/vence" },
+    ]),
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: "Sezónní věnce THE BLOOMS",
+      description: pageDescription,
+      url: absoluteUrl("/vence"),
+      about: floristOrganization(),
+      mainEntity: {
+        "@type": "ItemList",
+        numberOfItems: wreaths.length,
+        itemListElement: wreaths.map((w, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          item: {
+            "@type": "Product",
+            name: w.name,
+            description: w.description,
+            image: w.image,
+            url: absoluteUrl(`/vence/${w.slug}`),
+            sku: w.slug,
+            brand: { "@type": "Brand", name: site.name },
+            offers: {
+              "@type": "Offer",
+              priceCurrency: "CZK",
+              price: String(w.price),
+              availability: w.available
+                ? "https://schema.org/InStock"
+                : "https://schema.org/OutOfStock",
+              url: absoluteUrl(`/vence/${w.slug}`),
+            },
+          },
+        })),
+      },
+    },
+    faqJsonLd(faqs),
+  ];
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
       <JsonLd data={jsonLd} />
@@ -113,8 +122,7 @@ export default function VencePage() {
           Věnce
         </h1>
         <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-          Nabídka se mění podle sezóny. Každý věnec má fotografii, cenu, rozměr
-          a dostupnost — vyberete a koupíte přímo zde.
+          {textFrom(cms, "vence.intro")}
         </p>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
           Věnce jsou hotové floristické výrobky studia {site.name}. Ostatní
@@ -123,7 +131,7 @@ export default function VencePage() {
       </FadeIn>
       <div className="mt-10 sm:mt-12">
         <h2 className="sr-only">Nabídka věnců</h2>
-        <WreathCatalog />
+        <WreathCatalog items={wreaths} />
       </div>
       <FaqSection faqs={faqs} />
     </div>

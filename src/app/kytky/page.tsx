@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { CtaLink } from "@/components/cta-link";
+import { CmsImage } from "@/components/cms-image";
 import { FadeIn } from "@/components/fade-in";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
 import { site } from "@/data/site";
+import {
+  getCmsContent,
+  slotFrom,
+  textFrom,
+} from "@/lib/cms/content";
 import {
   breadcrumbJsonLd,
   faqJsonLd,
@@ -104,14 +109,28 @@ const jsonLd = [
   faqJsonLd(faqs),
 ];
 
-export default function KytkyPage() {
+export const dynamic = "force-dynamic";
+
+export default async function KytkyPage() {
+  const cms = await getCmsContent();
+  const hero = slotFrom(
+    cms,
+    "kytky.hero",
+    "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=1800&q=80",
+  );
+  const eventImg = slotFrom(
+    cms,
+    "kytky.eventy",
+    "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=1200&q=80",
+  );
+
   return (
     <div>
       <JsonLd data={jsonLd} />
 
       <div className="relative h-[45svh] min-h-[280px] overflow-hidden">
-        <Image
-          src="https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=1800&q=80"
+        <CmsImage
+          src={hero}
           alt="Květinové aranžmá na míru od floristického studia THE BLOOMS"
           fill
           priority
@@ -129,14 +148,7 @@ export default function KytkyPage() {
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <FadeIn>
           <p className="max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            Nemám klasické květinářství, květiny tvořím vždy na objednávku a
-            podle vaší představy. Věnuji se větším a individuálním zakázkám,
-            orientačně od{" "}
-            <strong className="font-medium text-foreground">
-              2&nbsp;000&nbsp;Kč
-            </strong>
-            . Stačí mi napsat, pro jakou příležitost květiny hledáte, a společně
-            něco vymyslíme.
+            {textFrom(cms, "kytky.intro")}
           </p>
           <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">
             Za studiem {site.name} stojí floristka {site.owner}. Pracuji ve
@@ -184,8 +196,8 @@ export default function KytkyPage() {
         <FadeIn delay={100}>
           <section className="mt-20 grid gap-10 lg:grid-cols-2 lg:items-center">
             <div className="relative aspect-[4/5] overflow-hidden">
-              <Image
-                src="https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=1200&q=80"
+              <CmsImage
+                src={eventImg}
                 alt="Výzdoba firemního eventu květinami THE BLOOMS"
                 fill
                 className="object-cover"

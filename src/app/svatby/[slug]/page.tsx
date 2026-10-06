@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CtaLink } from "@/components/cta-link";
+import { CmsImage } from "@/components/cms-image";
 import { JsonLd } from "@/components/json-ld";
-import { getWedding, weddings } from "@/data/weddings";
+import { weddings as baseWeddings } from "@/data/weddings";
 import { site } from "@/data/site";
+import { getCmsContent, mergeWedding, mergeWeddings } from "@/lib/cms/content";
 import {
   absoluteUrl,
   breadcrumbJsonLd,
@@ -15,12 +16,13 @@ import {
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
-  return weddings.map((w) => ({ slug: w.slug }));
+  return baseWeddings.map((w) => ({ slug: w.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const wedding = getWedding(slug);
+  const cms = await getCmsContent();
+  const wedding = mergeWedding(cms, slug);
   if (!wedding) return { title: "Svatba" };
   return {
     title: `${wedding.title} — svatební floristika`,
@@ -36,12 +38,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function WeddingDetailPage({ params }: Props) {
   const { slug } = await params;
-  const wedding = getWedding(slug);
+  const cms = await getCmsContent();
+  const wedding = mergeWedding(cms, slug);
   if (!wedding) notFound();
-
-  const others = weddings.filter((w) => w.slug !== slug).slice(0, 2);
+  const others = mergeWeddings(cms)
+    .filter((w) => w.slug !== slug)
+    .slice(0, 2);
 
   const jsonLd = [
     breadcrumbJsonLd([
@@ -70,7 +76,7 @@ export default async function WeddingDetailPage({ params }: Props) {
     <div>
       <JsonLd data={jsonLd} />
       <div className="relative h-[55svh] min-h-[360px] w-full overflow-hidden">
-        <Image
+        <CmsImage
           src={wedding.cover}
           alt={`Svatební floristika ${wedding.title} — ${wedding.place}`}
           fill
@@ -105,7 +111,7 @@ export default async function WeddingDetailPage({ params }: Props) {
           {wedding.images.map((src, i) => (
             <div key={src} className="mb-4 break-inside-avoid">
               <div className="relative aspect-[4/5] overflow-hidden">
-                <Image
+                <CmsImage
                   src={src}
                   alt={`${wedding.title} — fotografie ${i + 1}`}
                   fill
@@ -126,7 +132,7 @@ export default async function WeddingDetailPage({ params }: Props) {
               {others.map((w) => (
                 <Link key={w.slug} href={`/svatby/${w.slug}`} className="group">
                   <div className="relative aspect-[16/10] overflow-hidden">
-                    <Image
+                    <CmsImage
                       src={w.cover}
                       alt={w.title}
                       fill

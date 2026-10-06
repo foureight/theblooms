@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { CtaLink } from "@/components/cta-link";
+import { CmsImage } from "@/components/cms-image";
 import { FadeIn } from "@/components/fade-in";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
 import { site } from "@/data/site";
+import {
+  getCmsContent,
+  slotFrom,
+  textFrom,
+} from "@/lib/cms/content";
 import {
   breadcrumbJsonLd,
   faqJsonLd,
@@ -112,13 +117,27 @@ const places = [
   },
 ];
 
-export default function WorkshopyPage() {
+export const dynamic = "force-dynamic";
+
+export default async function WorkshopyPage() {
+  const cms = await getCmsContent();
+  const hero = slotFrom(
+    cms,
+    "workshopy.hero",
+    "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=1800&q=80",
+  );
+  const side = slotFrom(
+    cms,
+    "workshopy.side",
+    "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=1400&q=80",
+  );
+
   return (
     <div>
       <JsonLd data={jsonLd} />
       <div className="relative h-[45svh] min-h-[280px] overflow-hidden">
-        <Image
-          src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=1800&q=80"
+        <CmsImage
+          src={hero}
           alt="Květinový workshop"
           fill
           priority
@@ -136,10 +155,7 @@ export default function WorkshopyPage() {
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <FadeIn>
           <p className="max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            Nemám stálou dílnu otevřenou veřejnosti — workshopy dělám na míru a
-            přijedu za vámi. Vy zajistíte místo a lidi, já přivezu květiny,
-            materiál, nástroje i celý program. Domluvíme se na tématu, počtu
-            účastníků a termínu.
+            {textFrom(cms, "workshopy.intro")}
           </p>
           <CtaLink href="/kontakt?typ=workshop" className="mt-8">
             Domluvit workshop
@@ -172,8 +188,8 @@ export default function WorkshopyPage() {
         <FadeIn delay={100}>
           <section className="mt-20 grid gap-10 lg:grid-cols-2 lg:items-center">
             <div className="relative aspect-[4/5] overflow-hidden">
-              <Image
-                src="https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=1400&q=80"
+              <CmsImage
+                src={side}
                 alt="Společná práce s květinami"
                 fill
                 className="object-cover"

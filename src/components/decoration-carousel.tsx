@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { DecorationCategory } from "@/data/weddings";
+import { CmsImage } from "@/components/cms-image";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -58,7 +58,7 @@ export function DecorationCarousel({ items }: Props) {
             data-deco-card
             className="group relative aspect-[3/4] w-[78vw] max-w-[300px] shrink-0 snap-center overflow-hidden sm:w-[46vw] sm:snap-start lg:w-[min(22vw,260px)] lg:max-w-none"
           >
-            <Image
+            <CmsImage
               src={d.image}
               alt={d.title}
               fill

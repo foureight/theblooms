@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { formatPrice, wreaths } from "@/data/wreaths";
+import { formatPrice, type Wreath } from "@/data/wreaths";
 import { Badge } from "@/components/ui/badge";
+import { CmsImage } from "@/components/cms-image";
 import { cn } from "@/lib/utils";
 
 const seasons = ["Vše", "Jaro", "Léto", "Podzim", "Advent"] as const;
@@ -17,13 +17,13 @@ const seasonActive: Record<(typeof seasons)[number], string> = {
   Advent: "bg-bloom-pink text-white",
 };
 
-export function WreathCatalog() {
+export function WreathCatalog({ items }: { items: Wreath[] }) {
   const [season, setSeason] = useState<(typeof seasons)[number]>("Vše");
 
   const filtered = useMemo(() => {
-    if (season === "Vše") return wreaths;
-    return wreaths.filter((w) => w.season === season);
-  }, [season]);
+    if (season === "Vše") return items;
+    return items.filter((w) => w.season === season);
+  }, [season, items]);
 
   return (
     <div>
@@ -55,7 +55,7 @@ export function WreathCatalog() {
           {filtered.map((w) => (
             <Link key={w.slug} href={`/vence/${w.slug}`} className="group block">
               <div className="relative aspect-square overflow-hidden bg-stone">
-                <Image
+                <CmsImage
                   src={w.image}
                   alt={w.name}
                   fill

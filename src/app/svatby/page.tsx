@@ -1,13 +1,19 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { CtaLink } from "@/components/cta-link";
+import { CmsImage } from "@/components/cms-image";
 import { DecorationCarousel } from "@/components/decoration-carousel";
 import { FadeIn } from "@/components/fade-in";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
-import { decorations, weddings } from "@/data/weddings";
 import { site } from "@/data/site";
+import {
+  getCmsContent,
+  mergeDecorations,
+  mergeWeddings,
+  slotFrom,
+  textFrom,
+} from "@/lib/cms/content";
 import {
   absoluteUrl,
   breadcrumbJsonLd,
@@ -63,45 +69,56 @@ const faqs = [
   },
 ];
 
-const jsonLd = [
-  breadcrumbJsonLd([
-    { name: "Úvod", path: "/" },
-    { name: "Svatby", path: "/svatby" },
-  ]),
-  serviceJsonLd({
-    name: "Svatební floristika a dekorace",
-    description: pageDescription,
-    path: "/svatby",
-    serviceType: "Svatební floristika",
-  }),
-  {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    name: "Svatební realizace THE BLOOMS",
-    url: absoluteUrl("/svatby"),
-    isPartOf: { "@id": `${absoluteUrl("/")}/#website` },
-    about: floristOrganization(),
-    mainEntity: {
-      "@type": "ItemList",
-      itemListElement: weddings.map((w, i) => ({
-        "@type": "ListItem",
-        position: i + 1,
-        url: absoluteUrl(`/svatby/${w.slug}`),
-        name: w.title,
-      })),
-    },
-  },
-  faqJsonLd(faqs),
-];
+export const dynamic = "force-dynamic";
 
-export default function SvatbyPage() {
+export default async function SvatbyPage() {
+  const cms = await getCmsContent();
+  const weddings = mergeWeddings(cms);
+  const decorations = mergeDecorations(cms);
+  const hero = slotFrom(
+    cms,
+    "svatby.hero",
+    "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1800&q=80",
+  );
+
+  const jsonLd = [
+    breadcrumbJsonLd([
+      { name: "Úvod", path: "/" },
+      { name: "Svatby", path: "/svatby" },
+    ]),
+    serviceJsonLd({
+      name: "Svatební floristika a dekorace",
+      description: pageDescription,
+      path: "/svatby",
+      serviceType: "Svatební floristika",
+    }),
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: "Svatební realizace THE BLOOMS",
+      url: absoluteUrl("/svatby"),
+      isPartOf: { "@id": `${absoluteUrl("/")}/#website` },
+      about: floristOrganization(),
+      mainEntity: {
+        "@type": "ItemList",
+        itemListElement: weddings.map((w, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          url: absoluteUrl(`/svatby/${w.slug}`),
+          name: w.title,
+        })),
+      },
+    },
+    faqJsonLd(faqs),
+  ];
+
   return (
     <div>
       <JsonLd data={jsonLd} />
 
       <div className="relative h-[45svh] min-h-[280px] overflow-hidden">
-        <Image
-          src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1800&q=80"
+        <CmsImage
+          src={hero}
           alt="Svatební floristika a dekorace THE BLOOMS"
           fill
           priority
@@ -119,9 +136,7 @@ export default function SvatbyPage() {
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <FadeIn>
           <p className="max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-lg">
-            Navrhnu celý floristický a dekorační koncept — nebo vyjdu z vaší
-            představy a zrealizuji ji. Nejen květiny: brány, stoly, instalace,
-            vázy, svícny, textil a další dekorace z vlastního inventáře.
+            {textFrom(cms, "svatby.intro")}
           </p>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
             Za studiem {site.name} stojí floristka {site.owner}. Každá svatba je
@@ -150,7 +165,7 @@ export default function SvatbyPage() {
               <FadeIn key={w.slug} delay={(i % 2) * 80}>
                 <Link href={`/svatby/${w.slug}`} className="group block">
                   <div className="relative aspect-[4/5] overflow-hidden">
-                    <Image
+                    <CmsImage
                       src={w.cover}
                       alt={`Svatební floristika ${w.title} — ${w.place}`}
                       fill

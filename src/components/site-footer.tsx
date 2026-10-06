@@ -1,8 +1,14 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { BloomLogo } from "@/components/bloom-logo";
 import { legalNav, nav, site } from "@/data/site";
 
 export function SiteFooter() {
+  const pathname = usePathname();
+  if (pathname.startsWith("/admin")) return null;
+
   return (
     <footer className="mt-0 bg-moss-deep text-white">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-8">

@@ -4,6 +4,7 @@ import { FadeIn } from "@/components/fade-in";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
 import { site, type InquiryType } from "@/data/site";
+import { getCmsContent, textFrom } from "@/lib/cms/content";
 import {
   absoluteUrl,
   breadcrumbJsonLd,
@@ -93,6 +94,7 @@ export default async function KontaktPage({ searchParams }: Props) {
   const defaultMessage = dekorace
     ? `Mám zájem o dekorace z inventáře — ${dekorace}.`
     : "";
+  const cms = await getCmsContent();
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
@@ -109,10 +111,7 @@ export default async function KontaktPage({ searchParams }: Props) {
             {site.owner}
           </p>
           <p className="mt-5 max-w-md text-sm leading-relaxed text-muted-foreground">
-            Napište, čeho se poptávka týká. U svatby se rovnou ptám na datum,
-            místo a základní představu — ať můžu odpovědět konkrétně. Studio{" "}
-            {site.name} řeší svatby, kytky, eventy i workshopy přes poptávku;
-            věnce koupíte v e-shopu.
+            {textFrom(cms, "kontakt.intro")}
           </p>
           <dl className="mt-10 space-y-4 text-sm">
             <div>

@@ -27,19 +27,37 @@ Poptávky se logují na server (`/api/inquiry`) — e-mailová služba a platebn
 
 SEO / GEO / AIO: stránky mají rozšířené texty, FAQ a JSON-LD (`Service`, `FAQPage`, `BreadcrumbList`, u věnců `Product`). Canonical URL nastavte přes `NEXT_PUBLIC_SITE_URL` (výchozí `https://theblooms.cz`).
 
+## Admin (texty + fotky)
+
+Alena spravuje obsah na [`/admin`](http://127.0.0.1:43123/admin).
+
+- **Texty** — nadpisy a odstavce (úvod, svatby, kytky, věnce, workshopy, o mně, kontakt)
+- **Fotky stránek** — hero a sekční fotky
+- **Svatby / Věnce** — názvy, popisy, ceny, cover i galerie
+- **Knihovna** — nahrání JPG/PNG/WEBP (max 8 MB)
+
+Lokálně nastavte v `.env.local`:
+
+```bash
+ADMIN_PASSWORD=vas-heslo
+ADMIN_SECRET=nahodny-retezec
+UPLOADS_DIR=./uploads
+```
+
+Na Zerops: Local Storage `vol` namountovaný na `/srv/uploads`, secret `ADMIN_PASSWORD` (+ ideálně `ADMIN_SECRET`), `UPLOADS_DIR=/srv/uploads`.
+
 ## Nasazení (Zerops)
 
 V kořeni je `zerops.yml` (Node.js 22, Next.js SSR, port 3000).
 
-1. V Zerops vytvořte projekt a službu **Node.js @22** (hostname `app`).
-2. Napojte Git repo → pipeline trigger na branch `main`, setup `app`.
-3. V runtime secrets nastavte `CAPTCHA_SECRET` (náhodný dlouhý string).
-4. Public HTTP access + vlastní doména (DNS A/CNAME dle Zerops).
-5. Ověřte `NEXT_PUBLIC_SITE_URL` v `zerops.yml` (výchozí `https://theblooms.cz`).
+1. Vytvořte **Local Storage** službu hostname `vol` (persistentní fotky + CMS).
+2. Vytvořte **Node.js @22** službu hostname `app`.
+3. Napojte Git → pipeline na `main`, setup `app`.
+4. Secrets: `ADMIN_PASSWORD`, `ADMIN_SECRET`, `CAPTCHA_SECRET`.
+5. Public HTTP access + doména; zkontrolujte `NEXT_PUBLIC_SITE_URL`.
 
 Lokálně: `npm run dev` (port 43123). Produkce: `npm run build && npm run start` (port 3000).
 
-Kontakty (z vizitky): Alena Šmejkalová · theblooms@chtel.biz · +420 775 125 224 · Instagram @thebloomscz
 
 Typografie: celý web na **Acumin Pro Wide** (Adobe Fonts kit `zwe5oqo`, včetně češtiny).
 

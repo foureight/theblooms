@@ -1,5 +1,6 @@
 # THE BLOOMS — Next.js SSR na Zerops
 # Docs: https://docs.zerops.io/zerops-yaml/specification
+# Poznámka: vytvořte Local Storage službu s hostname `vol` (fotky + CMS texty).
 zerops:
   - setup: app
     build:
@@ -13,12 +14,14 @@ zerops:
       ports:
         - port: 3000
           httpSupport: true
+      volume:
+        hostname: vol
+        mountPath: /srv/uploads
       envVariables:
         NODE_ENV: production
-        # Veřejná kanonická URL webu (SEO / Open Graph)
         NEXT_PUBLIC_SITE_URL: https://theblooms.cz
-        # Adobe Fonts kit (volitelné — v kódu je fallback zwe5oqo)
         NEXT_PUBLIC_TYPEKIT_ID: zwe5oqo
+        UPLOADS_DIR: /srv/uploads
       start: npm run start
       healthCheck:
         httpGet:

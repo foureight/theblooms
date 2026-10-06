@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AddToCartButton } from "@/components/add-to-cart-button";
+import { CmsImage } from "@/components/cms-image";
 import { JsonLd } from "@/components/json-ld";
 import { site } from "@/data/site";
-import { formatPrice, getWreath, wreaths } from "@/data/wreaths";
+import { formatPrice, wreaths as baseWreaths } from "@/data/wreaths";
+import { getCmsContent, mergeWreath } from "@/lib/cms/content";
 import {
   absoluteUrl,
   breadcrumbJsonLd,
@@ -15,12 +16,13 @@ import {
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
-  return wreaths.map((w) => ({ slug: w.slug }));
+  return baseWreaths.map((w) => ({ slug: w.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const wreath = getWreath(slug);
+  const cms = await getCmsContent();
+  const wreath = mergeWreath(cms, slug);
   if (!wreath) return { title: "Věnec" };
   return {
     title: `${wreath.name} — ${formatPrice(wreath.price)}`,
@@ -36,9 +38,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function WreathDetailPage({ params }: Props) {
   const { slug } = await params;
-  const wreath = getWreath(slug);
+  const cms = await getCmsContent();
+  const wreath = mergeWreath(cms, slug);
   if (!wreath) notFound();
 
   const jsonLd = [
@@ -83,7 +88,7 @@ export default async function WreathDetailPage({ params }: Props) {
       </Link>
       <div className="mt-8 grid gap-10 lg:grid-cols-2">
         <div className="relative aspect-square overflow-hidden bg-stone">
-          <Image
+          <CmsImage
             src={wreath.image}
             alt={`${wreath.name} — ${wreath.season}, ${wreath.size}`}
             fill

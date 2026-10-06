@@ -1,13 +1,19 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { CtaLink } from "@/components/cta-link";
+import { CmsImage } from "@/components/cms-image";
 import { FadeIn } from "@/components/fade-in";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
-import { weddings } from "@/data/weddings";
-import { wreaths, formatPrice } from "@/data/wreaths";
+import { formatPrice } from "@/data/wreaths";
 import { site } from "@/data/site";
+import {
+  getCmsContent,
+  mergeWeddings,
+  mergeWreaths,
+  slotFrom,
+  textFrom,
+} from "@/lib/cms/content";
 import {
   faqJsonLd,
   floristOrganization,
@@ -81,16 +87,47 @@ const jsonLd = [
   faqJsonLd(faqs),
 ];
 
-export default function HomePage() {
-  const featuredWeddings = weddings.slice(0, 3);
-  const featuredWreaths = wreaths.filter((w) => w.available).slice(0, 3);
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const cms = await getCmsContent();
+  const featuredWeddings = mergeWeddings(cms).slice(0, 3);
+  const featuredWreaths = mergeWreaths(cms)
+    .filter((w) => w.available)
+    .slice(0, 3);
+
+  const hero = slotFrom(
+    cms,
+    "home.hero",
+    "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=2000&q=85",
+  );
+  const flowersImg = slotFrom(
+    cms,
+    "home.kytky",
+    "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=1400&q=80",
+  );
+  const wreathsImg = slotFrom(
+    cms,
+    "home.vence",
+    "https://images.unsplash.com/photo-1508610048659-a06b669e3321?w=1400&q=80",
+  );
+  const workshopsImg = slotFrom(
+    cms,
+    "home.workshopy",
+    "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=1400&q=80",
+  );
+  const ctaImg = slotFrom(
+    cms,
+    "home.cta",
+    "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=1400&q=80",
+  );
 
   return (
     <>
       <JsonLd data={jsonLd} />
       <section className="relative min-h-[100svh] overflow-hidden grain">
-        <Image
-          src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=2000&q=85"
+        <CmsImage
+          src={hero}
           alt="Svatební květinová instalace"
           fill
           priority
@@ -100,11 +137,10 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/20" />
         <div className="relative mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-end px-4 pb-16 pt-28 sm:px-6 lg:px-8 lg:pb-24">
           <h1 className="reveal max-w-3xl font-sans text-4xl font-normal tracking-wide text-white sm:text-5xl md:text-6xl md:leading-[1.05]">
-            Floristické studio pro svatby, větší květinové realizace nebo věnce
+            {textFrom(cms, "home.heroTitle")}
           </h1>
           <p className="reveal reveal-delay-1 mt-3 max-w-lg text-base leading-relaxed text-white/70">
-            Nejsem klasické květinářství — osobní práce v dílně, od celého
-            svatebního konceptu po sezónní věnce.
+            {textFrom(cms, "home.heroLead")}
           </p>
           <div className="reveal reveal-delay-2 mt-8 flex flex-wrap gap-3">
             <CtaLink
@@ -127,16 +163,15 @@ export default function HomePage() {
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
         <FadeIn>
           <h2 className="font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
-            Dva způsoby, jak začít
+            {textFrom(cms, "home.twoWaysTitle")}
           </h2>
           <div className="mt-8 grid gap-10 md:grid-cols-2">
             <div className="border-t border-bloom/40 pt-6">
               <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
-                Svatby & kytky
+                {textFrom(cms, "home.twoWaysWeddingsTitle")}
               </h3>
               <p className="mt-3 max-w-sm text-base leading-relaxed text-muted-foreground">
-                Větší zakázky, eventy a realizace na míru — napíšete poptávku a
-                domluvíme se společně.
+                {textFrom(cms, "home.twoWaysWeddingsText")}
               </p>
               <CtaLink href="/kontakt" variant="ghost" className="mt-5 px-0">
                 Poslat poptávku →
@@ -144,11 +179,10 @@ export default function HomePage() {
             </div>
             <div className="border-t border-bloom/40 pt-6">
               <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
-                Věnce
+                {textFrom(cms, "home.twoWaysWreathsTitle")}
               </h3>
               <p className="mt-3 max-w-sm text-base leading-relaxed text-muted-foreground">
-                Hotové sezónní věnce — vyberete, přidáte do košíku a koupíte
-                přímo na webu.
+                {textFrom(cms, "home.twoWaysWreathsText")}
               </p>
               <CtaLink href="/vence" variant="ghost" className="mt-5 px-0">
                 Do e-shopu →
@@ -183,7 +217,7 @@ export default function HomePage() {
               <FadeIn key={w.slug} delay={i * 100}>
                 <Link href={`/svatby/${w.slug}`} className="group block">
                   <div className="relative aspect-[3/4] overflow-hidden">
-                    <Image
+                    <CmsImage
                       src={w.cover}
                       alt={w.title}
                       fill
@@ -211,8 +245,8 @@ export default function HomePage() {
         <FadeIn>
           <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-10">
             <div className="relative aspect-[4/5] overflow-hidden">
-              <Image
-                src="https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=1400&q=80"
+              <CmsImage
+                src={flowersImg}
                 alt="Květinové aranžmá"
                 fill
                 className="object-cover"
@@ -224,13 +258,10 @@ export default function HomePage() {
                 Kytky & eventy
               </p>
               <h2 className="mt-2 font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
-                Květiny na míru
+                {textFrom(cms, "home.flowersTitle")}
               </h2>
               <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground sm:mt-5">
-                Květiny do domu, do firmy, výzdoba eventů i individuální
-                aranžmá. Každá zakázka vzniká podle vaší představy a konkrétní
-                příležitosti, orientačně od 2&nbsp;000&nbsp;Kč. Stačí poslat
-                poptávku a domluvíme se na všem ostatním.
+                {textFrom(cms, "home.flowersText")}
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <CtaLink href="/kytky">Kytky</CtaLink>
@@ -248,8 +279,8 @@ export default function HomePage() {
           <FadeIn>
             <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-14">
               <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[5/4] lg:aspect-[4/5]">
-                <Image
-                  src="https://images.unsplash.com/photo-1508610048659-a06b669e3321?w=1400&q=80"
+                <CmsImage
+                  src={wreathsImg}
                   alt="Sezónní věnec THE BLOOMS"
                   fill
                   className="object-cover"
@@ -261,11 +292,10 @@ export default function HomePage() {
                   E-shop
                 </p>
                 <h2 className="mt-2 font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
-                  Sezónní věnce
+                  {textFrom(cms, "home.wreathsTitle")}
                 </h2>
                 <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground">
-                  Hotové věnce podle sezóny — s fotografií, cenou, rozměrem a
-                  dostupností. Vyberete a koupíte přímo na webu.
+                  {textFrom(cms, "home.wreathsText")}
                 </p>
                 <CtaLink href="/vence" className="mt-8">
                   Do e-shopu
@@ -279,7 +309,7 @@ export default function HomePage() {
               <FadeIn key={w.slug} delay={i * 80}>
                 <Link href={`/vence/${w.slug}`} className="group block">
                   <div className="relative aspect-square overflow-hidden bg-stone">
-                    <Image
+                    <CmsImage
                       src={w.image}
                       alt={w.name}
                       fill
@@ -313,19 +343,18 @@ export default function HomePage() {
                 Workshopy
               </p>
               <h2 className="mt-2 font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
-                Přijedu za vámi
+                {textFrom(cms, "home.workshopsTitle")}
               </h2>
               <p className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground sm:mt-5">
-                Květinové a věncové workshopy domů, do firmy nebo na akci.
-                Přivezu květiny, materiál i nástroje — vy zajistíte místo a lidi.
+                {textFrom(cms, "home.workshopsText")}
               </p>
               <CtaLink href="/workshopy" className="mt-8">
                 Workshopy
               </CtaLink>
             </div>
             <div className="relative aspect-[5/4] overflow-hidden">
-              <Image
-                src="https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=1400&q=80"
+              <CmsImage
+                src={workshopsImg}
                 alt="Floristický workshop"
                 fill
                 className="object-cover"
@@ -344,8 +373,8 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:py-28">
           <FadeIn>
             <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[5/4] lg:aspect-[4/5]">
-              <Image
-                src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=1400&q=80"
+              <CmsImage
+                src={ctaImg}
                 alt="Svatební květinová realizace"
                 fill
                 className="object-cover"
@@ -355,10 +384,10 @@ export default function HomePage() {
           </FadeIn>
           <FadeIn delay={80} className="lg:py-4">
             <h2 className="font-display text-4xl leading-[1.05] text-moss-deep text-balance sm:text-5xl md:text-6xl">
-              „Jo, přesně tohle chci.“
+              {textFrom(cms, "home.ctaTitle")}
             </h2>
             <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground sm:mt-5">
-              Podívejte se na realizace, nebo mi rovnou napište.
+              {textFrom(cms, "home.ctaText")}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <CtaLink href="/svatby" variant="outline">
