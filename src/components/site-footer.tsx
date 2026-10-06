@@ -78,7 +78,7 @@ export function SiteFooter() {
               href="https://forejt.net"
               target="_blank"
               rel="noreferrer"
-              className="underline underline-offset-2 hover:text-foreground"
+              className="text-bloom-pink underline underline-offset-2 hover:text-bloom-deep"
             >
               forejt.net
             </a>
@@ -87,7 +87,7 @@ export function SiteFooter() {
               href="https://seo-radar.com"
               target="_blank"
               rel="noreferrer"
-              className="underline underline-offset-2 hover:text-foreground"
+              className="text-bloom-pink underline underline-offset-2 hover:text-bloom-deep"
             >
               seo-radar.com
             </a>
