@@ -4,6 +4,8 @@ import { cn } from "@/lib/utils";
 type Props = {
   className?: string;
   variant?: "full" | "flower";
+  /** White lockup for dark / colored backgrounds (footer). Uses /theblooms-white.svg when present. */
+  tone?: "default" | "white";
   priority?: boolean;
 };
 
@@ -11,6 +13,7 @@ type Props = {
 export function BloomLogo({
   className,
   variant = "full",
+  tone = "default",
   priority = false,
 }: Props) {
   if (variant === "flower") {
@@ -26,10 +29,13 @@ export function BloomLogo({
     );
   }
 
+  // Prefer dedicated white asset (replace /public/theblooms-white.svg when you upload one).
+  const src = tone === "white" ? "/theblooms-white.svg" : "/theblooms.svg";
+
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src="/theblooms.svg"
+      src={src}
       alt="THE BLOOMS"
       width={553}
       height={85}

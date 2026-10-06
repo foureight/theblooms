@@ -7,9 +7,7 @@ export function SiteFooter() {
     <footer className="mt-24 bg-bloom text-white">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
         <div>
-          <div className="inline-block rounded-sm bg-white px-3 py-2">
-            <BloomLogo variant="full" className="h-8 w-auto" />
-          </div>
+          <BloomLogo tone="white" className="h-8 w-auto" />
           <p className="mt-4 font-name text-lg font-medium tracking-wide text-white">
             {site.owner}
           </p>
