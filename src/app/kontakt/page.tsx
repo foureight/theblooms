@@ -148,7 +148,7 @@ export default async function KontaktPage({ searchParams }: Props) {
           </dl>
         </FadeIn>
         <FadeIn delay={80}>
-          <div className="border border-border/70 bg-card/70 p-6 sm:p-8">
+          <div className="border-t border-bloom/35 bg-gradient-to-b from-card/80 to-background px-1 pt-8 sm:border-t-0 sm:border-l sm:border-bloom/35 sm:bg-none sm:px-0 sm:pl-10 sm:pt-0">
             <InquiryForm
               defaultType={defaultType}
               defaultMessage={defaultMessage}
