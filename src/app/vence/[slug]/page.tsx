@@ -93,7 +93,7 @@ export default async function WreathDetailPage({ params }: Props) {
             alt={`${wreath.name} — ${wreath.season}, ${wreath.size}`}
             fill
             priority
-            className="object-cover object-top"
+            className="object-cover object-center"
             sizes="(max-width:1024px) 100vw, 50vw"
           />
         </div>

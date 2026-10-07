@@ -313,7 +313,7 @@ export default async function HomePage() {
                       src={w.image}
                       alt={w.name}
                       fill
-                      className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                      className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
                       sizes="(max-width:768px) 100vw, 33vw"
                     />
                   </div>
