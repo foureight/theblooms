@@ -60,34 +60,39 @@ export function SiteFooter() {
           <p className="text-xs tracking-[0.2em] uppercase text-white/70">
             Kontakt
           </p>
-          <ul className="mt-4 space-y-2 text-sm text-white/90">
-            <li>
-              <a
-                href={`mailto:${site.email}`}
-                className="transition-colors hover:text-bloom-light"
-              >
-                {site.email}
-              </a>
-            </li>
-            <li>
-              <a
-                href={`tel:${site.phone.replace(/\s/g, "")}`}
-                className="transition-colors hover:text-bloom-light"
-              >
-                {site.phone}
-              </a>
-            </li>
-            <li>
-              <a
-                href={site.instagram}
-                target="_blank"
-                rel="noreferrer"
-                className="transition-colors hover:text-bloom-light"
-              >
-                @{site.instagramHandle}
-              </a>
-            </li>
-          </ul>
+          <address className="mt-4 not-italic">
+            <ul className="space-y-2 text-sm text-white/90">
+              <li className="font-medium text-white">{site.name}</li>
+              <li>{site.owner}</li>
+              <li>{site.location}</li>
+              <li>
+                <a
+                  href={`mailto:${site.email}`}
+                  className="transition-colors hover:text-bloom-light"
+                >
+                  {site.email}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`tel:${site.phone.replace(/\s/g, "")}`}
+                  className="transition-colors hover:text-bloom-light"
+                >
+                  {site.phone}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={site.instagram}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="transition-colors hover:text-bloom-light"
+                >
+                  @{site.instagramHandle}
+                </a>
+              </li>
+            </ul>
+          </address>
         </div>
       </div>
 

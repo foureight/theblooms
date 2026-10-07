@@ -15,8 +15,11 @@ import {
   textFrom,
 } from "@/lib/cms/content";
 import {
+  breadcrumbJsonLd,
+  defaultOgImage,
   faqJsonLd,
   floristOrganization,
+  personJsonLd,
   siteUrl,
 } from "@/lib/seo";
 
@@ -28,14 +31,6 @@ export const metadata: Metadata = {
     absolute: `${site.name} — floristické studio pro svatby a věnce`,
   },
   description: pageDescription,
-  keywords: [
-    "floristické studio",
-    "svatební floristika",
-    "věnce",
-    "kytky na míru",
-    "THE BLOOMS",
-    "Alena Šmejkalová",
-  ],
   alternates: { canonical: "/" },
   openGraph: {
     title: `${site.name} — floristické studio`,
@@ -43,6 +38,20 @@ export const metadata: Metadata = {
     type: "website",
     locale: "cs_CZ",
     url: siteUrl,
+    images: [
+      {
+        url: defaultOgImage,
+        width: 1200,
+        height: 630,
+        alt: `${site.name} — floristické studio`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${site.name} — floristické studio`,
+    description: pageDescription,
+    images: [defaultOgImage],
   },
 };
 
@@ -82,10 +91,33 @@ const jsonLd = [
   },
   {
     "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${siteUrl}/#webpage`,
+    name: `${site.name} — floristické studio pro svatby a věnce`,
+    url: siteUrl,
+    description: pageDescription,
+    inLanguage: "cs-CZ",
+    isPartOf: { "@id": `${siteUrl}/#website` },
+    about: { "@id": `${siteUrl}/#organization` },
+    primaryImageOfPage: absoluteOg(),
+  },
+  {
+    "@context": "https://schema.org",
     ...floristOrganization(),
   },
+  personJsonLd(),
+  breadcrumbJsonLd([{ name: "Úvod", path: "/" }]),
   faqJsonLd(faqs),
 ];
+
+function absoluteOg() {
+  return {
+    "@type": "ImageObject" as const,
+    url: defaultOgImage,
+    width: 1200,
+    height: 630,
+  };
+}
 
 export const dynamic = "force-dynamic";
 

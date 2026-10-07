@@ -28,15 +28,6 @@ const pageDescription =
 export const metadata: Metadata = {
   title: "Svatební floristika a dekorace",
   description: pageDescription,
-  keywords: [
-    "svatební floristika",
-    "svatební dekorace",
-    "květiny na svatbu",
-    "svatební kytice",
-    "obřadní brána",
-    "THE BLOOMS",
-    "Alena Šmejkalová",
-  ],
   alternates: { canonical: "/svatby" },
   openGraph: {
     title: `Svatební floristika · ${site.name}`,

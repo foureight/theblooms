@@ -23,16 +23,6 @@ const pageDescription =
 export const metadata: Metadata = {
   title: "Kytky na míru",
   description: pageDescription,
-  keywords: [
-    "kytky na míru",
-    "květiny do domu",
-    "květiny do firmy",
-    "floristické studio",
-    "výzdoba eventu",
-    "květinové aranžmá",
-    "THE BLOOMS",
-    "Alena Šmejkalová",
-  ],
   alternates: {
     canonical: "/kytky",
   },

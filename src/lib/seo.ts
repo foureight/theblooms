@@ -11,23 +11,39 @@ export function absoluteUrl(path = "/") {
   return `${siteUrl}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
+export const defaultOgImage = absoluteUrl("/og.jpg");
+
 export function floristOrganization() {
   return {
-    "@type": "Florist" as const,
+    "@type": ["Florist", "LocalBusiness"],
     "@id": `${siteUrl}/#organization`,
     name: site.name,
     alternateName: "THE BLOOMS floristické studio",
     url: siteUrl,
     email: site.email,
     telephone: site.phone,
-    image: absoluteUrl("/theblooms.svg"),
+    image: absoluteUrl("/og.jpg"),
     logo: absoluteUrl("/theblooms.svg"),
+    priceRange: "$$",
+    currenciesAccepted: "CZK",
+    paymentAccepted: "Hotovost, bankovní převod",
     founder: {
       "@type": "Person",
+      "@id": `${siteUrl}/#person`,
+      name: site.owner,
+      jobTitle: "Floristka",
+      url: absoluteUrl("/o-mne"),
+      sameAs: [site.instagram],
+      worksFor: { "@id": `${siteUrl}/#organization` },
+    },
+    employee: {
+      "@type": "Person",
+      "@id": `${siteUrl}/#person`,
       name: site.owner,
     },
     address: {
       "@type": "PostalAddress",
+      addressLocality: site.location,
       addressCountry: "CZ",
     },
     areaServed: {
@@ -36,6 +52,36 @@ export function floristOrganization() {
     },
     sameAs: [site.instagram],
     description: site.tagline,
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: site.phone,
+      email: site.email,
+      contactType: "customer service",
+      availableLanguage: ["Czech", "cs"],
+      areaServed: "CZ",
+    },
+  };
+}
+
+export function personJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": `${siteUrl}/#person`,
+    name: site.owner,
+    jobTitle: "Floristka",
+    url: absoluteUrl("/o-mne"),
+    image: absoluteUrl("/og.jpg"),
+    email: site.email,
+    telephone: site.phone,
+    sameAs: [site.instagram],
+    worksFor: { "@id": `${siteUrl}/#organization` },
+    knowsAbout: [
+      "svatební floristika",
+      "sezónní věnce",
+      "květinové instalace",
+      "floristické workshopy",
+    ],
   };
 }
 

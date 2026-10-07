@@ -22,13 +22,6 @@ const pageDescription = `Za floristickým studiem ${site.name} stojí ${site.own
 export const metadata: Metadata = {
   title: `O mně — ${site.owner}`,
   description: pageDescription,
-  keywords: [
-    site.owner,
-    "floristka",
-    "floristické studio",
-    "THE BLOOMS",
-    "svatební floristika",
-  ],
   alternates: { canonical: "/o-mne" },
   openGraph: {
     title: `${site.owner} · ${site.name}`,

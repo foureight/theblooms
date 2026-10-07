@@ -22,14 +22,6 @@ const pageDescription =
 export const metadata: Metadata = {
   title: "Květinové a věncové workshopy",
   description: pageDescription,
-  keywords: [
-    "květinový workshop",
-    "věncový workshop",
-    "floristický workshop",
-    "team building květiny",
-    "workshop doma",
-    "THE BLOOMS",
-  ],
   alternates: { canonical: "/workshopy" },
   openGraph: {
     title: `Workshopy · ${site.name}`,

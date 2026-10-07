@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Encode_Sans_Expanded } from "next/font/google";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { CartProvider } from "@/lib/cart";
 import { site } from "@/data/site";
-import { siteUrl } from "@/lib/seo";
+import { defaultOgImage, siteUrl } from "@/lib/seo";
 import "./globals.css";
 
 /**
@@ -20,6 +20,12 @@ const encodeExpanded = Encode_Sans_Expanded({
 
 const typekitId = process.env.NEXT_PUBLIC_TYPEKIT_ID?.trim() || "zwe5oqo";
 
+export const viewport: Viewport = {
+  themeColor: "#42856c",
+  width: "device-width",
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
@@ -27,10 +33,31 @@ export const metadata: Metadata = {
     template: `%s · ${site.name}`,
   },
   description: site.tagline,
+  applicationName: site.name,
+  authors: [{ name: site.owner, url: `${siteUrl}/o-mne` }],
+  creator: site.owner,
+  publisher: site.name,
+  icons: {
+    icon: [{ url: "/theblooms-flower.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
+  manifest: "/site.webmanifest",
   openGraph: {
     type: "website",
     locale: "cs_CZ",
     siteName: site.name,
+    images: [
+      {
+        url: defaultOgImage,
+        width: 1200,
+        height: 630,
+        alt: `${site.name} — floristické studio`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: [defaultOgImage],
   },
 };
 

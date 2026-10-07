@@ -1,0 +1,23 @@
+{
+  "name": "THE BLOOMS",
+  "short_name": "THE BLOOMS",
+  "description": "Floristické studio Aleny Šmejkalové — svatby, věnce a větší květinové realizace",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#f7f4ef",
+  "theme_color": "#42856c",
+  "lang": "cs",
+  "icons": [
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/theblooms-flower.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

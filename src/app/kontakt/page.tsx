@@ -17,13 +17,6 @@ const pageDescription = `Kontaktujte floristické studio ${site.name} — ${site
 export const metadata: Metadata = {
   title: "Kontakt a poptávka",
   description: pageDescription,
-  keywords: [
-    "kontakt floristka",
-    "poptávka svatba",
-    "poptávka kytky",
-    site.name,
-    site.owner,
-  ],
   alternates: { canonical: "/kontakt" },
   openGraph: {
     title: `Kontakt · ${site.name}`,

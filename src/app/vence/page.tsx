@@ -22,15 +22,6 @@ const pageDescription =
 export const metadata: Metadata = {
   title: "Sezónní věnce — e-shop",
   description: pageDescription,
-  keywords: [
-    "věnce",
-    "adventní věnec",
-    "jarní věnec",
-    "podzimní věnec",
-    "věnec na dveře",
-    "THE BLOOMS",
-    "koupit věnec",
-  ],
   alternates: { canonical: "/vence" },
   openGraph: {
     title: `Sezónní věnce · ${site.name}`,

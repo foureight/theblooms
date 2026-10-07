@@ -23,11 +23,10 @@ export function BloomLogo({
     return (
       <Image
         src="/logo-flower.png"
-        alt=""
+        alt="Květinový znak THE BLOOMS"
         width={54}
         height={46}
         className={cn("h-auto w-auto", className)}
-        aria-hidden
       />
     );
   }
@@ -59,11 +58,10 @@ export function BloomLogo({
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={flower}
-        alt=""
+        alt="Květinový znak THE BLOOMS"
         width={84}
         height={84}
         decoding={priority ? "sync" : "async"}
-        aria-hidden
         className="logo-flower-spin pointer-events-none absolute top-[0.6%] left-[84.31%] h-[98.7%] w-auto"
       />
     </span>
