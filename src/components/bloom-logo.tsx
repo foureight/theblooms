@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { BloomFlowerMark } from "@/components/bloom-flower-mark";
 import { cn } from "@/lib/utils";
 

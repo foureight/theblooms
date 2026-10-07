@@ -145,14 +145,8 @@
   .font-display {
     font-family: "acumin-pro-wide", var(--font-name-fallback), ui-sans-serif,
       system-ui, sans-serif;
-    /* Acumin Wide — těsnější tracking (cca −3 až −10 px u velkých nadpisů) */
-    letter-spacing: -0.06em;
+    letter-spacing: -5px;
     line-height: 1.1;
-  }
-  h1,
-  .font-display.text-6xl,
-  .font-display.text-7xl {
-    letter-spacing: -0.08em;
   }
   .font-brand {
     font-family: "acumin-pro-wide", var(--font-name-fallback), ui-sans-serif,
@@ -161,7 +155,7 @@
   .font-name {
     font-family: "acumin-pro-wide", var(--font-name-fallback), ui-sans-serif,
       system-ui, sans-serif;
-    letter-spacing: -0.03em;
+    letter-spacing: -5px;
   }
 }
 

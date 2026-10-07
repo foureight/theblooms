@@ -88,7 +88,7 @@ Lokálně: `npm run dev` (port 43123). Produkce: `npm run build && npm run start
 
 Kontakty (z vizitky): Alena Šmejkalová · theblooms@chtel.biz · +420 775 125 224 · Instagram @thebloomscz
 
-Typografie: celý web na **Acumin Pro Wide** (Adobe Fonts kit `zwe5oqo`, včetně češtiny).
+Typografie: celý web na **Acumin Pro Wide** (Adobe Fonts kit `zwe5oqo`, včetně češtiny). V Adobe Fonts → kit → **Web Domains** musí být ostrou doménu i Zerops (`theblooms.cz`, `*.prg1.zerops.app`), jinak prohlížeč spadne na systémový font.
 
 - text / jméno Aleny → Regular (400)
 - wordmark BLOOMS → Extra Bold Italic (800)
