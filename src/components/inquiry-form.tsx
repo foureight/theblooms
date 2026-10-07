@@ -275,7 +275,7 @@ export function InquiryForm({
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Napište mi, co potřebujete…"
-          className="min-h-[8rem] rounded-none border-border/80 bg-background px-3 py-3 text-sm shadow-none focus-visible:border-bloom focus-visible:ring-0"
+          className="min-h-[8rem] rounded-none border-border/80 bg-white px-3 py-3 text-sm shadow-none focus-visible:border-bloom focus-visible:ring-0"
         />
       </div>
 
