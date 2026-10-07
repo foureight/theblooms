@@ -24,7 +24,7 @@ export function SiteFooterView({ contact }: { contact: SiteContact }) {
           </p>
         </div>
         <div>
-          <p className="text-xs tracking-[0.2em] uppercase text-bloom-orange">
+          <p className="text-xs tracking-[0.2em] uppercase text-[#ef7d61]">
             Menu
           </p>
           <ul className="mt-4 space-y-2">
@@ -41,7 +41,7 @@ export function SiteFooterView({ contact }: { contact: SiteContact }) {
           </ul>
         </div>
         <div>
-          <p className="text-xs tracking-[0.2em] uppercase text-bloom-orange">
+          <p className="text-xs tracking-[0.2em] uppercase text-[#ef7d61]">
             Informace
           </p>
           <ul className="mt-4 space-y-2">
@@ -58,7 +58,7 @@ export function SiteFooterView({ contact }: { contact: SiteContact }) {
           </ul>
         </div>
         <div>
-          <p className="text-xs tracking-[0.2em] uppercase text-bloom-orange">
+          <p className="text-xs tracking-[0.2em] uppercase text-[#ef7d61]">
             Kontakt
           </p>
           <address className="mt-4 not-italic">
