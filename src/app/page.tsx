@@ -124,7 +124,7 @@ export const dynamic = "force-dynamic";
 export default async function HomePage() {
   const cms = await getCmsContent();
   const featuredWeddings = mergeWeddings(cms).slice(0, 3);
-  const allWreaths = mergeWreaths(cms);
+  const featuredWreaths = mergeWreaths(cms).slice(0, 6);
 
   const hero = slotFrom(
     cms,
