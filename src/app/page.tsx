@@ -198,8 +198,8 @@ export default async function HomePage() {
               <p className="mt-3 max-w-sm text-base leading-relaxed text-muted-foreground">
                 {textFrom(cms, "home.twoWaysWeddingsText")}
               </p>
-              <CtaLink href="/kontakt" variant="ghost" className="mt-5 px-0">
-                Poslat poptávku →
+              <CtaLink href="/kontakt" variant="outline" className="mt-5">
+                Poslat poptávku
               </CtaLink>
             </div>
             <div className="border-t border-bloom/40 pt-6">
@@ -209,8 +209,8 @@ export default async function HomePage() {
               <p className="mt-3 max-w-sm text-base leading-relaxed text-muted-foreground">
                 {textFrom(cms, "home.twoWaysWreathsText")}
               </p>
-              <CtaLink href="/vence" variant="ghost" className="mt-5 px-0">
-                Do e-shopu →
+              <CtaLink href="/vence" variant="outline" className="mt-5">
+                Do e-shopu
               </CtaLink>
             </div>
           </div>
