@@ -1,0 +1,45 @@
+From 932c6b1a5fd8148e1f8a23283e97ff3793a7a4ff Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Wed, 7 Oct 2026 13:20:45 +0000
+Subject: [PATCH 1/2] Fix prefer-const lint error blocking production build
+
+Co-authored-by: nicneninemozne <nicneninemozne@gmail.com>
+---
+ src/components/admin/dashboard.tsx | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/components/admin/dashboard.tsx b/src/components/admin/dashboard.tsx
+index a5650cc..68bf18a 100644
+--- a/src/components/admin/dashboard.tsx
++++ b/src/components/admin/dashboard.tsx
+@@ -333,7 +333,7 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
+   );
+ 
+   function uniqueSlug(title: string, taken: Set<string>, fallback: string) {
+-    let slug = slugifyTitle(title, fallback);
++    const slug = slugifyTitle(title, fallback);
+     if (!taken.has(slug)) return slug;
+     let n = 2;
+     while (taken.has(`${slug}-${n}`)) n += 1;
+-- 
+2.43.0
+
+
+From ba3a8afd2af3647628ab14cdeb05397d8719efb8 Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Wed, 7 Oct 2026 13:21:15 +0000
+Subject: [PATCH 2/2] Fix build: move favicon.ico out of app to public
+
+Co-authored-by: nicneninemozne <nicneninemozne@gmail.com>
+---
+ {src/app => public}/favicon.ico | Bin
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ rename {src/app => public}/favicon.ico (100%)
+
+diff --git a/src/app/favicon.ico b/public/favicon.ico
+similarity index 100%
+rename from src/app/favicon.ico
+rename to public/favicon.ico
+-- 
+2.43.0
+
