@@ -613,7 +613,6 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                                   ...c.wreaths[w.slug],
                                   season: e.target.value as
                                     | "Jaro"
-                                    | "Léto"
                                     | "Podzim"
                                     | "Advent",
                                 },
@@ -622,7 +621,7 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                           }
                           className="mt-2 w-full border border-border bg-background px-3 py-3 text-sm outline-none focus:border-bloom"
                         >
-                          {["Jaro", "Léto", "Podzim", "Advent"].map((s) => (
+                          {["Jaro", "Podzim", "Advent"].map((s) => (
                             <option key={s} value={s}>
                               {s}
                             </option>

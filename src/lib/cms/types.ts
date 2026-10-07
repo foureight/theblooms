@@ -12,7 +12,7 @@ export type CmsWreathOverride = {
   description?: string;
   price?: number;
   size?: string;
-  season?: "Jaro" | "Léto" | "Podzim" | "Advent";
+  season?: "Jaro" | "Podzim" | "Advent";
   available?: boolean;
   image?: string;
 };

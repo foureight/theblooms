@@ -7,12 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { CmsImage } from "@/components/cms-image";
 import { cn } from "@/lib/utils";
 
-const seasons = ["Vše", "Jaro", "Léto", "Podzim", "Advent"] as const;
+const seasons = ["Vše", "Jaro", "Podzim", "Advent"] as const;
 
 const seasonActive: Record<(typeof seasons)[number], string> = {
   Vše: "bg-moss-deep text-primary-foreground",
   Jaro: "bg-bloom-yellow text-foreground",
-  Léto: "bg-bloom text-white",
   Podzim: "bg-bloom-orange text-white",
   Advent: "bg-bloom-pink text-white",
 };
