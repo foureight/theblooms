@@ -287,7 +287,7 @@ export function InquiryForm({
               {captchaLoading
                 ? "(načítám…)"
                 : captcha
-                  ? `— kolik je ${captcha.question.replace(/^Kolik je\s+/i, "").replace(/\?$/, "")}?`
+                  ? `— ${captcha.question}`
                   : "(nedostupné)"}
             </span>
           </Label>
