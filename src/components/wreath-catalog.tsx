@@ -53,12 +53,12 @@ export function WreathCatalog({ items }: { items: Wreath[] }) {
         <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((w) => (
             <Link key={w.slug} href={`/vence/${w.slug}`} className="group block">
-              <div className="relative aspect-square overflow-hidden bg-stone">
+              <div className="relative aspect-[3/4] overflow-hidden bg-stone">
                 <CmsImage
                   src={w.image}
                   alt={w.name}
                   fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width:768px) 100vw, 33vw"
                 />
                 {!w.available && (

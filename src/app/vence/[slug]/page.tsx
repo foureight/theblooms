@@ -87,13 +87,13 @@ export default async function WreathDetailPage({ params }: Props) {
         ← Všechny věnce
       </Link>
       <div className="mt-8 grid gap-10 lg:grid-cols-2">
-        <div className="relative aspect-square overflow-hidden bg-stone">
+        <div className="relative aspect-[3/4] overflow-hidden bg-stone">
           <CmsImage
             src={wreath.image}
             alt={`${wreath.name} — ${wreath.season}, ${wreath.size}`}
             fill
             priority
-            className="object-cover"
+            className="object-cover object-top"
             sizes="(max-width:1024px) 100vw, 50vw"
           />
         </div>
