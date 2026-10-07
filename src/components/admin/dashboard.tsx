@@ -330,20 +330,19 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
   }
 
   function addWedding() {
-    const title = window.prompt("Název svatby (např. Eva & Petr)");
-    if (!title?.trim()) return;
+    const title = "Nová svatba";
     const taken = new Set([
       ...baseWeddingSlugs,
       ...Object.keys(content.weddings ?? {}),
     ]);
-    const slug = uniqueSlug(title, taken, "svatba");
+    const slug = uniqueSlug(`${title}-${Date.now()}`, taken, "svatba");
     setContent((c) => ({
       ...c,
       weddings: {
         ...c.weddings,
         [slug]: {
           custom: true,
-          title: title.trim(),
+          title,
           place: "",
           season: "",
           summary: "",
@@ -352,7 +351,7 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
         },
       },
     }));
-    setStatus(`Přidána svatba „${title.trim()}“. Nezapomeňte uložit.`);
+    setStatus(`Přidána svatba. Upravte název a uložte změny.`);
     setTab("svatby");
   }
 
@@ -367,13 +366,12 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
   }
 
   function addWreath() {
-    const name = window.prompt("Název věnce");
-    if (!name?.trim()) return;
+    const name = "Nový věnec";
     const taken = new Set([
       ...baseWreathSlugs,
       ...Object.keys(content.wreaths ?? {}),
     ]);
-    const slug = uniqueSlug(name, taken, "venec");
+    const slug = uniqueSlug(`${name}-${Date.now()}`, taken, "venec");
     setContent((c) => {
       const order = c.wreathOrder?.length
         ? c.wreathOrder
@@ -384,7 +382,7 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
           ...c.wreaths,
           [slug]: {
             custom: true,
-            name: name.trim(),
+            name,
             description: "",
             price: 990,
             size: "Ø 33 cm",
@@ -396,8 +394,13 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
         wreathOrder: [slug, ...order.filter((s) => s !== slug)],
       };
     });
-    setStatus(`Přidán věnec „${name.trim()}“. Nezapomeňte uložit.`);
+    setStatus("Přidán nový věnec nahoře v seznamu. Upravte název a uložte.");
     setTab("vence");
+    requestAnimationFrame(() => {
+      document
+        .getElementById(`wreath-edit-${slug}`)
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   }
 
   function removeWreath(slug: string) {
@@ -415,18 +418,17 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
   }
 
   function addWorkshop() {
-    const title = window.prompt("Název workshopu / formátu");
-    if (!title?.trim()) return;
+    const title = "Nový workshop";
     const taken = new Set(Object.keys(content.workshops ?? {}));
-    const slug = uniqueSlug(title, taken, "workshop");
+    const slug = uniqueSlug(`${title}-${Date.now()}`, taken, "workshop");
     setContent((c) => ({
       ...c,
       workshops: {
         ...c.workshops,
-        [slug]: { custom: true, title: title.trim(), text: "" },
+        [slug]: { custom: true, title, text: "" },
       },
     }));
-    setStatus(`Přidán workshop „${title.trim()}“. Nezapomeňte uložit.`);
+    setStatus("Přidán workshop. Upravte název a uložte změny.");
     setTab("workshopy");
   }
 
@@ -441,18 +443,17 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
   }
 
   function addFlower() {
-    const title = window.prompt("Název služby / položky (kytky)");
-    if (!title?.trim()) return;
+    const title = "Nová položka";
     const taken = new Set(Object.keys(content.flowers ?? {}));
-    const slug = uniqueSlug(title, taken, "kytky");
+    const slug = uniqueSlug(`${title}-${Date.now()}`, taken, "kytky");
     setContent((c) => ({
       ...c,
       flowers: {
         ...c.flowers,
-        [slug]: { custom: true, title: title.trim(), text: "" },
+        [slug]: { custom: true, title, text: "" },
       },
     }));
-    setStatus(`Přidána položka „${title.trim()}“. Nezapomeňte uložit.`);
+    setStatus("Přidána položka. Upravte název a uložte změny.");
     setTab("kytky");
   }
 
@@ -843,6 +844,7 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
               return (
                 <section
                   key={w.slug}
+                  id={`wreath-edit-${w.slug}`}
                   className="grid gap-6 border border-border/70 p-4 sm:grid-cols-[160px_1fr] sm:p-6"
                 >
                   <div>
