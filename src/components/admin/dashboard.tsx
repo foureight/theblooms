@@ -7,6 +7,7 @@ import { useMemo, useState } from "react";
 import { weddings as baseWeddings } from "@/data/weddings";
 import { wreaths as baseWreaths } from "@/data/wreaths";
 import {
+  defaultText,
   PAGE_SLOTS,
   PAGE_TEXTS,
   slugifyTitle,
@@ -825,6 +826,22 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                 + Přidat věnec
               </button>
             </div>
+            <section className="border border-border/70 p-4 sm:p-6">
+              <h2 className="font-display text-2xl text-moss-deep">
+                Úvod stránky Věnce
+              </h2>
+              <label className="mt-4 block">
+                <span className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
+                  Úvodní odstavec
+                </span>
+                <textarea
+                  rows={4}
+                  value={content.texts["vence.intro"] ?? defaultText("vence.intro")}
+                  onChange={(e) => setText("vence.intro", e.target.value)}
+                  className="mt-2 w-full border border-border bg-background px-3 py-3 text-sm leading-relaxed outline-none focus:border-bloom"
+                />
+              </label>
+            </section>
             {orderedWreaths.map((w, index) => {
               const o = content.wreaths[w.slug] ?? {};
               const image = o.image || w.image;
