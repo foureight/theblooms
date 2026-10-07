@@ -61,7 +61,12 @@ export function AddToCartButton({ wreath }: { wreath: Wreath }) {
       <Button
         className="w-full sm:w-auto"
         onClick={() => {
-          addItem(wreath.slug, selected.id);
+          addItem(wreath.slug, selected.id, 1, {
+            name: wreath.name,
+            sizeLabel: selected.label,
+            price: selected.price,
+            image: wreath.image,
+          });
           setAdded(true);
           setTimeout(() => setAdded(false), 1800);
         }}

@@ -31,6 +31,8 @@ SEO / GEO / AIO: stránky mají rozšířené texty, FAQ a JSON-LD (`Service`, `
 
 Alena spravuje obsah na [`/admin`](http://127.0.0.1:43123/admin).
 
+**Priorita dat:** co je uložené v adminu (`uploads/cms.json`) má vždy přednost před hodnotami v kódu. Kód slouží jen jako záloha, když pole v CMS chybí.
+
 - **Texty** — nadpisy a odstavce (úvod, svatby, kytky, věnce, workshopy, o mně, kontakt)
 - **Fotky stránek** — hero a sekční fotky
 - **Svatby / Věnce** — názvy, popisy, ceny, cover i galerie; u věnců šipky ↑↓ pro pořadí na webu

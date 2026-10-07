@@ -20,36 +20,83 @@ import {
 } from "@/lib/cms/types";
 import { readCms, resolveSlot, resolveText } from "@/lib/cms/store";
 
-/** Persist filled + empty slots from CMS; public list uses getWreathSizes. */
+/**
+ * Admin / CMS always wins when a value is present.
+ * Code defaults are only a fallback for missing fields.
+ */
+function cmsString(
+  override: string | undefined,
+  fallback: string,
+): string {
+  if (typeof override === "string") {
+    const trimmed = override.trim();
+    if (trimmed) return trimmed;
+  }
+  return fallback;
+}
+
+function cmsNumber(
+  override: number | undefined,
+  fallback: number,
+): number {
+  return typeof override === "number" && Number.isFinite(override)
+    ? override
+    : fallback;
+}
+
+function cmsBool(
+  override: boolean | undefined,
+  fallback: boolean,
+): boolean {
+  return typeof override === "boolean" ? override : fallback;
+}
+
+/** Size slots from admin only — never invent S/L from code defaults. */
 function mergeWreathSizeSlots(
   basePrice: number,
   baseSize: string,
   o?: CmsWreathOverride,
-): WreathSizeOption[] {
-  const price = typeof o?.price === "number" ? o.price : basePrice;
-  const size = o?.size?.trim() || baseSize;
-  if (!o?.sizes || o.sizes.length === 0) {
-    return getWreathSizeSlots({ price, size });
-  }
+): WreathSizeOption[] | undefined {
+  if (!o?.sizes || o.sizes.length === 0) return undefined;
+  const price = cmsNumber(o.price, basePrice);
+  const size = cmsString(o.size, baseSize);
   return getWreathSizeSlots({ price, size, sizes: o.sizes });
 }
 
 function syncPriceFromSizes(
-  sizes: WreathSizeOption[],
+  sizes: WreathSizeOption[] | undefined,
+  adminPrice: number | undefined,
+  adminSize: string | undefined,
   fallbackPrice: number,
   fallbackSize: string,
 ) {
+  const priceFallback = cmsNumber(adminPrice, fallbackPrice);
+  const sizeFallback = cmsString(adminSize, fallbackSize);
+
+  if (!sizes || sizes.length === 0) {
+    return {
+      price: priceFallback,
+      size: sizeFallback,
+      sizes: undefined as WreathSizeOption[] | undefined,
+    };
+  }
+
   const active = getWreathSizes({
-    price: fallbackPrice,
-    size: fallbackSize,
+    price: priceFallback,
+    size: sizeFallback,
     sizes,
   });
   const primary =
-    active.find((s) => s.id === "m") ?? active[0] ?? legacyWreathSize({
-      price: fallbackPrice,
-      size: fallbackSize,
-    });
-  return { price: primary.price, size: primary.label, sizes };
+    active.find((s) => s.id === "m") ??
+    active[0] ??
+    legacyWreathSize({ price: priceFallback, size: sizeFallback });
+
+  // Explicit admin price/size still win over derived medium
+  return {
+    price: cmsNumber(adminPrice, primary.price),
+    size: cmsString(adminSize, primary.label),
+    sizes,
+  };
 }
 
 export async function getCmsContent() {
@@ -78,11 +125,11 @@ export function mergeWeddings(cms: CmsContent): Wedding[] {
     if (!o) return w;
     return {
       ...w,
-      title: o.title?.trim() || w.title,
-      place: o.place?.trim() || w.place,
-      season: o.season?.trim() || w.season,
-      summary: o.summary?.trim() || w.summary,
-      cover: o.cover?.trim() || w.cover,
+      title: cmsString(o.title, w.title),
+      place: cmsString(o.place, w.place),
+      season: cmsString(o.season, w.season),
+      summary: cmsString(o.summary, w.summary),
+      cover: cmsString(o.cover, w.cover),
       images:
         o.images && o.images.length > 0
           ? o.images.filter(Boolean)
@@ -100,11 +147,11 @@ export function mergeWeddings(cms: CmsContent): Wedding[] {
       place: o.place?.trim() || "",
       season: o.season?.trim() || "",
       summary: o.summary?.trim() || "",
-      cover: o.cover?.trim() || WEDDING_PLACEHOLDER,
+      cover: cmsString(o.cover, WEDDING_PLACEHOLDER),
       images:
         o.images && o.images.length > 0
           ? o.images.filter(Boolean)
-          : [o.cover?.trim() || WEDDING_PLACEHOLDER],
+          : [cmsString(o.cover, WEDDING_PLACEHOLDER)],
     });
   }
 
@@ -123,27 +170,26 @@ export function mergeWreaths(cms: CmsContent): Wreath[] {
   const merged = baseWreaths.map((w) => {
     const o = cms.wreaths[w.slug];
     if (!o) {
-      return {
-        ...w,
-        sizes: getWreathSizeSlots(w),
-      };
+      return { ...w };
     }
     const slots = mergeWreathSizeSlots(w.price, w.size, o);
     const synced = syncPriceFromSizes(
       slots,
-      typeof o.price === "number" ? o.price : w.price,
-      o.size?.trim() || w.size,
+      o.price,
+      o.size,
+      w.price,
+      w.size,
     );
     return {
       ...w,
-      name: o.name?.trim() || w.name,
-      description: o.description?.trim() || w.description,
+      name: cmsString(o.name, w.name),
+      description: cmsString(o.description, w.description),
       price: synced.price,
       size: synced.size,
       sizes: synced.sizes,
-      season: o.season || w.season,
-      available: typeof o.available === "boolean" ? o.available : w.available,
-      image: o.image?.trim() || w.image,
+      season: (cmsString(o.season, w.season) || w.season) as Wreath["season"],
+      available: cmsBool(o.available, w.available),
+      image: cmsString(o.image, w.image),
     };
   });
 
@@ -151,10 +197,21 @@ export function mergeWreaths(cms: CmsContent): Wreath[] {
     if (baseSlugs.has(slug)) continue;
     const name = o.name?.trim();
     if (!name) continue;
-    const basePrice = typeof o.price === "number" ? o.price : 990;
-    const baseSize = o.size?.trim() || "Ø 30 cm";
+    const basePrice = cmsNumber(o.price, 990);
+    const baseSize = cmsString(o.size, "Ø 30 cm");
     const slots = mergeWreathSizeSlots(basePrice, baseSize, o);
-    const synced = syncPriceFromSizes(slots, basePrice, baseSize);
+    const synced = syncPriceFromSizes(
+      slots,
+      o.price,
+      o.size,
+      basePrice,
+      baseSize,
+    );
+    const seasonRaw = o.season?.trim();
+    const season: Wreath["season"] =
+      seasonRaw === "Jaro" || seasonRaw === "Podzim" || seasonRaw === "Advent"
+        ? seasonRaw
+        : "Jaro";
     merged.push({
       slug,
       name,
@@ -162,9 +219,9 @@ export function mergeWreaths(cms: CmsContent): Wreath[] {
       price: synced.price,
       size: synced.size,
       sizes: synced.sizes,
-      season: o.season || "Jaro",
-      available: typeof o.available === "boolean" ? o.available : true,
-      image: o.image?.trim() || WREATH_PLACEHOLDER,
+      season,
+      available: cmsBool(o.available, true),
+      image: cmsString(o.image, WREATH_PLACEHOLDER),
     });
   }
 
@@ -204,17 +261,17 @@ export function mergeDecorations(cms: CmsContent): DecorationCategory[] {
     if (!o) return d;
     return {
       ...d,
-      title: o.title?.trim() || d.title,
-      description: o.description?.trim() || d.description,
-      image: o.image?.trim() || d.image,
+      title: cmsString(o.title, d.title),
+      description: cmsString(o.description, d.description),
+      image: cmsString(o.image, d.image),
       variants: d.variants.map((v) => {
         const vo = o.variants?.[v.slug];
         if (!vo) return v;
         return {
           ...v,
-          name: vo.name?.trim() || v.name,
-          note: vo.note?.trim() || v.note,
-          image: vo.image?.trim() || v.image,
+          name: cmsString(vo.name, v.name),
+          note: cmsString(vo.note, v.note),
+          image: cmsString(vo.image, v.image),
         };
       }),
     };

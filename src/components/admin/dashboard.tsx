@@ -286,11 +286,26 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
         };
       });
     const merged = [
-      ...baseWreaths.map((w) => ({
-        ...w,
-        sizes: getWreathSizeSlots(w),
-        custom: false as const,
-      })),
+      ...baseWreaths.map((w) => {
+        const o = content.wreaths[w.slug];
+        const price =
+          typeof o?.price === "number" && Number.isFinite(o.price)
+            ? o.price
+            : w.price;
+        const size = o?.size?.trim() || w.size;
+        return {
+          ...w,
+          // Admin CMS wins for display seeds; never invent from stale code sizes
+          price,
+          size,
+          sizes: getWreathSizeSlots({
+            price,
+            size,
+            sizes: o?.sizes,
+          }),
+          custom: false as const,
+        };
+      }),
       ...customs,
     ];
     const all = merged.map((w) => w.slug);
@@ -980,7 +995,8 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                         {getWreathSizeSlots({
                           price: o.price ?? w.price,
                           size: o.size ?? w.size,
-                          sizes: o.sizes ?? w.sizes,
+                          // Only admin-saved sizes — never bake code catalog sizes into CMS
+                          sizes: o.sizes,
                         }).map((size) => {
                           const filled = Boolean(
                             size.label.trim() && size.price > 0,
@@ -1027,15 +1043,16 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                                             c.wreaths[w.slug]?.price ?? w.price,
                                           size:
                                             c.wreaths[w.slug]?.size ?? w.size,
-                                          sizes:
-                                            c.wreaths[w.slug]?.sizes ?? w.sizes,
+                                          sizes: c.wreaths[w.slug]?.sizes,
                                         });
                                         const nextSizes = current.map((s) =>
                                           s.id === id ? { ...s, label: v } : s,
                                         );
                                         const active = getWreathSizes({
-                                          price: w.price,
-                                          size: w.size,
+                                          price:
+                                            c.wreaths[w.slug]?.price ?? w.price,
+                                          size:
+                                            c.wreaths[w.slug]?.size ?? w.size,
                                           sizes: nextSizes,
                                         });
                                         const primary =
@@ -1074,15 +1091,16 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                                             c.wreaths[w.slug]?.price ?? w.price,
                                           size:
                                             c.wreaths[w.slug]?.size ?? w.size,
-                                          sizes:
-                                            c.wreaths[w.slug]?.sizes ?? w.sizes,
+                                          sizes: c.wreaths[w.slug]?.sizes,
                                         });
                                         const nextSizes = current.map((s) =>
                                           s.id === id ? { ...s, price } : s,
                                         );
                                         const active = getWreathSizes({
-                                          price: w.price,
-                                          size: w.size,
+                                          price:
+                                            c.wreaths[w.slug]?.price ?? w.price,
+                                          size:
+                                            c.wreaths[w.slug]?.size ?? w.size,
                                           sizes: nextSizes,
                                         });
                                         const primary =
@@ -1121,9 +1139,7 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                                               w.price,
                                             size:
                                               c.wreaths[w.slug]?.size ?? w.size,
-                                            sizes:
-                                              c.wreaths[w.slug]?.sizes ??
-                                              w.sizes,
+                                            sizes: c.wreaths[w.slug]?.sizes,
                                           });
                                           const nextSizes = current.map((s) =>
                                             s.id === id
@@ -1131,8 +1147,11 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                                               : s,
                                           );
                                           const active = getWreathSizes({
-                                            price: w.price,
-                                            size: w.size,
+                                            price:
+                                              c.wreaths[w.slug]?.price ??
+                                              w.price,
+                                            size:
+                                              c.wreaths[w.slug]?.size ?? w.size,
                                             sizes: nextSizes,
                                           });
                                           const primary =

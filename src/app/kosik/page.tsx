@@ -3,19 +3,23 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import {
-  formatPrice,
-  getWreath,
-  getWreathSize,
-} from "@/data/wreaths";
-import { cartKey, useCart } from "@/lib/cart";
+import { formatPrice } from "@/data/wreaths";
+import { cartKey, resolveLine, useCart } from "@/lib/cart";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CtaLink } from "@/components/cta-link";
 
 export default function CartPage() {
-  const { items, setQuantity, removeItem, total, clear, hydrated } = useCart();
+  const {
+    items,
+    setQuantity,
+    removeItem,
+    total,
+    clear,
+    hydrated,
+    catalog,
+  } = useCart();
   const [ordered, setOrdered] = useState(false);
 
   if (!hydrated) {
@@ -60,15 +64,14 @@ export default function CartPage() {
       <h1 className="font-display text-5xl text-moss-deep sm:text-6xl">Košík</h1>
       <ul className="mt-10 divide-y divide-border">
         {items.map((item) => {
-          const product = getWreath(item.slug);
+          const product = resolveLine(item, catalog);
           if (!product) return null;
-          const size = getWreathSize(product, item.sizeId);
           const key = cartKey(item.slug, item.sizeId);
           return (
             <li key={key} className="flex gap-4 py-6">
               <div className="relative size-24 shrink-0 overflow-hidden bg-stone sm:size-28">
                 <Image
-                  src={product.image}
+                  src={product.image || "/wreaths/placeholder.svg"}
                   alt={product.name}
                   fill
                   className="object-cover"
@@ -79,17 +82,19 @@ export default function CartPage() {
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <Link
-                      href={`/vence/${product.slug}`}
+                      href={`/vence/${item.slug}`}
                       className="font-display text-2xl text-moss-deep hover:underline"
                     >
                       {product.name}
                     </Link>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      {size.label} · {formatPrice(size.price)}
+                      {product.sizeLabel
+                        ? `${product.sizeLabel} · ${formatPrice(product.price)}`
+                        : formatPrice(product.price)}
                     </p>
                   </div>
                   <p className="text-sm font-medium">
-                    {formatPrice(size.price * item.quantity)}
+                    {formatPrice(product.price * item.quantity)}
                   </p>
                 </div>
                 <div className="mt-3 flex items-center gap-3">
