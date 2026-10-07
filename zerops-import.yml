@@ -20,7 +20,7 @@ services:
     type: local-storage:single@1
     priority: 10
     verticalAutoscaling:
-      minDisk: 1
+      minDisk: 5
       maxDisk: 10
 
   # Next.js SSR app
