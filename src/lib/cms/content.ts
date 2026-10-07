@@ -27,8 +27,13 @@ export function slotFrom(cms: CmsContent, id: string, fallback: string) {
   return resolveSlot(cms, id, fallback);
 }
 
+const WREATH_PLACEHOLDER = "/wreaths/placeholder.svg";
+const WEDDING_PLACEHOLDER =
+  "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1600&q=80";
+
 export function mergeWeddings(cms: CmsContent): Wedding[] {
-  return baseWeddings.map((w) => {
+  const baseSlugs = new Set(baseWeddings.map((w) => w.slug));
+  const merged = baseWeddings.map((w) => {
     const o = cms.weddings[w.slug];
     if (!o) return w;
     return {
@@ -44,6 +49,26 @@ export function mergeWeddings(cms: CmsContent): Wedding[] {
           : w.images,
     };
   });
+
+  for (const [slug, o] of Object.entries(cms.weddings ?? {})) {
+    if (baseSlugs.has(slug)) continue;
+    const title = o.title?.trim();
+    if (!title) continue;
+    merged.push({
+      slug,
+      title,
+      place: o.place?.trim() || "",
+      season: o.season?.trim() || "",
+      summary: o.summary?.trim() || "",
+      cover: o.cover?.trim() || WEDDING_PLACEHOLDER,
+      images:
+        o.images && o.images.length > 0
+          ? o.images.filter(Boolean)
+          : [o.cover?.trim() || WEDDING_PLACEHOLDER],
+    });
+  }
+
+  return merged;
 }
 
 export function mergeWedding(
@@ -54,6 +79,7 @@ export function mergeWedding(
 }
 
 export function mergeWreaths(cms: CmsContent): Wreath[] {
+  const baseSlugs = new Set(baseWreaths.map((w) => w.slug));
   const merged = baseWreaths.map((w) => {
     const o = cms.wreaths[w.slug];
     if (!o) return w;
@@ -68,6 +94,22 @@ export function mergeWreaths(cms: CmsContent): Wreath[] {
       image: o.image?.trim() || w.image,
     };
   });
+
+  for (const [slug, o] of Object.entries(cms.wreaths ?? {})) {
+    if (baseSlugs.has(slug)) continue;
+    const name = o.name?.trim();
+    if (!name) continue;
+    merged.push({
+      slug,
+      name,
+      description: o.description?.trim() || "",
+      price: typeof o.price === "number" ? o.price : 0,
+      size: o.size?.trim() || "Ø 33 cm",
+      season: o.season || "Jaro",
+      available: typeof o.available === "boolean" ? o.available : true,
+      image: o.image?.trim() || WREATH_PLACEHOLDER,
+    });
+  }
 
   const order = resolveWreathOrder(cms);
   const rank = new Map(order.map((slug, i) => [slug, i]));
@@ -84,9 +126,13 @@ export function defaultWreathOrder(): string[] {
 }
 
 export function resolveWreathOrder(cms: CmsContent): string[] {
-  const all = baseWreaths.map((w) => w.slug);
+  const base = baseWreaths.map((w) => w.slug);
+  const custom = Object.entries(cms.wreaths ?? {})
+    .filter(([slug, o]) => !base.includes(slug) && Boolean(o.name?.trim()))
+    .map(([slug]) => slug);
+  const all = [...base, ...custom];
   const saved = (cms.wreathOrder ?? []).filter((s) => all.includes(s));
-  if (saved.length === 0) return defaultWreathOrder();
+  if (saved.length === 0) return [...defaultWreathOrder(), ...custom];
   const missing = all.filter((s) => !saved.includes(s));
   return [...saved, ...missing];
 }

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { BloomFlowerMark } from "@/components/bloom-flower-mark";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -11,7 +12,7 @@ type Props = {
 
 /**
  * Official vector lockup — wordmark + flower.
- * Flower spins once every ~6.5s (≈5s pause, then a turn).
+ * Flower spins once every ~6.5s and cycles brand colors on each turn.
  */
 export function BloomLogo({
   className,
@@ -21,11 +22,8 @@ export function BloomLogo({
 }: Props) {
   if (variant === "flower") {
     return (
-      <Image
-        src="/logo-flower.png"
-        alt="Květinový znak THE BLOOMS"
-        width={54}
-        height={46}
+      <BloomFlowerMark
+        tone={tone}
         className={cn("h-auto w-auto", className)}
       />
     );
@@ -35,10 +33,6 @@ export function BloomLogo({
     tone === "white"
       ? "/theblooms-wordmark-white.svg"
       : "/theblooms-wordmark.svg";
-  const flower =
-    tone === "white"
-      ? "/theblooms-flower-white.svg"
-      : "/theblooms-flower.svg";
 
   return (
     <span
@@ -55,14 +49,9 @@ export function BloomLogo({
         fetchPriority={priority ? "high" : "auto"}
         className="block h-full w-auto"
       />
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={flower}
-        alt="Květinový znak THE BLOOMS"
-        width={84}
-        height={84}
-        decoding={priority ? "sync" : "async"}
-        className="logo-flower-spin pointer-events-none absolute top-[0.6%] left-[84.31%] h-[98.7%] w-auto"
+      <BloomFlowerMark
+        tone={tone}
+        className="pointer-events-none absolute top-[0.6%] left-[84.31%] h-[98.7%] w-auto"
       />
     </span>
   );

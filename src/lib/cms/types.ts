@@ -1,4 +1,6 @@
 export type CmsWeddingOverride = {
+  /** CMS-only entry (not in code defaults) */
+  custom?: boolean;
   title?: string;
   place?: string;
   season?: string;
@@ -8,6 +10,8 @@ export type CmsWeddingOverride = {
 };
 
 export type CmsWreathOverride = {
+  /** CMS-only entry (not in code defaults) */
+  custom?: boolean;
   name?: string;
   description?: string;
   price?: number;

@@ -135,19 +135,26 @@
       font-size: 18px;
     }
   }
+  body {
+    font-family: "acumin-pro-wide", var(--font-name-fallback), ui-sans-serif,
+      system-ui, sans-serif;
+  }
   h1,
   h2,
   h3,
   .font-display {
-    font-family: var(--font-heading);
+    font-family: "acumin-pro-wide", var(--font-name-fallback), ui-sans-serif,
+      system-ui, sans-serif;
     letter-spacing: 0.01em;
     line-height: 1.15;
   }
   .font-brand {
-    font-family: var(--font-brand);
+    font-family: "acumin-pro-wide", var(--font-name-fallback), ui-sans-serif,
+      system-ui, sans-serif;
   }
   .font-name {
-    font-family: var(--font-name);
+    font-family: "acumin-pro-wide", var(--font-name-fallback), ui-sans-serif,
+      system-ui, sans-serif;
     letter-spacing: 0.02em;
   }
 }
@@ -201,23 +208,43 @@
   .hero-media {
     animation: soft-zoom 1.6s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
-  /* Logo flower: ~5s pause, then one slow turn, repeat */
+  /* Logo flower: ~5s pause, then one slow turn + brand color cycle */
   @keyframes bloom-flower-spin {
     0%,
     77% {
       transform: rotate(0deg);
+      color: var(--bloom);
+    }
+    82% {
+      transform: rotate(72deg);
+      color: var(--bloom-light);
+    }
+    87% {
+      transform: rotate(144deg);
+      color: var(--bloom-pink);
+    }
+    92% {
+      transform: rotate(216deg);
+      color: var(--bloom-orange);
+    }
+    96% {
+      transform: rotate(288deg);
+      color: var(--bloom-yellow);
     }
     100% {
       transform: rotate(360deg);
+      color: var(--bloom);
     }
   }
   .logo-flower-spin {
     transform-origin: center center;
+    color: var(--bloom);
     animation: bloom-flower-spin 6.5s ease-in-out infinite;
   }
   @media (prefers-reduced-motion: reduce) {
     .logo-flower-spin {
       animation: none;
+      color: var(--bloom);
     }
   }
 }
