@@ -35,6 +35,8 @@ export type CmsContent = {
   weddings: Record<string, CmsWeddingOverride>;
   wreaths: Record<string, CmsWreathOverride>;
   decorations: Record<string, CmsDecorationOverride>;
+  /** Pořadí věnců podle prodejnosti (slug → pozice) */
+  wreathOrder: string[];
 };
 
 export type MediaItem = {
@@ -50,6 +52,7 @@ export const emptyCms = (): CmsContent => ({
   weddings: {},
   wreaths: {},
   decorations: {},
+  wreathOrder: [],
 });
 
 /** Named page photo slots */

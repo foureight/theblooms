@@ -54,7 +54,7 @@ export function mergeWedding(
 }
 
 export function mergeWreaths(cms: CmsContent): Wreath[] {
-  return baseWreaths.map((w) => {
+  const merged = baseWreaths.map((w) => {
     const o = cms.wreaths[w.slug];
     if (!o) return w;
     return {
@@ -68,6 +68,27 @@ export function mergeWreaths(cms: CmsContent): Wreath[] {
       image: o.image?.trim() || w.image,
     };
   });
+
+  const order = resolveWreathOrder(cms);
+  const rank = new Map(order.map((slug, i) => [slug, i]));
+  return [...merged].sort(
+    (a, b) => (rank.get(a.slug) ?? 999) - (rank.get(b.slug) ?? 999),
+  );
+}
+
+/** Default: dostupné nahoře (prodejnější), pak původní pořadí */
+export function defaultWreathOrder(): string[] {
+  const available = baseWreaths.filter((w) => w.available).map((w) => w.slug);
+  const rest = baseWreaths.filter((w) => !w.available).map((w) => w.slug);
+  return [...available, ...rest];
+}
+
+export function resolveWreathOrder(cms: CmsContent): string[] {
+  const all = baseWreaths.map((w) => w.slug);
+  const saved = (cms.wreathOrder ?? []).filter((s) => all.includes(s));
+  if (saved.length === 0) return defaultWreathOrder();
+  const missing = all.filter((s) => !saved.includes(s));
+  return [...saved, ...missing];
 }
 
 export function mergeWreath(cms: CmsContent, slug: string): Wreath | undefined {

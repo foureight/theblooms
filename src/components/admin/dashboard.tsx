@@ -208,6 +208,32 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
     return groups;
   }, []);
 
+  const orderedWreaths = useMemo(() => {
+    const all = baseWreaths.map((w) => w.slug);
+    const saved = (content.wreathOrder ?? []).filter((s) => all.includes(s));
+    const order =
+      saved.length === 0
+        ? [
+            ...baseWreaths.filter((w) => w.available).map((w) => w.slug),
+            ...baseWreaths.filter((w) => !w.available).map((w) => w.slug),
+          ]
+        : [...saved, ...all.filter((s) => !saved.includes(s))];
+    const bySlug = new Map(baseWreaths.map((w) => [w.slug, w]));
+    return order
+      .map((slug) => bySlug.get(slug))
+      .filter((w): w is (typeof baseWreaths)[number] => Boolean(w));
+  }, [content.wreathOrder]);
+
+  function moveWreath(slug: string, direction: -1 | 1) {
+    const slugs = orderedWreaths.map((w) => w.slug);
+    const i = slugs.indexOf(slug);
+    const j = i + direction;
+    if (i < 0 || j < 0 || j >= slugs.length) return;
+    const next = [...slugs];
+    [next[i], next[j]] = [next[j]!, next[i]!];
+    setContent((c) => ({ ...c, wreathOrder: next }));
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/95 backdrop-blur">
@@ -525,9 +551,15 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
 
         {tab === "vence" ? (
           <div className="mt-8 space-y-8">
-            {baseWreaths.map((w) => {
+            <p className="text-sm text-muted-foreground">
+              Pořadí určuje, jak se věnce zobrazí na webu — nahoře =
+              prodejnější. Šipkami posouvejte nahoru a dolů, pak uložte.
+            </p>
+            {orderedWreaths.map((w, index) => {
               const o = content.wreaths[w.slug] ?? {};
               const image = o.image || w.image;
+              const atTop = index === 0;
+              const atBottom = index === orderedWreaths.length - 1;
               return (
                 <section
                   key={w.slug}
@@ -555,6 +587,31 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                     </button>
                   </div>
                   <div className="space-y-4">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <p className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
+                        Pořadí {index + 1} / {orderedWreaths.length}
+                      </p>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          disabled={atTop}
+                          onClick={() => moveWreath(w.slug, -1)}
+                          className="border border-border px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-moss-deep hover:border-bloom-light hover:text-bloom-light disabled:cursor-not-allowed disabled:opacity-40"
+                          aria-label="Posunout nahoru"
+                        >
+                          ↑ Nahoru
+                        </button>
+                        <button
+                          type="button"
+                          disabled={atBottom}
+                          onClick={() => moveWreath(w.slug, 1)}
+                          className="border border-border px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-moss-deep hover:border-bloom-light hover:text-bloom-light disabled:cursor-not-allowed disabled:opacity-40"
+                          aria-label="Posunout dolů"
+                        >
+                          ↓ Dolů
+                        </button>
+                      </div>
+                    </div>
                     <Field
                       label="Název"
                       value={o.name ?? w.name}
