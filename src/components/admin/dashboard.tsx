@@ -199,6 +199,8 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
   const textGroups = useMemo(() => {
     const groups: Record<string, typeof PAGE_TEXTS> = {};
     for (const t of PAGE_TEXTS) {
+      // Wreath page copy lives under the Věnce tab, not in Texty
+      if (t.id.startsWith("vence.")) continue;
       const prefix = t.id.split(".")[0] ?? "ostatní";
       const label =
         prefix === "home"
@@ -207,15 +209,13 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
             ? "Svatby"
             : prefix === "kytky"
               ? "Kytky"
-              : prefix === "vence"
-                ? "Věnce"
-                : prefix === "workshopy"
-                  ? "Workshopy"
-                  : prefix === "o-mne"
-                    ? "O mně"
-                    : prefix === "kontakt"
-                      ? "Kontakt"
-                      : prefix;
+              : prefix === "workshopy"
+                ? "Workshopy"
+                : prefix === "o-mne"
+                  ? "O mně"
+                  : prefix === "kontakt"
+                    ? "Kontakt"
+                    : prefix;
       if (!groups[label]) groups[label] = [] as unknown as typeof PAGE_TEXTS;
       (groups[label] as unknown as (typeof PAGE_TEXTS)[number][]).push(t);
     }
