@@ -265,6 +265,9 @@ export default async function KytkyPage() {
                 </p>
               </li>
             </ol>
+            <div className="mt-10 sm:mt-12">
+              <CtaLink href="/kontakt?typ=kytky">Poslat poptávku</CtaLink>
+            </div>
           </section>
         </FadeIn>
 
