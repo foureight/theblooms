@@ -45,6 +45,10 @@ type Props = {
 export function AdminDashboard({ initialContent, initialMedia }: Props) {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("texty");
+  /** Which size row is expanded in admin (closed by default). */
+  const [openWreathSize, setOpenWreathSize] = useState<
+    Record<string, WreathSizeId | null>
+  >({});
   const [content, setContent] = useState<CmsContent>(initialContent);
   const [media, setMedia] = useState<MediaItem[]>(initialMedia);
   const [status, setStatus] = useState("");
@@ -981,120 +985,42 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                           const filled = Boolean(
                             size.label.trim() && size.price > 0,
                           );
+                          const sizeKey = size.id as WreathSizeId;
+                          const isOpen = openWreathSize[w.slug] === sizeKey;
                           return (
-                            <details
+                            <div
                               key={size.id}
                               className="border border-border/70 bg-background"
                             >
-                              <summary className="cursor-pointer list-none px-3 py-3 text-sm marker:content-none [&::-webkit-details-marker]:hidden">
-                                <span className="flex flex-wrap items-center justify-between gap-2">
-                                  <span className="font-medium uppercase tracking-[0.12em] text-moss-deep">
-                                    {WREATH_SIZE_NAMES[size.id as WreathSizeId]}
-                                  </span>
-                                  <span className="text-xs text-muted-foreground">
-                                    {filled
-                                      ? `${size.label} · ${size.price} Kč`
-                                      : "Nevyplněno — skryté na webu"}
-                                  </span>
+                              <button
+                                type="button"
+                                aria-expanded={isOpen}
+                                onClick={() =>
+                                  setOpenWreathSize((prev) => ({
+                                    ...prev,
+                                    [w.slug]:
+                                      prev[w.slug] === sizeKey ? null : sizeKey,
+                                  }))
+                                }
+                                className="flex w-full flex-wrap items-center justify-between gap-2 px-3 py-3 text-left text-sm transition-colors hover:bg-moss-deep hover:text-white"
+                              >
+                                <span className="font-medium uppercase tracking-[0.12em]">
+                                  {isOpen ? "▾ " : "▸ "}
+                                  {WREATH_SIZE_NAMES[sizeKey]}
                                 </span>
-                              </summary>
-                              <div className="grid gap-3 border-t border-border/60 px-3 py-4 sm:grid-cols-2">
-                                <Field
-                                  label="Popisek (např. Ø 33 cm)"
-                                  value={size.label}
-                                  onChange={(v) => {
-                                    const id = size.id as WreathSizeId;
-                                    setContent((c) => {
-                                      const current = getWreathSizeSlots({
-                                        price:
-                                          c.wreaths[w.slug]?.price ?? w.price,
-                                        size: c.wreaths[w.slug]?.size ?? w.size,
-                                        sizes:
-                                          c.wreaths[w.slug]?.sizes ?? w.sizes,
-                                      });
-                                      const nextSizes = current.map((s) =>
-                                        s.id === id ? { ...s, label: v } : s,
-                                      );
-                                      const active = getWreathSizes({
-                                        price: w.price,
-                                        size: w.size,
-                                        sizes: nextSizes,
-                                      });
-                                      const primary =
-                                        active.find((s) => s.id === "m") ??
-                                        active[0];
-                                      return {
-                                        ...c,
-                                        wreaths: {
-                                          ...c.wreaths,
-                                          [w.slug]: {
-                                            ...c.wreaths[w.slug],
-                                            sizes: nextSizes,
-                                            size:
-                                              primary?.label ||
-                                              c.wreaths[w.slug]?.size ||
-                                              w.size,
-                                            price:
-                                              primary?.price ??
-                                              c.wreaths[w.slug]?.price ??
-                                              w.price,
-                                          },
-                                        },
-                                      };
-                                    });
-                                  }}
-                                />
-                                <Field
-                                  label="Cena (Kč)"
-                                  value={size.price ? String(size.price) : ""}
-                                  onChange={(v) => {
-                                    const id = size.id as WreathSizeId;
-                                    const price = Number(v) || 0;
-                                    setContent((c) => {
-                                      const current = getWreathSizeSlots({
-                                        price:
-                                          c.wreaths[w.slug]?.price ?? w.price,
-                                        size: c.wreaths[w.slug]?.size ?? w.size,
-                                        sizes:
-                                          c.wreaths[w.slug]?.sizes ?? w.sizes,
-                                      });
-                                      const nextSizes = current.map((s) =>
-                                        s.id === id ? { ...s, price } : s,
-                                      );
-                                      const active = getWreathSizes({
-                                        price: w.price,
-                                        size: w.size,
-                                        sizes: nextSizes,
-                                      });
-                                      const primary =
-                                        active.find((s) => s.id === "m") ??
-                                        active[0];
-                                      return {
-                                        ...c,
-                                        wreaths: {
-                                          ...c.wreaths,
-                                          [w.slug]: {
-                                            ...c.wreaths[w.slug],
-                                            sizes: nextSizes,
-                                            size:
-                                              primary?.label ||
-                                              c.wreaths[w.slug]?.size ||
-                                              w.size,
-                                            price:
-                                              primary?.price ??
-                                              c.wreaths[w.slug]?.price ??
-                                              w.price,
-                                          },
-                                        },
-                                      };
-                                    });
-                                  }}
-                                />
-                                {filled ? (
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      const id = size.id as WreathSizeId;
+                                <span className="text-xs opacity-80">
+                                  {filled
+                                    ? `${size.label} · ${size.price} Kč`
+                                    : "Nevyplněno — skryté na webu"}
+                                </span>
+                              </button>
+                              {isOpen ? (
+                                <div className="grid gap-3 border-t border-border/60 px-3 py-4 sm:grid-cols-2">
+                                  <Field
+                                    label="Popisek (např. Ø 33 cm)"
+                                    value={size.label}
+                                    onChange={(v) => {
+                                      const id = sizeKey;
                                       setContent((c) => {
                                         const current = getWreathSizeSlots({
                                           price:
@@ -1105,9 +1031,7 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                                             c.wreaths[w.slug]?.sizes ?? w.sizes,
                                         });
                                         const nextSizes = current.map((s) =>
-                                          s.id === id
-                                            ? { ...s, label: "", price: 0 }
-                                            : s,
+                                          s.id === id ? { ...s, label: v } : s,
                                         );
                                         const active = getWreathSizes({
                                           price: w.price,
@@ -1137,13 +1061,111 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                                         };
                                       });
                                     }}
-                                    className="sm:col-span-2 px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
-                                  >
-                                    Vymazat velikost (skryje na webu)
-                                  </button>
-                                ) : null}
-                              </div>
-                            </details>
+                                  />
+                                  <Field
+                                    label="Cena (Kč)"
+                                    value={size.price ? String(size.price) : ""}
+                                    onChange={(v) => {
+                                      const id = sizeKey;
+                                      const price = Number(v) || 0;
+                                      setContent((c) => {
+                                        const current = getWreathSizeSlots({
+                                          price:
+                                            c.wreaths[w.slug]?.price ?? w.price,
+                                          size:
+                                            c.wreaths[w.slug]?.size ?? w.size,
+                                          sizes:
+                                            c.wreaths[w.slug]?.sizes ?? w.sizes,
+                                        });
+                                        const nextSizes = current.map((s) =>
+                                          s.id === id ? { ...s, price } : s,
+                                        );
+                                        const active = getWreathSizes({
+                                          price: w.price,
+                                          size: w.size,
+                                          sizes: nextSizes,
+                                        });
+                                        const primary =
+                                          active.find((s) => s.id === "m") ??
+                                          active[0];
+                                        return {
+                                          ...c,
+                                          wreaths: {
+                                            ...c.wreaths,
+                                            [w.slug]: {
+                                              ...c.wreaths[w.slug],
+                                              sizes: nextSizes,
+                                              size:
+                                                primary?.label ||
+                                                c.wreaths[w.slug]?.size ||
+                                                w.size,
+                                              price:
+                                                primary?.price ??
+                                                c.wreaths[w.slug]?.price ??
+                                                w.price,
+                                            },
+                                          },
+                                        };
+                                      });
+                                    }}
+                                  />
+                                  {filled ? (
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const id = sizeKey;
+                                        setContent((c) => {
+                                          const current = getWreathSizeSlots({
+                                            price:
+                                              c.wreaths[w.slug]?.price ??
+                                              w.price,
+                                            size:
+                                              c.wreaths[w.slug]?.size ?? w.size,
+                                            sizes:
+                                              c.wreaths[w.slug]?.sizes ??
+                                              w.sizes,
+                                          });
+                                          const nextSizes = current.map((s) =>
+                                            s.id === id
+                                              ? { ...s, label: "", price: 0 }
+                                              : s,
+                                          );
+                                          const active = getWreathSizes({
+                                            price: w.price,
+                                            size: w.size,
+                                            sizes: nextSizes,
+                                          });
+                                          const primary =
+                                            active.find((s) => s.id === "m") ??
+                                            active[0];
+                                          return {
+                                            ...c,
+                                            wreaths: {
+                                              ...c.wreaths,
+                                              [w.slug]: {
+                                                ...c.wreaths[w.slug],
+                                                sizes: nextSizes,
+                                                size:
+                                                  primary?.label ||
+                                                  c.wreaths[w.slug]?.size ||
+                                                  w.size,
+                                                price:
+                                                  primary?.price ??
+                                                  c.wreaths[w.slug]?.price ??
+                                                  w.price,
+                                              },
+                                            },
+                                          };
+                                        });
+                                      }}
+                                      className="sm:col-span-2 px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
+                                    >
+                                      Vymazat velikost (skryje na webu)
+                                    </button>
+                                  ) : null}
+                                </div>
+                              ) : null}
+                            </div>
                           );
                         })}
                       </div>
