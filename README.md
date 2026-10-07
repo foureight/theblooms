@@ -46,6 +46,23 @@ UPLOADS_DIR=./uploads
 
 Na Zerops: Local Storage `vol` namountovaný na `/srv/uploads`, secret `ADMIN_PASSWORD` (+ ideálně `ADMIN_SECRET`), `UPLOADS_DIR=/srv/uploads`.
 
+## GitHub (Zerops / foureight)
+
+Kanónické GitHub repo pro nasazení: **https://github.com/foureight/theblooms**
+
+Kód z Cursoru / Origin je na [tomas-forejt/blooms-web](https://cursor.com/codebase/tomas-forejt/blooms-web). Na prázdné GitHub repo ho pošlete jednou z počítače (Cloud Agent nemá přístup k vašemu GitHub účtu):
+
+```bash
+git clone https://origin.cursor.com/tomas-forejt/blooms-web.git theblooms
+cd theblooms
+git remote add github https://github.com/foureight/theblooms.git
+git push -u github main
+```
+
+(Případně `gh auth login` a pak `git push github main`.)
+
+Ve Zerops u služby `app` napojte pipeline na `https://github.com/foureight/theblooms`, větev `main`, setup `app` (viz `zerops.yml` v kořeni).
+
 ## Nasazení (Zerops)
 
 ### Rychlý import projektu
@@ -55,7 +72,7 @@ Na Zerops: Local Storage `vol` namountovaný na `/srv/uploads`, secret `ADMIN_PA
 3. Import vytvoří projekt **theblooms** se službami:
    - `vol` — Local Storage (CMS + fotky)
    - `app` — Node.js 22 (Next.js SSR)
-4. Ve službě `app` → Pipelines & CI/CD napojte Git (větev `main`, setup `app`). Import sám o sobě Git nevyžaduje — `zeropsSetup` + `buildFromGit` použijte jen u veřejného GitHub/GitLab repa.
+4. Ve službě `app` → Pipelines & CI/CD napojte GitHub `foureight/theblooms` (větev `main`, setup `app`). Import sám o sobě Git nevyžaduje — `buildFromGit` + `zeropsSetup` v [`zerops-import.yml`](./zerops-import.yml) až po prvním pushi na GitHub.
 5. V secrets změňte `ADMIN_PASSWORD` na silné heslo (výchozí z importu je jen placeholder).
 6. Přidejte vlastní doménu / public HTTP; zkontrolujte `NEXT_PUBLIC_SITE_URL`.
 

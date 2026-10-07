@@ -33,8 +33,8 @@ services:
     minContainers: 1
     maxContainers: 1
     priority: 1
-    # Odcomentujte jen když máte veřejné GitHub/GitLab repo:
-    # buildFromGit: https://github.com/ORG/REPO
+    # Po napojení GitHub repa odkomentujte oba řádky (build + setup):
+    # buildFromGit: https://github.com/foureight/theblooms
     # zeropsSetup: app
     envSecrets:
       ADMIN_PASSWORD: zmente-toto-heslo
