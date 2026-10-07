@@ -33,9 +33,9 @@ services:
     minContainers: 1
     maxContainers: 1
     priority: 1
-    # Po napojení GitHub repa odkomentujte oba řádky (build + setup):
-    # buildFromGit: https://github.com/foureight/theblooms
-    # zeropsSetup: app
+    # Po pushi kódu na GitHub odkomentujte (nebo napojte pipeline v GUI):
+    buildFromGit: https://github.com/foureight/theblooms
+    zeropsSetup: app
     envSecrets:
       ADMIN_PASSWORD: zmente-toto-heslo
       ADMIN_SECRET: <@generateRandomString(<48>)>
