@@ -97,7 +97,7 @@ export default async function KontaktPage({ searchParams }: Props) {
           <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
             Domluvíme se
           </p>
-          <h1 className="mt-3 font-display text-6xl text-bloom-deep sm:text-7xl">
+          <h1 className="mt-3 font-display text-5xl text-moss-deep sm:text-6xl">
             Kontakt
           </h1>
           <p className="mt-3 font-display text-2xl text-foreground">

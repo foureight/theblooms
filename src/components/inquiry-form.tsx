@@ -133,7 +133,7 @@ export function InquiryForm({
         <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground">
           Poptávka
         </p>
-        <h2 className="mt-2 font-display text-3xl text-moss-deep sm:text-4xl">
+        <h2 className="mt-2 font-display text-5xl text-moss-deep sm:text-6xl">
           Napište mi
         </h2>
         <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
