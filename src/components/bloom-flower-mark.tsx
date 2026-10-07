@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 type Props = {
   className?: string;
-  /** White mark for dark backgrounds — no color cycle. */
+  /** White mark for dark backgrounds. */
   tone?: "default" | "white";
 };
 

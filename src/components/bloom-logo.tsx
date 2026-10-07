@@ -11,7 +11,7 @@ type Props = {
 
 /**
  * Official vector lockup — wordmark + flower.
- * Flower spins once every ~6.5s and cycles brand colors on each turn.
+ * Flower spins once every ~6.5s (stays brand green).
  */
 export function BloomLogo({
   className,

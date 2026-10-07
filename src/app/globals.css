@@ -208,44 +208,24 @@
   .hero-media {
     animation: soft-zoom 1.6s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
-  /* Logo flower: pause on green, then smooth 360° + color blend (no snap) */
+  /* Logo flower: ~5s pause, then one slow turn in green, repeat */
   @keyframes bloom-flower-spin {
     0%,
-    72% {
+    77% {
       transform: rotate(0deg);
-      color: var(--bloom);
-    }
-    78% {
-      transform: rotate(60deg);
-      color: var(--bloom-light);
-    }
-    84% {
-      transform: rotate(140deg);
-      color: var(--bloom-pink);
-    }
-    90% {
-      transform: rotate(220deg);
-      color: var(--bloom-orange);
-    }
-    96% {
-      transform: rotate(300deg);
-      color: var(--bloom-yellow);
     }
     100% {
       transform: rotate(360deg);
-      color: var(--bloom);
     }
   }
   .logo-flower-spin {
-    transform-origin: 50% 50%;
+    transform-origin: center center;
     color: var(--bloom);
-    will-change: transform, color;
-    animation: bloom-flower-spin 7s linear infinite;
+    animation: bloom-flower-spin 6.5s ease-in-out infinite;
   }
   @media (prefers-reduced-motion: reduce) {
     .logo-flower-spin {
       animation: none;
-      color: var(--bloom);
     }
   }
 }
