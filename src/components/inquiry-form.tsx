@@ -22,7 +22,7 @@ const fieldClass =
   "h-11 rounded-none border-border/80 bg-background px-3 text-sm shadow-none focus-visible:border-bloom focus-visible:ring-0";
 
 const labelClass =
-  "text-[10px] font-normal tracking-[0.16em] uppercase text-muted-foreground";
+  "text-xs font-normal tracking-[0.16em] uppercase text-muted-foreground";
 
 export function InquiryForm({
   defaultType = "svatba",
@@ -107,7 +107,7 @@ export function InquiryForm({
   if (status === "success") {
     return (
       <div className="border-t border-bloom/40 bg-background px-1 py-12 text-center sm:px-2">
-        <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground">
+        <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
           Poptávka odeslána
         </p>
         <p className="mt-3 font-display text-4xl text-moss-deep sm:text-5xl">
@@ -130,13 +130,13 @@ export function InquiryForm({
   return (
     <form onSubmit={onSubmit} className="relative space-y-8">
       <div>
-        <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground">
+        <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
           Poptávka
         </p>
-        <h2 className="mt-2 font-display text-5xl text-moss-deep sm:text-6xl">
+        <h2 className="mt-3 font-display text-5xl text-moss-deep sm:text-6xl">
           Napište mi
         </h2>
-        <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-5 max-w-md text-sm leading-relaxed text-muted-foreground">
           Vyberte typ poptávky a pár vět stačí — ozvu se s dalšími detaily.
         </p>
       </div>
@@ -167,7 +167,7 @@ export function InquiryForm({
                 type="button"
                 onClick={() => setType(t.value)}
                 className={cn(
-                  "px-4 py-2.5 text-[10px] tracking-[0.16em] uppercase transition-colors",
+                  "px-4 py-2.5 text-xs tracking-[0.16em] uppercase transition-colors",
                   active
                     ? "bg-moss-deep text-white"
                     : "bg-muted text-muted-foreground hover:text-foreground",
