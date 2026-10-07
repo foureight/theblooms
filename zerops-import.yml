@@ -1,0 +1,45 @@
+# THE BLOOMS — Zerops project import
+# Vložte do: Zerops Dashboard → Import a project
+# Docs: https://docs.zerops.io/references/import
+#
+# Po importu:
+# 1. Napojte Git repo na službu `app` (pipeline → setup `app`, větev main)
+# 2. Nastavte silné heslo ADMIN_PASSWORD (a ideálně CAPTCHA_SECRET)
+# 3. Přidejte vlastní doménu / public HTTP access
+# 4. Zkontrolujte NEXT_PUBLIC_SITE_URL v zerops.yml nebo v env služby
+
+project:
+  name: theblooms
+  tags:
+    - production
+    - theblooms
+
+services:
+  # Persistentní úložiště pro CMS (cms.json) + nahrané fotky
+  - hostname: vol
+    type: local-storage:single@1
+    priority: 10
+    verticalAutoscaling:
+      minDisk: 1
+      maxDisk: 10
+
+  # Next.js SSR app
+  - hostname: app
+    type: nodejs@22
+    enableSubdomainAccess: true
+    zeropsSetup: app
+    minContainers: 1
+    maxContainers: 1
+    priority: 1
+    # Po vytvoření projektu napojte Git v Pipelines & CI/CD.
+    # Volitelně odkomentujte a doplňte URL:
+    # buildFromGit: https://github.com/ORG/REPO
+    envSecrets:
+      ADMIN_PASSWORD: zmente-toto-heslo
+      ADMIN_SECRET: <@generateRandomString(<48>)>
+      CAPTCHA_SECRET: <@generateRandomString(<48>)>
+    envVariables:
+      NODE_ENV: production
+      UPLOADS_DIR: /srv/uploads
+      NEXT_PUBLIC_SITE_URL: https://theblooms.cz
+      NEXT_PUBLIC_TYPEKIT_ID: zwe5oqo

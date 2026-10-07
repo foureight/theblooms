@@ -48,13 +48,24 @@ Na Zerops: Local Storage `vol` namountovaný na `/srv/uploads`, secret `ADMIN_PA
 
 ## Nasazení (Zerops)
 
-V kořeni je `zerops.yml` (Node.js 22, Next.js SSR, port 3000).
+### Rychlý import projektu
 
-1. Vytvořte **Local Storage** službu hostname `vol` (persistentní fotky + CMS).
-2. Vytvořte **Node.js @22** službu hostname `app`.
-3. Napojte Git → pipeline na `main`, setup `app`.
-4. Secrets: `ADMIN_PASSWORD`, `ADMIN_SECRET`, `CAPTCHA_SECRET`.
-5. Public HTTP access + doména; zkontrolujte `NEXT_PUBLIC_SITE_URL`.
+1. Otevřete [Zerops](https://app.zerops.io) → **Import a project**.
+2. Vložte obsah souboru [`zerops-import.yml`](./zerops-import.yml) (nebo nahrajte soubor).
+3. Import vytvoří projekt **theblooms** se službami:
+   - `vol` — Local Storage (CMS + fotky)
+   - `app` — Node.js 22 (Next.js SSR)
+4. Ve službě `app` napojte Git (pipeline na větev `main`, setup `app`).
+5. V secrets změňte `ADMIN_PASSWORD` na silné heslo (výchozí z importu je jen placeholder).
+6. Přidejte vlastní doménu / public HTTP; zkontrolujte `NEXT_PUBLIC_SITE_URL`.
+
+CLI alternativa:
+
+```bash
+zcli project project-import zerops-import.yml
+```
+
+Build a run konfigurace je v [`zerops.yml`](./zerops.yml) (Node.js 22, port 3000, volume `vol` → `/srv/uploads`).
 
 Lokálně: `npm run dev` (port 43123). Produkce: `npm run build && npm run start` (port 3000).
 
