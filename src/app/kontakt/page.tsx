@@ -4,7 +4,11 @@ import { FadeIn } from "@/components/fade-in";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
 import { site, type InquiryType } from "@/data/site";
-import { getCmsContent, textFrom } from "@/lib/cms/content";
+import {
+  getCmsContent,
+  mergeSiteContact,
+  textFrom,
+} from "@/lib/cms/content";
 import {
   absoluteUrl,
   breadcrumbJsonLd,
@@ -88,6 +92,7 @@ export default async function KontaktPage({ searchParams }: Props) {
     ? `Mám zájem o dekorace z inventáře — ${dekorace}.`
     : "";
   const cms = await getCmsContent();
+  const contact = mergeSiteContact(cms);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
@@ -101,7 +106,7 @@ export default async function KontaktPage({ searchParams }: Props) {
             Kontakt
           </h1>
           <p className="mt-3 font-display text-2xl text-foreground">
-            {site.owner}
+            {contact.owner}
           </p>
           <p className="mt-5 max-w-md text-sm leading-relaxed text-muted-foreground">
             {textFrom(cms, "kontakt.intro")}
@@ -112,8 +117,8 @@ export default async function KontaktPage({ searchParams }: Props) {
                 E-mail
               </dt>
               <dd className="mt-1">
-                <a href={`mailto:${site.email}`} className="hover:underline">
-                  {site.email}
+                <a href={`mailto:${contact.email}`} className="hover:underline">
+                  {contact.email}
                 </a>
               </dd>
             </div>
@@ -123,10 +128,10 @@ export default async function KontaktPage({ searchParams }: Props) {
               </dt>
               <dd className="mt-1">
                 <a
-                  href={`tel:${site.phone.replace(/\s/g, "")}`}
+                  href={`tel:${contact.phone.replace(/\s/g, "")}`}
                   className="hover:underline"
                 >
-                  {site.phone}
+                  {contact.phone}
                 </a>
               </dd>
             </div>
@@ -136,12 +141,12 @@ export default async function KontaktPage({ searchParams }: Props) {
               </dt>
               <dd className="mt-1">
                 <a
-                  href={site.instagram}
+                  href={contact.instagram}
                   target="_blank"
                   rel="noreferrer"
                   className="hover:underline"
                 >
-                  @{site.instagramHandle}
+                  @{contact.instagramHandle}
                 </a>
               </dd>
             </div>

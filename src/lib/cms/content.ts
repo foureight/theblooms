@@ -114,6 +114,30 @@ export function slotFrom(cms: CmsContent, id: string, fallback: string) {
   return resolveSlot(cms, id, fallback);
 }
 
+/** Contact block for footer / kontakt — admin texts win over code defaults. */
+export type SiteContact = {
+  name: string;
+  owner: string;
+  email: string;
+  phone: string;
+  location: string;
+  instagramHandle: string;
+  instagram: string;
+};
+
+export function mergeSiteContact(cms: CmsContent): SiteContact {
+  const handle = textFrom(cms, "kontakt.instagram").replace(/^@/, "");
+  return {
+    name: "THE BLOOMS",
+    owner: textFrom(cms, "kontakt.owner"),
+    email: textFrom(cms, "kontakt.email"),
+    phone: textFrom(cms, "kontakt.phone"),
+    location: textFrom(cms, "kontakt.location"),
+    instagramHandle: handle,
+    instagram: `https://instagram.com/${handle}`,
+  };
+}
+
 const WREATH_PLACEHOLDER = "/wreaths/placeholder.svg";
 const WEDDING_PLACEHOLDER =
   "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1600&q=80";

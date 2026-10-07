@@ -269,6 +269,36 @@ export const PAGE_TEXTS = [
     defaultValue:
       "Napište, čeho se poptávka týká. U svatby se rovnou ptám na datum, místo a základní představu — ať můžu odpovědět konkrétně. Studio THE BLOOMS řeší svatby, kytky, eventy i workshopy přes poptávku; věnce koupíte v e-shopu.",
   },
+  {
+    id: "kontakt.owner",
+    label: "Kontakt — jméno (patička + kontakt)",
+    multiline: false,
+    defaultValue: "Alena Šmejkalová",
+  },
+  {
+    id: "kontakt.email",
+    label: "Kontakt — e-mail",
+    multiline: false,
+    defaultValue: "theblooms@chtel.biz",
+  },
+  {
+    id: "kontakt.phone",
+    label: "Kontakt — telefon",
+    multiline: false,
+    defaultValue: "+420 775 125 224",
+  },
+  {
+    id: "kontakt.location",
+    label: "Kontakt — lokalita",
+    multiline: false,
+    defaultValue: "Česká republika",
+  },
+  {
+    id: "kontakt.instagram",
+    label: "Kontakt — Instagram (bez @)",
+    multiline: false,
+    defaultValue: "thebloomscz",
+  },
 ] as const;
 
 export type PageTextId = (typeof PAGE_TEXTS)[number]["id"];

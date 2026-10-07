@@ -20,6 +20,9 @@ const encodeExpanded = Encode_Sans_Expanded({
 
 const typekitId = process.env.NEXT_PUBLIC_TYPEKIT_ID?.trim() || "zwe5oqo";
 
+/** Footer + header read CMS contact on every request (admin edits). */
+export const dynamic = "force-dynamic";
+
 export const viewport: Viewport = {
   themeColor: "#42856c",
   width: "device-width",
