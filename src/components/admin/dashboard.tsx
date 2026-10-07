@@ -333,7 +333,7 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
   );
 
   function uniqueSlug(title: string, taken: Set<string>, fallback: string) {
-    let slug = slugifyTitle(title, fallback);
+    const slug = slugifyTitle(title, fallback);
     if (!taken.has(slug)) return slug;
     let n = 2;
     while (taken.has(`${slug}-${n}`)) n += 1;
