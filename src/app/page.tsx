@@ -6,7 +6,7 @@ import { FadeIn } from "@/components/fade-in";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
 import { site } from "@/data/site";
-import { WreathCardCaption } from "@/components/wreath-card-caption";
+import { HomeWreathsSection } from "@/components/home-wreaths-section";
 import {
   getCmsContent,
   mergeWeddings,
@@ -124,7 +124,7 @@ export const dynamic = "force-dynamic";
 export default async function HomePage() {
   const cms = await getCmsContent();
   const featuredWeddings = mergeWeddings(cms).slice(0, 3);
-  const featuredWreaths = mergeWreaths(cms).slice(0, 6);
+  const allWreaths = mergeWreaths(cms);
 
   const hero = slotFrom(
     cms,
@@ -266,53 +266,11 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="border-y border-border/60 bg-card/50">
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
-          <FadeIn>
-            <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
-              E-shop
-            </p>
-            <h2 className="mt-2 font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
-              {textFrom(cms, "home.wreathsTitle")}
-            </h2>
-            <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
-              {textFrom(cms, "home.wreathsText")}
-            </p>
-            <CtaLink href="/vence" className="mt-8">
-              Celý e-shop
-            </CtaLink>
-          </FadeIn>
-
-          <div className="mt-12 grid gap-6 sm:mt-14 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
-            {featuredWreaths.map((w, i) => (
-              <FadeIn key={w.slug} delay={i * 60}>
-                <Link href={`/vence/${w.slug}`} className="group block">
-                  <div className="relative aspect-[3/4] overflow-hidden bg-stone">
-                    <CmsImage
-                      src={w.image}
-                      alt={w.name}
-                      fill
-                      className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
-                      sizes="(max-width:768px) 100vw, 33vw"
-                    />
-                    {!w.available ? (
-                      <div className="absolute inset-0 flex items-center justify-center bg-moss-deep/45">
-                        <span className="bg-background px-3 py-1.5 text-[10px] tracking-[0.14em] uppercase text-foreground">
-                          Momentálně nedostupné
-                        </span>
-                      </div>
-                    ) : null}
-                  </div>
-                  <WreathCardCaption
-                    wreath={w}
-                    priceClassName="text-base"
-                  />
-                </Link>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
+      <HomeWreathsSection
+        title={textFrom(cms, "home.wreathsTitle")}
+        text={textFrom(cms, "home.wreathsText")}
+        items={allWreaths}
+      />
 
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
         <FadeIn>

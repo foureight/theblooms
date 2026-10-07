@@ -6,19 +6,13 @@ import type { Wreath } from "@/data/wreaths";
 import { Badge } from "@/components/ui/badge";
 import { CmsImage } from "@/components/cms-image";
 import { WreathCardCaption } from "@/components/wreath-card-caption";
-import { cn } from "@/lib/utils";
-
-const seasons = ["Vše", "Jaro", "Podzim", "Advent"] as const;
-
-const seasonActive: Record<(typeof seasons)[number], string> = {
-  Vše: "bg-moss-deep text-primary-foreground",
-  Jaro: "bg-bloom-yellow text-foreground",
-  Podzim: "bg-bloom-orange text-white",
-  Advent: "bg-bloom-pink text-white",
-};
+import {
+  WreathSeasonFilters,
+  type WreathSeasonFilter,
+} from "@/components/wreath-season-filters";
 
 export function WreathCatalog({ items }: { items: Wreath[] }) {
-  const [season, setSeason] = useState<(typeof seasons)[number]>("Vše");
+  const [season, setSeason] = useState<WreathSeasonFilter>("Vše");
 
   const filtered = useMemo(() => {
     if (season === "Vše") return items;
@@ -27,23 +21,7 @@ export function WreathCatalog({ items }: { items: Wreath[] }) {
 
   return (
     <div>
-      <div className="flex flex-wrap gap-2">
-        {seasons.map((s) => (
-          <button
-            key={s}
-            type="button"
-            onClick={() => setSeason(s)}
-            className={cn(
-              "px-4 py-2 text-xs tracking-[0.16em] uppercase transition-colors",
-              season === s
-                ? seasonActive[s]
-                : "bg-muted text-muted-foreground hover:text-foreground",
-            )}
-          >
-            {s}
-          </button>
-        ))}
-      </div>
+      <WreathSeasonFilters value={season} onChange={setSeason} />
 
       {filtered.length === 0 ? (
         <p className="mt-12 text-sm text-muted-foreground">
