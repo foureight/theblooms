@@ -33,7 +33,7 @@ Alena spravuje obsah na [`/admin`](http://127.0.0.1:43123/admin).
 
 - **Texty** — nadpisy a odstavce (úvod, svatby, kytky, věnce, workshopy, o mně, kontakt)
 - **Fotky stránek** — hero a sekční fotky
-- **Svatby / Věnce** — názvy, popisy, ceny, cover i galerie
+- **Svatby / Věnce** — názvy, popisy, ceny, cover i galerie; u věnců šipky ↑↓ pro pořadí na webu
 - **Knihovna** — nahrání JPG/PNG/WEBP (max 8 MB)
 
 Lokálně nastavte v `.env.local`:
