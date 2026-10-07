@@ -813,19 +813,10 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
 
         {tab === "vence" ? (
           <div className="mt-8 space-y-8">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <p className="text-sm text-muted-foreground">
-                Pořadí určuje, jak se věnce zobrazí na webu — nahoře =
-                prodejnější. Šipkami posouvejte nahoru a dolů, pak uložte.
-              </p>
-              <button
-                type="button"
-                onClick={addWreath}
-                className="bg-moss-deep px-4 py-2.5 text-[10px] tracking-[0.14em] uppercase text-white transition-colors hover:bg-bloom-light sm:text-xs"
-              >
-                + Přidat věnec
-              </button>
-            </div>
+            <p className="text-sm text-muted-foreground">
+              Pořadí určuje, jak se věnce zobrazí na webu — nahoře =
+              prodejnější. Šipkami posouvejte nahoru a dolů, pak uložte.
+            </p>
             <section className="border border-border/70 p-4 sm:p-6">
               <h2 className="font-display text-2xl text-moss-deep">
                 Úvod stránky Věnce
@@ -884,7 +875,7 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                           type="button"
                           disabled={atTop}
                           onClick={() => moveWreath(w.slug, -1)}
-                          className="border border-border px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-moss-deep transition-colors hover:border-moss-deep hover:bg-moss-deep hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                          className="border border-border px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-moss-deep transition-colors hover:border-sky-600 hover:bg-sky-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
                           aria-label="Posunout nahoru"
                         >
                           ↑ Nahoru
@@ -893,7 +884,7 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                           type="button"
                           disabled={atBottom}
                           onClick={() => moveWreath(w.slug, 1)}
-                          className="border border-border px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-moss-deep transition-colors hover:border-moss-deep hover:bg-moss-deep hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                          className="border border-border px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-moss-deep transition-colors hover:border-sky-600 hover:bg-sky-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
                           aria-label="Posunout dolů"
                         >
                           ↓ Dolů
