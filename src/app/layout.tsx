@@ -69,10 +69,13 @@ export default function RootLayout({
   return (
     <html lang="cs">
       <head>
-        <link rel="preconnect" href="https://use.typekit.net" />
+        <link rel="preconnect" href="https://use.typekit.net" crossOrigin="" />
         <link rel="preconnect" href="https://p.typekit.net" crossOrigin="" />
+        <link rel="stylesheet" href={`https://use.typekit.net/${typekitId}.css`} />
+        {/* Ensures Adobe Fonts kit is requested with the page origin */}
         <link
-          rel="stylesheet"
+          rel="preload"
+          as="style"
           href={`https://use.typekit.net/${typekitId}.css`}
         />
       </head>
