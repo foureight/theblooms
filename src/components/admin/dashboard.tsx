@@ -492,13 +492,6 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
             </button>
             <button
               type="button"
-              onClick={addWreath}
-              className="bg-moss-deep px-5 py-2.5 text-xs font-medium tracking-[0.16em] uppercase text-white transition-colors hover:bg-bloom-light"
-            >
-              Přidat věnec
-            </button>
-            <button
-              type="button"
               onClick={save}
               disabled={saving}
               className="bg-moss-deep px-5 py-2.5 text-xs font-medium tracking-[0.16em] uppercase text-white transition-colors hover:bg-bloom-light disabled:opacity-60"
