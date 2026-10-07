@@ -311,11 +311,14 @@ export default async function HomePage() {
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
               {textFrom(cms, "home.wreathsText")}
             </p>
+            <CtaLink href="/vence" className="mt-8">
+              Celý e-shop
+            </CtaLink>
           </FadeIn>
 
           <div className="mt-12 grid gap-6 sm:mt-14 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
-            {allWreaths.map((w, i) => (
-              <FadeIn key={w.slug} delay={Math.min(i, 8) * 40}>
+            {featuredWreaths.map((w, i) => (
+              <FadeIn key={w.slug} delay={i * 60}>
                 <Link href={`/vence/${w.slug}`} className="group block">
                   <div className="relative aspect-[3/4] overflow-hidden bg-stone">
                     <CmsImage
