@@ -813,10 +813,19 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
 
         {tab === "vence" ? (
           <div className="mt-8 space-y-8">
-            <p className="text-sm text-muted-foreground">
-              Pořadí určuje, jak se věnce zobrazí na webu — nahoře =
-              prodejnější. Šipkami posouvejte nahoru a dolů, pak uložte.
-            </p>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="text-sm text-muted-foreground">
+                Pořadí určuje, jak se věnce zobrazí na webu — nahoře =
+                prodejnější. Šipkami posouvejte nahoru a dolů, pak uložte.
+              </p>
+              <button
+                type="button"
+                onClick={addWreath}
+                className="bg-moss-deep px-4 py-2.5 text-[10px] tracking-[0.14em] uppercase text-white transition-colors hover:bg-bloom-light sm:text-xs"
+              >
+                + Přidat věnec
+              </button>
+            </div>
             <section className="border border-border/70 p-4 sm:p-6">
               <h2 className="font-display text-2xl text-moss-deep">
                 Úvod stránky Věnce
