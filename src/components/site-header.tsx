@@ -42,7 +42,7 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "px-3 py-2 text-xs font-medium tracking-[0.18em] uppercase underline-offset-4 transition-colors hover:text-bloom-light hover:underline",
+                  "px-3 py-2 text-xs font-bold tracking-[0.18em] uppercase underline-offset-4 transition-colors hover:text-bloom-light hover:underline",
                   active
                     ? "text-bloom underline"
                     : "text-muted-foreground",
@@ -87,7 +87,7 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="border-b border-border/40 py-3 text-base tracking-[0.16em] uppercase"
+                className="border-b border-border/40 py-3 text-base font-bold tracking-[0.16em] uppercase"
               >
                 {item.label}
               </Link>
