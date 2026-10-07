@@ -100,7 +100,7 @@ export default async function KontaktPage({ searchParams }: Props) {
           <h1 className="mt-3 font-display text-6xl text-bloom-deep sm:text-7xl">
             Kontakt
           </h1>
-          <p className="mt-3 font-name text-2xl font-bold tracking-wide text-foreground">
+          <p className="mt-3 font-display text-2xl text-foreground">
             {site.owner}
           </p>
           <p className="mt-5 max-w-md text-sm leading-relaxed text-muted-foreground">
