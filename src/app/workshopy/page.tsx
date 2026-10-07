@@ -237,13 +237,16 @@ export default async function WorkshopyPage() {
                 </li>
               ))}
             </ul>
+            <CtaLink href="/kontakt?typ=workshop" className="mt-10">
+              Domluvit workshop
+            </CtaLink>
           </section>
         </FadeIn>
 
         <FaqSection faqs={faqs} />
 
         <FadeIn delay={140}>
-          <section className="mt-20 border-t border-bloom/30 pt-12">
+          <section className="mt-20 border-t border-bloom/30 pt-12 pb-4">
             <h2 className="font-display text-4xl text-moss-deep text-balance sm:text-5xl md:text-6xl">
               Napište, pro koho workshop plánujete
             </h2>
