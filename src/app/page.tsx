@@ -124,9 +124,7 @@ export const dynamic = "force-dynamic";
 export default async function HomePage() {
   const cms = await getCmsContent();
   const featuredWeddings = mergeWeddings(cms).slice(0, 3);
-  const featuredWreaths = mergeWreaths(cms)
-    .filter((w) => w.available)
-    .slice(0, 3);
+  const allWreaths = mergeWreaths(cms);
 
   const hero = slotFrom(
     cms,
@@ -137,11 +135,6 @@ export default async function HomePage() {
     cms,
     "home.kytky",
     "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=1400&q=80",
-  );
-  const wreathsImg = slotFrom(
-    cms,
-    "home.vence",
-    "https://images.unsplash.com/photo-1508610048659-a06b669e3321?w=1400&q=80",
   );
   const workshopsImg = slotFrom(
     cms,
@@ -309,36 +302,20 @@ export default async function HomePage() {
       <section className="border-y border-border/60 bg-card/50">
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
           <FadeIn>
-            <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-14">
-              <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[5/4] lg:aspect-[4/5]">
-                <CmsImage
-                  src={wreathsImg}
-                  alt="Sezónní věnec THE BLOOMS"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width:1024px) 100vw, 50vw"
-                />
-              </div>
-              <div>
-                <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
-                  E-shop
-                </p>
-                <h2 className="mt-2 font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
-                  {textFrom(cms, "home.wreathsTitle")}
-                </h2>
-                <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground">
-                  {textFrom(cms, "home.wreathsText")}
-                </p>
-                <CtaLink href="/vence" className="mt-8">
-                  Do e-shopu
-                </CtaLink>
-              </div>
-            </div>
+            <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
+              E-shop
+            </p>
+            <h2 className="mt-2 font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
+              {textFrom(cms, "home.wreathsTitle")}
+            </h2>
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
+              {textFrom(cms, "home.wreathsText")}
+            </p>
           </FadeIn>
 
           <div className="mt-12 grid gap-6 sm:mt-14 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
-            {featuredWreaths.map((w, i) => (
-              <FadeIn key={w.slug} delay={i * 80}>
+            {allWreaths.map((w, i) => (
+              <FadeIn key={w.slug} delay={Math.min(i, 8) * 40}>
                 <Link href={`/vence/${w.slug}`} className="group block">
                   <div className="relative aspect-[3/4] overflow-hidden bg-stone">
                     <CmsImage
@@ -348,6 +325,13 @@ export default async function HomePage() {
                       className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
                       sizes="(max-width:768px) 100vw, 33vw"
                     />
+                    {!w.available ? (
+                      <div className="absolute inset-0 flex items-center justify-center bg-moss-deep/45">
+                        <span className="bg-background px-3 py-1.5 text-[10px] tracking-[0.14em] uppercase text-foreground">
+                          Momentálně nedostupné
+                        </span>
+                      </div>
+                    ) : null}
                   </div>
                   <div className="mt-4 flex items-start justify-between gap-3">
                     <div>
