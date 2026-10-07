@@ -1,4 +1,9 @@
-import { formatPrice, type Wreath } from "@/data/wreaths";
+import {
+  formatPrice,
+  wreathMinPrice,
+  wreathSizeRangeLabel,
+  type Wreath,
+} from "@/data/wreaths";
 import { cn } from "@/lib/utils";
 
 /** Split name after the first word so titles always read as two lines. */
@@ -21,19 +26,22 @@ function TwoLineName({ name }: { name: string }) {
 }
 
 type Props = {
-  wreath: Pick<Wreath, "name" | "season" | "size" | "price">;
+  wreath: Pick<Wreath, "name" | "season" | "size" | "price" | "sizes">;
   className?: string;
   titleClassName?: string;
   priceClassName?: string;
 };
 
-/** Name (2 lines) → season · size → price on the right. */
+/** Name (2 lines) → season · sizes → from-price on the right. */
 export function WreathCardCaption({
   wreath,
   className,
   titleClassName,
   priceClassName,
 }: Props) {
+  const minPrice = wreathMinPrice(wreath);
+  const sizeLabel = wreathSizeRangeLabel(wreath);
+
   return (
     <div className={cn("mt-4 flex items-start justify-between gap-3", className)}>
       <div className="min-w-0">
@@ -46,11 +54,11 @@ export function WreathCardCaption({
           <TwoLineName name={wreath.name} />
         </h3>
         <p className="mt-1 text-[10px] font-normal tracking-[0.12em] uppercase text-muted-foreground sm:text-xs">
-          {wreath.season} · {wreath.size}
+          {wreath.season} · {sizeLabel}
         </p>
       </div>
       <p className={cn("shrink-0 text-sm font-medium", priceClassName)}>
-        {formatPrice(wreath.price)}
+        od {formatPrice(minPrice)}
       </p>
     </div>
   );

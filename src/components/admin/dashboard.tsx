@@ -5,7 +5,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { weddings as baseWeddings } from "@/data/weddings";
-import { wreaths as baseWreaths } from "@/data/wreaths";
+import {
+  DEFAULT_SIZE_LABELS,
+  defaultWreathSizes,
+  getWreathSizes,
+  wreaths as baseWreaths,
+  type WreathSizeId,
+} from "@/data/wreaths";
 import {
   defaultText,
   PAGE_SLOTS,
@@ -257,19 +263,28 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
   const orderedWreaths = useMemo(() => {
     const customs = Object.entries(content.wreaths ?? {})
       .filter(([slug, o]) => !baseWreathSlugs.has(slug) && Boolean(o.name?.trim()))
-      .map(([slug, o]) => ({
-        slug,
-        name: o.name!.trim(),
-        description: o.description?.trim() || "",
-        price: typeof o.price === "number" ? o.price : 0,
-        size: o.size?.trim() || "Ø 33 cm",
-        season: (o.season || "Jaro") as "Jaro" | "Podzim" | "Advent",
-        available: typeof o.available === "boolean" ? o.available : true,
-        image: o.image?.trim() || WREATH_PLACEHOLDER,
-        custom: true as const,
-      }));
+      .map(([slug, o]) => {
+        const price = typeof o.price === "number" ? o.price : 990;
+        const size = o.size?.trim() || DEFAULT_SIZE_LABELS.m;
+        return {
+          slug,
+          name: o.name!.trim(),
+          description: o.description?.trim() || "",
+          price,
+          size,
+          sizes: getWreathSizes({ price, size, sizes: o.sizes }),
+          season: (o.season || "Jaro") as "Jaro" | "Podzim" | "Advent",
+          available: typeof o.available === "boolean" ? o.available : true,
+          image: o.image?.trim() || WREATH_PLACEHOLDER,
+          custom: true as const,
+        };
+      });
     const merged = [
-      ...baseWreaths.map((w) => ({ ...w, custom: false as const })),
+      ...baseWreaths.map((w) => ({
+        ...w,
+        sizes: getWreathSizes(w),
+        custom: false as const,
+      })),
       ...customs,
     ];
     const all = merged.map((w) => w.slug);
@@ -385,7 +400,8 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
             name,
             description: "",
             price: 990,
-            size: "Ø 33 cm",
+            size: DEFAULT_SIZE_LABELS.m,
+            sizes: defaultWreathSizes(990),
             season: "Jaro",
             available: true,
             image: WREATH_PLACEHOLDER,
@@ -917,66 +933,125 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                         }))
                       }
                     />
-                    <div className="grid gap-4 sm:grid-cols-3">
-                      <Field
-                        label="Cena (Kč)"
-                        value={String(o.price ?? w.price)}
-                        onChange={(v) =>
+                    <label className="block max-w-xs">
+                      <span className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
+                        Sezóna
+                      </span>
+                      <select
+                        value={o.season ?? w.season}
+                        onChange={(e) =>
                           setContent((c) => ({
                             ...c,
                             wreaths: {
                               ...c.wreaths,
                               [w.slug]: {
                                 ...c.wreaths[w.slug],
-                                price: Number(v) || 0,
+                                season: e.target.value as
+                                  | "Jaro"
+                                  | "Podzim"
+                                  | "Advent",
                               },
                             },
                           }))
                         }
-                      />
-                      <Field
-                        label="Rozměr"
-                        value={o.size ?? w.size}
-                        onChange={(v) =>
-                          setContent((c) => ({
-                            ...c,
-                            wreaths: {
-                              ...c.wreaths,
-                              [w.slug]: { ...c.wreaths[w.slug], size: v },
-                            },
-                          }))
-                        }
-                      />
-                      <label className="block">
-                        <span className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
-                          Sezóna
-                        </span>
-                        <select
-                          value={o.season ?? w.season}
-                          onChange={(e) =>
-                            setContent((c) => ({
-                              ...c,
-                              wreaths: {
-                                ...c.wreaths,
-                                [w.slug]: {
-                                  ...c.wreaths[w.slug],
-                                  season: e.target.value as
-                                    | "Jaro"
-                                    | "Podzim"
-                                    | "Advent",
-                                },
-                              },
-                            }))
-                          }
-                          className="mt-2 w-full border border-border bg-background px-3 py-3 text-sm outline-none focus:border-bloom"
-                        >
-                          {["Jaro", "Podzim", "Advent"].map((s) => (
-                            <option key={s} value={s}>
-                              {s}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
+                        className="mt-2 w-full border border-border bg-background px-3 py-3 text-sm outline-none focus:border-bloom"
+                      >
+                        {["Jaro", "Podzim", "Advent"].map((s) => (
+                          <option key={s} value={s}>
+                            {s}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <div>
+                      <p className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
+                        Velikosti (zákazník si vybere při objednávce)
+                      </p>
+                      <div className="mt-3 space-y-3">
+                        {getWreathSizes({
+                          price: o.price ?? w.price,
+                          size: o.size ?? w.size,
+                          sizes: o.sizes ?? w.sizes,
+                        }).map((size) => (
+                          <div
+                            key={size.id}
+                            className="grid gap-3 sm:grid-cols-[4.5rem_1fr_8rem] sm:items-end"
+                          >
+                            <p className="text-sm font-medium uppercase text-moss-deep">
+                              {size.id === "s"
+                                ? "Malý"
+                                : size.id === "m"
+                                  ? "Střední"
+                                  : "Velký"}
+                            </p>
+                            <Field
+                              label="Popisek"
+                              value={size.label}
+                              onChange={(v) => {
+                                const id = size.id as WreathSizeId;
+                                setContent((c) => {
+                                  const current = getWreathSizes({
+                                    price: c.wreaths[w.slug]?.price ?? w.price,
+                                    size: c.wreaths[w.slug]?.size ?? w.size,
+                                    sizes: c.wreaths[w.slug]?.sizes ?? w.sizes,
+                                  });
+                                  const nextSizes = current.map((s) =>
+                                    s.id === id ? { ...s, label: v } : s,
+                                  );
+                                  const medium =
+                                    nextSizes.find((s) => s.id === "m") ??
+                                    nextSizes[1]!;
+                                  return {
+                                    ...c,
+                                    wreaths: {
+                                      ...c.wreaths,
+                                      [w.slug]: {
+                                        ...c.wreaths[w.slug],
+                                        sizes: nextSizes,
+                                        size: medium.label,
+                                        price: medium.price,
+                                      },
+                                    },
+                                  };
+                                });
+                              }}
+                            />
+                            <Field
+                              label="Cena (Kč)"
+                              value={String(size.price)}
+                              onChange={(v) => {
+                                const id = size.id as WreathSizeId;
+                                const price = Number(v) || 0;
+                                setContent((c) => {
+                                  const current = getWreathSizes({
+                                    price: c.wreaths[w.slug]?.price ?? w.price,
+                                    size: c.wreaths[w.slug]?.size ?? w.size,
+                                    sizes: c.wreaths[w.slug]?.sizes ?? w.sizes,
+                                  });
+                                  const nextSizes = current.map((s) =>
+                                    s.id === id ? { ...s, price } : s,
+                                  );
+                                  const medium =
+                                    nextSizes.find((s) => s.id === "m") ??
+                                    nextSizes[1]!;
+                                  return {
+                                    ...c,
+                                    wreaths: {
+                                      ...c.wreaths,
+                                      [w.slug]: {
+                                        ...c.wreaths[w.slug],
+                                        sizes: nextSizes,
+                                        size: medium.label,
+                                        price: medium.price,
+                                      },
+                                    },
+                                  };
+                                });
+                              }}
+                            />
+                          </div>
+                        ))}
+                      </div>
                     </div>
                     <label className="flex items-center gap-2 text-sm">
                       <input

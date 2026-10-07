@@ -5,7 +5,13 @@ import { AddToCartButton } from "@/components/add-to-cart-button";
 import { CmsImage } from "@/components/cms-image";
 import { JsonLd } from "@/components/json-ld";
 import { site } from "@/data/site";
-import { formatPrice, wreaths as baseWreaths } from "@/data/wreaths";
+import {
+  formatPrice,
+  getWreathSizes,
+  wreathMinPrice,
+  wreathSizeRangeLabel,
+  wreaths as baseWreaths,
+} from "@/data/wreaths";
 import { getCmsContent, mergeWreath } from "@/lib/cms/content";
 import {
   absoluteUrl,
@@ -24,9 +30,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cms = await getCmsContent();
   const wreath = mergeWreath(cms, slug);
   if (!wreath) return { title: "Věnec" };
+  const sizeLabel = wreathSizeRangeLabel(wreath);
   return {
-    title: `${wreath.name} — ${formatPrice(wreath.price)}`,
-    description: `${wreath.description} Sezóna: ${wreath.season}. Rozměr ${wreath.size}.`,
+    title: `${wreath.name} — od ${formatPrice(wreathMinPrice(wreath))}`,
+    description: `${wreath.description} Sezóna: ${wreath.season}. Velikosti ${sizeLabel}.`,
     alternates: { canonical: `/vence/${wreath.slug}` },
     openGraph: {
       title: `${wreath.name} · ${site.name}`,
@@ -45,6 +52,9 @@ export default async function WreathDetailPage({ params }: Props) {
   const cms = await getCmsContent();
   const wreath = mergeWreath(cms, slug);
   if (!wreath) notFound();
+  const sizes = getWreathSizes(wreath);
+  const sizeLabel = wreathSizeRangeLabel(wreath);
+  const minPrice = wreathMinPrice(wreath);
 
   const jsonLd = [
     breadcrumbJsonLd([
@@ -61,19 +71,20 @@ export default async function WreathDetailPage({ params }: Props) {
       sku: wreath.slug,
       brand: { "@type": "Brand", name: site.name },
       category: `Sezónní věnec — ${wreath.season}`,
-      size: wreath.size,
+      size: sizeLabel,
       url: absoluteUrl(`/vence/${wreath.slug}`),
       manufacturer: floristOrganization(),
-      offers: {
+      offers: sizes.map((s) => ({
         "@type": "Offer",
+        name: s.label,
         priceCurrency: "CZK",
-        price: String(wreath.price),
+        price: String(s.price),
         availability: wreath.available
           ? "https://schema.org/InStock"
           : "https://schema.org/OutOfStock",
         url: absoluteUrl(`/vence/${wreath.slug}`),
         seller: floristOrganization(),
-      },
+      })),
     },
   ];
 
@@ -90,7 +101,7 @@ export default async function WreathDetailPage({ params }: Props) {
         <div className="relative aspect-[3/4] overflow-hidden bg-stone">
           <CmsImage
             src={wreath.image}
-            alt={`${wreath.name} — ${wreath.season}, ${wreath.size}`}
+            alt={`${wreath.name} — ${wreath.season}, ${sizeLabel}`}
             fill
             priority
             className="object-cover object-center"
@@ -104,11 +115,13 @@ export default async function WreathDetailPage({ params }: Props) {
           <h1 className="mt-2 font-display text-5xl text-moss-deep sm:text-6xl">
             {wreath.name}
           </h1>
-          <p className="mt-4 text-2xl font-medium">{formatPrice(wreath.price)}</p>
+          <p className="mt-4 text-lg text-muted-foreground">
+            od {formatPrice(minPrice)}
+          </p>
           <dl className="mt-8 space-y-3 border-y border-border py-6 text-sm">
             <div className="flex justify-between gap-4">
-              <dt className="text-muted-foreground">Rozměr</dt>
-              <dd>{wreath.size}</dd>
+              <dt className="text-muted-foreground">Velikosti</dt>
+              <dd>{sizeLabel}</dd>
             </div>
             <div className="flex justify-between gap-4">
               <dt className="text-muted-foreground">Dostupnost</dt>

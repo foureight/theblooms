@@ -3,8 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { formatPrice, getWreath } from "@/data/wreaths";
-import { useCart } from "@/lib/cart";
+import {
+  formatPrice,
+  getWreath,
+  getWreathSize,
+} from "@/data/wreaths";
+import { cartKey, useCart } from "@/lib/cart";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -58,8 +62,10 @@ export default function CartPage() {
         {items.map((item) => {
           const product = getWreath(item.slug);
           if (!product) return null;
+          const size = getWreathSize(product, item.sizeId);
+          const key = cartKey(item.slug, item.sizeId);
           return (
-            <li key={item.slug} className="flex gap-4 py-6">
+            <li key={key} className="flex gap-4 py-6">
               <div className="relative size-24 shrink-0 overflow-hidden bg-stone sm:size-28">
                 <Image
                   src={product.image}
@@ -79,30 +85,34 @@ export default function CartPage() {
                       {product.name}
                     </Link>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      {product.size}
+                      {size.label} · {formatPrice(size.price)}
                     </p>
                   </div>
                   <p className="text-sm font-medium">
-                    {formatPrice(product.price * item.quantity)}
+                    {formatPrice(size.price * item.quantity)}
                   </p>
                 </div>
                 <div className="mt-3 flex items-center gap-3">
-                  <Label htmlFor={`qty-${item.slug}`} className="sr-only">
+                  <Label htmlFor={`qty-${key}`} className="sr-only">
                     Množství
                   </Label>
                   <Input
-                    id={`qty-${item.slug}`}
+                    id={`qty-${key}`}
                     type="number"
                     min={1}
                     value={item.quantity}
                     onChange={(e) =>
-                      setQuantity(item.slug, Number(e.target.value) || 1)
+                      setQuantity(
+                        item.slug,
+                        item.sizeId,
+                        Number(e.target.value) || 1,
+                      )
                     }
                     className="h-9 w-20"
                   />
                   <button
                     type="button"
-                    onClick={() => removeItem(item.slug)}
+                    onClick={() => removeItem(item.slug, item.sizeId)}
                     className="text-xs tracking-wide text-muted-foreground underline-offset-2 hover:underline"
                   >
                     Odebrat

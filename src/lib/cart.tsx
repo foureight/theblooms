@@ -9,18 +9,23 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { wreaths } from "@/data/wreaths";
+import {
+  getWreath,
+  getWreathSize,
+  type WreathSizeId,
+} from "@/data/wreaths";
 
 export type CartItem = {
   slug: string;
+  sizeId: WreathSizeId;
   quantity: number;
 };
 
 type CartContextValue = {
   items: CartItem[];
-  addItem: (slug: string, quantity?: number) => void;
-  removeItem: (slug: string) => void;
-  setQuantity: (slug: string, quantity: number) => void;
+  addItem: (slug: string, sizeId?: WreathSizeId, quantity?: number) => void;
+  removeItem: (slug: string, sizeId: WreathSizeId) => void;
+  setQuantity: (slug: string, sizeId: WreathSizeId, quantity: number) => void;
   clear: () => void;
   count: number;
   total: number;
@@ -28,7 +33,31 @@ type CartContextValue = {
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
-const STORAGE_KEY = "the-blooms-cart";
+const STORAGE_KEY = "the-blooms-cart-v2";
+
+function cartKey(slug: string, sizeId: WreathSizeId) {
+  return `${slug}::${sizeId}`;
+}
+
+function normalizeItems(raw: unknown): CartItem[] {
+  if (!Array.isArray(raw)) return [];
+  const out: CartItem[] = [];
+  for (const row of raw) {
+    if (!row || typeof row !== "object") continue;
+    const item = row as Partial<CartItem> & { slug?: string };
+    if (!item.slug || typeof item.slug !== "string") continue;
+    const sizeId: WreathSizeId =
+      item.sizeId === "s" || item.sizeId === "m" || item.sizeId === "l"
+        ? item.sizeId
+        : "m";
+    const quantity =
+      typeof item.quantity === "number" && item.quantity > 0
+        ? Math.floor(item.quantity)
+        : 1;
+    out.push({ slug: item.slug, sizeId, quantity });
+  }
+  return out;
+}
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -37,7 +66,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setItems(JSON.parse(raw) as CartItem[]);
+      if (raw) {
+        setItems(normalizeItems(JSON.parse(raw)));
+      } else {
+        // migrate legacy cart (slug + qty only → medium size)
+        const legacy = localStorage.getItem("the-blooms-cart");
+        if (legacy) {
+          setItems(normalizeItems(JSON.parse(legacy)));
+        }
+      }
     } catch {
       /* ignore */
     }
@@ -49,31 +86,47 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   }, [items, hydrated]);
 
-  const addItem = useCallback((slug: string, quantity = 1) => {
-    setItems((prev) => {
-      const existing = prev.find((i) => i.slug === slug);
-      if (existing) {
-        return prev.map((i) =>
-          i.slug === slug ? { ...i, quantity: i.quantity + quantity } : i,
+  const addItem = useCallback(
+    (slug: string, sizeId: WreathSizeId = "m", quantity = 1) => {
+      setItems((prev) => {
+        const existing = prev.find(
+          (i) => i.slug === slug && i.sizeId === sizeId,
         );
-      }
-      return [...prev, { slug, quantity }];
-    });
-  }, []);
+        if (existing) {
+          return prev.map((i) =>
+            i.slug === slug && i.sizeId === sizeId
+              ? { ...i, quantity: i.quantity + quantity }
+              : i,
+          );
+        }
+        return [...prev, { slug, sizeId, quantity }];
+      });
+    },
+    [],
+  );
 
-  const removeItem = useCallback((slug: string) => {
-    setItems((prev) => prev.filter((i) => i.slug !== slug));
-  }, []);
-
-  const setQuantity = useCallback((slug: string, quantity: number) => {
-    if (quantity <= 0) {
-      setItems((prev) => prev.filter((i) => i.slug !== slug));
-      return;
-    }
+  const removeItem = useCallback((slug: string, sizeId: WreathSizeId) => {
     setItems((prev) =>
-      prev.map((i) => (i.slug === slug ? { ...i, quantity } : i)),
+      prev.filter((i) => !(i.slug === slug && i.sizeId === sizeId)),
     );
   }, []);
+
+  const setQuantity = useCallback(
+    (slug: string, sizeId: WreathSizeId, quantity: number) => {
+      if (quantity <= 0) {
+        setItems((prev) =>
+          prev.filter((i) => !(i.slug === slug && i.sizeId === sizeId)),
+        );
+        return;
+      }
+      setItems((prev) =>
+        prev.map((i) =>
+          i.slug === slug && i.sizeId === sizeId ? { ...i, quantity } : i,
+        ),
+      );
+    },
+    [],
+  );
 
   const clear = useCallback(() => setItems([]), []);
 
@@ -85,8 +138,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const total = useMemo(
     () =>
       items.reduce((sum, i) => {
-        const product = wreaths.find((w) => w.slug === i.slug);
-        return sum + (product?.price ?? 0) * i.quantity;
+        const product = getWreath(i.slug);
+        if (!product) return sum;
+        const size = getWreathSize(product, i.sizeId);
+        return sum + size.price * i.quantity;
       }, 0),
     [items],
   );
@@ -113,3 +168,5 @@ export function useCart() {
   if (!ctx) throw new Error("useCart must be used within CartProvider");
   return ctx;
 }
+
+export { cartKey };

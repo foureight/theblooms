@@ -9,6 +9,12 @@ export type CmsWeddingOverride = {
   images?: string[];
 };
 
+export type CmsWreathSizeOverride = {
+  id: "s" | "m" | "l";
+  label?: string;
+  price?: number;
+};
+
 export type CmsWreathOverride = {
   /** CMS-only entry (not in code defaults) */
   custom?: boolean;
@@ -16,6 +22,8 @@ export type CmsWreathOverride = {
   description?: string;
   price?: number;
   size?: string;
+  /** Three customer-selectable sizes (S / M / L) */
+  sizes?: CmsWreathSizeOverride[];
   season?: "Jaro" | "Podzim" | "Advent";
   available?: boolean;
   image?: string;

@@ -4,7 +4,49 @@ import {
   type DecorationCategory,
   type Wedding,
 } from "@/data/weddings";
-import { wreaths as baseWreaths, type Wreath } from "@/data/wreaths";
+import {
+  DEFAULT_SIZE_LABELS,
+  defaultWreathSizes,
+  getWreathSizes,
+  wreaths as baseWreaths,
+  type Wreath,
+  type WreathSizeId,
+  type WreathSizeOption,
+} from "@/data/wreaths";
+import type { CmsWreathOverride } from "@/lib/cms/types";
+
+function mergeWreathSizes(
+  basePrice: number,
+  baseSize: string,
+  o?: CmsWreathOverride,
+): WreathSizeOption[] {
+  const defaults = defaultWreathSizes(
+    typeof o?.price === "number" ? o.price : basePrice,
+  ).map((s) =>
+    s.id === "m" && (o?.size?.trim() || baseSize)
+      ? { ...s, label: (o?.size?.trim() || baseSize).trim() }
+      : s,
+  );
+  if (!o?.sizes || o.sizes.length === 0) return defaults;
+  const byId = new Map(
+    o.sizes
+      .filter((s) => s && (s.id === "s" || s.id === "m" || s.id === "l"))
+      .map((s) => [s.id as WreathSizeId, s]),
+  );
+  return (["s", "m", "l"] as WreathSizeId[]).map((id) => {
+    const fallback = defaults.find((d) => d.id === id)!;
+    const override = byId.get(id);
+    if (!override) return fallback;
+    return {
+      id,
+      label: override.label?.trim() || fallback.label || DEFAULT_SIZE_LABELS[id],
+      price:
+        typeof override.price === "number" && Number.isFinite(override.price)
+          ? override.price
+          : fallback.price,
+    };
+  });
+}
 import {
   defaultText,
   PAGE_TEXTS,
@@ -82,13 +124,18 @@ export function mergeWreaths(cms: CmsContent): Wreath[] {
   const baseSlugs = new Set(baseWreaths.map((w) => w.slug));
   const merged = baseWreaths.map((w) => {
     const o = cms.wreaths[w.slug];
-    if (!o) return w;
+    if (!o) {
+      return { ...w, sizes: getWreathSizes(w) };
+    }
+    const sizes = mergeWreathSizes(w.price, w.size, o);
+    const medium = sizes.find((s) => s.id === "m") ?? sizes[1]!;
     return {
       ...w,
       name: o.name?.trim() || w.name,
       description: o.description?.trim() || w.description,
-      price: typeof o.price === "number" ? o.price : w.price,
-      size: o.size?.trim() || w.size,
+      price: medium.price,
+      size: medium.label,
+      sizes,
       season: o.season || w.season,
       available: typeof o.available === "boolean" ? o.available : w.available,
       image: o.image?.trim() || w.image,
@@ -99,12 +146,15 @@ export function mergeWreaths(cms: CmsContent): Wreath[] {
     if (baseSlugs.has(slug)) continue;
     const name = o.name?.trim();
     if (!name) continue;
+    const sizes = mergeWreathSizes(o.price ?? 990, o.size || "Ø 33 cm", o);
+    const medium = sizes.find((s) => s.id === "m") ?? sizes[1]!;
     merged.push({
       slug,
       name,
       description: o.description?.trim() || "",
-      price: typeof o.price === "number" ? o.price : 0,
-      size: o.size?.trim() || "Ø 33 cm",
+      price: medium.price,
+      size: medium.label,
+      sizes,
       season: o.season || "Jaro",
       available: typeof o.available === "boolean" ? o.available : true,
       image: o.image?.trim() || WREATH_PLACEHOLDER,

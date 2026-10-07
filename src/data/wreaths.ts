@@ -1,15 +1,109 @@
 export type WreathSeason = "Jaro" | "Podzim" | "Advent";
 
+export type WreathSizeId = "s" | "m" | "l";
+
+export type WreathSizeOption = {
+  id: WreathSizeId;
+  label: string;
+  price: number;
+};
+
 export type Wreath = {
   slug: string;
   name: string;
+  /** Base / medium size price (katalog „od“) */
   price: number;
+  /** Medium size label fallback */
   size: string;
+  /** Up to 3 size options — if missing, defaults are derived from price */
+  sizes?: WreathSizeOption[];
   season: WreathSeason;
   available: boolean;
   description: string;
   image: string;
 };
+
+export const WREATH_SIZE_IDS: WreathSizeId[] = ["s", "m", "l"];
+
+export const DEFAULT_SIZE_LABELS: Record<WreathSizeId, string> = {
+  s: "Ø 25 cm",
+  m: "Ø 33 cm",
+  l: "Ø 45 cm",
+};
+
+/** Three sizes from the medium (base) price. */
+export function defaultWreathSizes(basePrice: number): WreathSizeOption[] {
+  const mid = Math.max(0, Math.round(basePrice));
+  return [
+    {
+      id: "s",
+      label: DEFAULT_SIZE_LABELS.s,
+      price: Math.max(390, mid - 200),
+    },
+    {
+      id: "m",
+      label: DEFAULT_SIZE_LABELS.m,
+      price: mid,
+    },
+    {
+      id: "l",
+      label: DEFAULT_SIZE_LABELS.l,
+      price: mid + 400,
+    },
+  ];
+}
+
+export function getWreathSizes(wreath: {
+  price: number;
+  size?: string;
+  sizes?: Array<{ id: WreathSizeId; label?: string; price?: number }>;
+}): WreathSizeOption[] {
+  const defaults = defaultWreathSizes(wreath.price).map((s) =>
+    s.id === "m" && wreath.size?.trim()
+      ? { ...s, label: wreath.size.trim() }
+      : s,
+  );
+  if (!wreath.sizes || wreath.sizes.length === 0) return defaults;
+  const byId = new Map(wreath.sizes.map((s) => [s.id, s]));
+  return WREATH_SIZE_IDS.map((id) => {
+    const fallback = defaults.find((d) => d.id === id)!;
+    const override = byId.get(id);
+    if (!override) return fallback;
+    return {
+      id,
+      label: override.label?.trim() || fallback.label,
+      price:
+        typeof override.price === "number" && Number.isFinite(override.price)
+          ? override.price
+          : fallback.price,
+    };
+  });
+}
+
+export function getWreathSize(
+  wreath: Pick<Wreath, "price" | "size" | "sizes">,
+  sizeId: WreathSizeId = "m",
+) {
+  return (
+    getWreathSizes(wreath).find((s) => s.id === sizeId) ??
+    getWreathSizes(wreath)[1]!
+  );
+}
+
+export function wreathMinPrice(
+  wreath: Pick<Wreath, "price" | "size" | "sizes">,
+) {
+  return Math.min(...getWreathSizes(wreath).map((s) => s.price));
+}
+
+export function wreathSizeRangeLabel(
+  wreath: Pick<Wreath, "price" | "size" | "sizes">,
+) {
+  const sizes = getWreathSizes(wreath);
+  if (sizes.length === 1) return sizes[0]!.label;
+  const labels = sizes.map((s) => s.label.replace(/^Ø\s*/i, ""));
+  return `Ø ${labels.join(" / ")}`;
+}
 
 const PLACEHOLDER = "/wreaths/placeholder.svg";
 
