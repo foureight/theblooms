@@ -5,54 +5,52 @@ import {
   type Wedding,
 } from "@/data/weddings";
 import {
-  DEFAULT_SIZE_LABELS,
-  defaultWreathSizes,
+  getWreathSizeSlots,
   getWreathSizes,
+  legacyWreathSize,
   wreaths as baseWreaths,
   type Wreath,
-  type WreathSizeId,
   type WreathSizeOption,
 } from "@/data/wreaths";
 import type { CmsWreathOverride } from "@/lib/cms/types";
-
-function mergeWreathSizes(
-  basePrice: number,
-  baseSize: string,
-  o?: CmsWreathOverride,
-): WreathSizeOption[] {
-  const defaults = defaultWreathSizes(
-    typeof o?.price === "number" ? o.price : basePrice,
-  ).map((s) =>
-    s.id === "m" && (o?.size?.trim() || baseSize)
-      ? { ...s, label: (o?.size?.trim() || baseSize).trim() }
-      : s,
-  );
-  if (!o?.sizes || o.sizes.length === 0) return defaults;
-  const byId = new Map(
-    o.sizes
-      .filter((s) => s && (s.id === "s" || s.id === "m" || s.id === "l"))
-      .map((s) => [s.id as WreathSizeId, s]),
-  );
-  return (["s", "m", "l"] as WreathSizeId[]).map((id) => {
-    const fallback = defaults.find((d) => d.id === id)!;
-    const override = byId.get(id);
-    if (!override) return fallback;
-    return {
-      id,
-      label: override.label?.trim() || fallback.label || DEFAULT_SIZE_LABELS[id],
-      price:
-        typeof override.price === "number" && Number.isFinite(override.price)
-          ? override.price
-          : fallback.price,
-    };
-  });
-}
 import {
   defaultText,
   PAGE_TEXTS,
   type CmsContent,
 } from "@/lib/cms/types";
 import { readCms, resolveSlot, resolveText } from "@/lib/cms/store";
+
+/** Persist filled + empty slots from CMS; public list uses getWreathSizes. */
+function mergeWreathSizeSlots(
+  basePrice: number,
+  baseSize: string,
+  o?: CmsWreathOverride,
+): WreathSizeOption[] {
+  const price = typeof o?.price === "number" ? o.price : basePrice;
+  const size = o?.size?.trim() || baseSize;
+  if (!o?.sizes || o.sizes.length === 0) {
+    return getWreathSizeSlots({ price, size });
+  }
+  return getWreathSizeSlots({ price, size, sizes: o.sizes });
+}
+
+function syncPriceFromSizes(
+  sizes: WreathSizeOption[],
+  fallbackPrice: number,
+  fallbackSize: string,
+) {
+  const active = getWreathSizes({
+    price: fallbackPrice,
+    size: fallbackSize,
+    sizes,
+  });
+  const primary =
+    active.find((s) => s.id === "m") ?? active[0] ?? legacyWreathSize({
+      price: fallbackPrice,
+      size: fallbackSize,
+    });
+  return { price: primary.price, size: primary.label, sizes };
+}
 
 export async function getCmsContent() {
   return readCms();
@@ -125,17 +123,24 @@ export function mergeWreaths(cms: CmsContent): Wreath[] {
   const merged = baseWreaths.map((w) => {
     const o = cms.wreaths[w.slug];
     if (!o) {
-      return { ...w, sizes: getWreathSizes(w) };
+      return {
+        ...w,
+        sizes: getWreathSizeSlots(w),
+      };
     }
-    const sizes = mergeWreathSizes(w.price, w.size, o);
-    const medium = sizes.find((s) => s.id === "m") ?? sizes[1]!;
+    const slots = mergeWreathSizeSlots(w.price, w.size, o);
+    const synced = syncPriceFromSizes(
+      slots,
+      typeof o.price === "number" ? o.price : w.price,
+      o.size?.trim() || w.size,
+    );
     return {
       ...w,
       name: o.name?.trim() || w.name,
       description: o.description?.trim() || w.description,
-      price: medium.price,
-      size: medium.label,
-      sizes,
+      price: synced.price,
+      size: synced.size,
+      sizes: synced.sizes,
       season: o.season || w.season,
       available: typeof o.available === "boolean" ? o.available : w.available,
       image: o.image?.trim() || w.image,
@@ -146,15 +151,17 @@ export function mergeWreaths(cms: CmsContent): Wreath[] {
     if (baseSlugs.has(slug)) continue;
     const name = o.name?.trim();
     if (!name) continue;
-    const sizes = mergeWreathSizes(o.price ?? 990, o.size || "Ø 33 cm", o);
-    const medium = sizes.find((s) => s.id === "m") ?? sizes[1]!;
+    const basePrice = typeof o.price === "number" ? o.price : 990;
+    const baseSize = o.size?.trim() || "Ø 33 cm";
+    const slots = mergeWreathSizeSlots(basePrice, baseSize, o);
+    const synced = syncPriceFromSizes(slots, basePrice, baseSize);
     merged.push({
       slug,
       name,
       description: o.description?.trim() || "",
-      price: medium.price,
-      size: medium.label,
-      sizes,
+      price: synced.price,
+      size: synced.size,
+      sizes: synced.sizes,
       season: o.season || "Jaro",
       available: typeof o.available === "boolean" ? o.available : true,
       image: o.image?.trim() || WREATH_PLACEHOLDER,

@@ -1,5 +1,6 @@
 import {
   formatPrice,
+  getWreathSizes,
   wreathMinPrice,
   wreathSizeRangeLabel,
   type Wreath,
@@ -32,15 +33,17 @@ type Props = {
   priceClassName?: string;
 };
 
-/** Name (2 lines) → season · sizes → from-price on the right. */
+/** Name (2 lines) → season · sizes (if any) → price on the right. */
 export function WreathCardCaption({
   wreath,
   className,
   titleClassName,
   priceClassName,
 }: Props) {
-  const minPrice = wreathMinPrice(wreath);
+  const sizes = getWreathSizes(wreath);
   const sizeLabel = wreathSizeRangeLabel(wreath);
+  const minPrice = wreathMinPrice(wreath);
+  const showFrom = sizes.length > 1;
 
   return (
     <div className={cn("mt-4 flex items-start justify-between gap-3", className)}>
@@ -54,11 +57,11 @@ export function WreathCardCaption({
           <TwoLineName name={wreath.name} />
         </h3>
         <p className="mt-1 text-[10px] font-normal tracking-[0.12em] uppercase text-muted-foreground sm:text-xs">
-          {wreath.season} · {sizeLabel}
+          {sizeLabel ? `${wreath.season} · ${sizeLabel}` : wreath.season}
         </p>
       </div>
       <p className={cn("shrink-0 text-sm font-medium", priceClassName)}>
-        od {formatPrice(minPrice)}
+        {showFrom ? `od ${formatPrice(minPrice)}` : formatPrice(minPrice)}
       </p>
     </div>
   );

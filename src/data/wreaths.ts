@@ -15,7 +15,10 @@ export type Wreath = {
   price: number;
   /** Medium size label fallback */
   size: string;
-  /** Up to 3 size options — if missing, defaults are derived from price */
+  /**
+   * Up to 3 optional sizes. Only entries with a filled label + price
+   * appear on the website. Empty slots are ignored.
+   */
   sizes?: WreathSizeOption[];
   season: WreathSeason;
   available: boolean;
@@ -25,57 +28,99 @@ export type Wreath = {
 
 export const WREATH_SIZE_IDS: WreathSizeId[] = ["s", "m", "l"];
 
+export const WREATH_SIZE_NAMES: Record<WreathSizeId, string> = {
+  s: "Malý",
+  m: "Střední",
+  l: "Velký",
+};
+
 export const DEFAULT_SIZE_LABELS: Record<WreathSizeId, string> = {
   s: "Ø 25 cm",
   m: "Ø 33 cm",
   l: "Ø 45 cm",
 };
 
-/** Three sizes from the medium (base) price. */
-export function defaultWreathSizes(basePrice: number): WreathSizeOption[] {
-  const mid = Math.max(0, Math.round(basePrice));
-  return [
-    {
-      id: "s",
-      label: DEFAULT_SIZE_LABELS.s,
-      price: Math.max(390, mid - 200),
-    },
-    {
-      id: "m",
-      label: DEFAULT_SIZE_LABELS.m,
-      price: mid,
-    },
-    {
-      id: "l",
-      label: DEFAULT_SIZE_LABELS.l,
-      price: mid + 400,
-    },
-  ];
+function isFilledSize(s: {
+  label?: string;
+  price?: number;
+}): s is { label: string; price: number } {
+  return Boolean(s.label?.trim()) && typeof s.price === "number" && s.price > 0;
 }
 
+/** Single fallback size from legacy price / size fields. */
+export function legacyWreathSize(wreath: {
+  price: number;
+  size?: string;
+}): WreathSizeOption {
+  return {
+    id: "m",
+    label: wreath.size?.trim() || DEFAULT_SIZE_LABELS.m,
+    price: Math.max(0, Math.round(wreath.price) || 0),
+  };
+}
+
+/** Empty admin slots for S/M/L (nothing shown on the web until filled). */
+export function emptyWreathSizeSlots(
+  seed?: { price?: number; size?: string },
+): Array<{ id: WreathSizeId; label: string; price: number }> {
+  const mid = Math.max(0, Math.round(seed?.price ?? 0));
+  const midLabel = seed?.size?.trim() || "";
+  return WREATH_SIZE_IDS.map((id) => ({
+    id,
+    label: id === "m" ? midLabel || DEFAULT_SIZE_LABELS.m : "",
+    price: id === "m" && mid > 0 ? mid : 0,
+  }));
+}
+
+/**
+ * Active sizes for the shop. Only filled slots (label + price > 0).
+ * If none are configured, falls back to the single legacy size/price.
+ */
 export function getWreathSizes(wreath: {
   price: number;
   size?: string;
   sizes?: Array<{ id: WreathSizeId; label?: string; price?: number }>;
 }): WreathSizeOption[] {
-  const defaults = defaultWreathSizes(wreath.price).map((s) =>
-    s.id === "m" && wreath.size?.trim()
-      ? { ...s, label: wreath.size.trim() }
-      : s,
-  );
-  if (!wreath.sizes || wreath.sizes.length === 0) return defaults;
+  if (wreath.sizes && wreath.sizes.length > 0) {
+    const filled = WREATH_SIZE_IDS.flatMap((id) => {
+      const row = wreath.sizes?.find((s) => s.id === id);
+      if (!row || !isFilledSize(row)) return [];
+      return [
+        {
+          id,
+          label: row.label.trim(),
+          price: row.price,
+        } satisfies WreathSizeOption,
+      ];
+    });
+    if (filled.length > 0) return filled;
+  }
+  if (wreath.price > 0 || wreath.size?.trim()) {
+    return [legacyWreathSize(wreath)];
+  }
+  return [];
+}
+
+/** All 3 admin slots (filled or empty) for editing. */
+export function getWreathSizeSlots(wreath: {
+  price: number;
+  size?: string;
+  sizes?: Array<{ id: WreathSizeId; label?: string; price?: number }>;
+}) {
+  const seed = emptyWreathSizeSlots(wreath);
+  if (!wreath.sizes || wreath.sizes.length === 0) return seed;
   const byId = new Map(wreath.sizes.map((s) => [s.id, s]));
   return WREATH_SIZE_IDS.map((id) => {
-    const fallback = defaults.find((d) => d.id === id)!;
-    const override = byId.get(id);
-    if (!override) return fallback;
+    const fallback = seed.find((s) => s.id === id)!;
+    const row = byId.get(id);
+    if (!row) return fallback;
     return {
       id,
-      label: override.label?.trim() || fallback.label,
+      label: row.label?.trim() ?? "",
       price:
-        typeof override.price === "number" && Number.isFinite(override.price)
-          ? override.price
-          : fallback.price,
+        typeof row.price === "number" && Number.isFinite(row.price)
+          ? row.price
+          : 0,
     };
   });
 }
@@ -84,22 +129,23 @@ export function getWreathSize(
   wreath: Pick<Wreath, "price" | "size" | "sizes">,
   sizeId: WreathSizeId = "m",
 ) {
-  return (
-    getWreathSizes(wreath).find((s) => s.id === sizeId) ??
-    getWreathSizes(wreath)[1]!
-  );
+  const sizes = getWreathSizes(wreath);
+  return sizes.find((s) => s.id === sizeId) ?? sizes[0] ?? legacyWreathSize(wreath);
 }
 
 export function wreathMinPrice(
   wreath: Pick<Wreath, "price" | "size" | "sizes">,
 ) {
-  return Math.min(...getWreathSizes(wreath).map((s) => s.price));
+  const sizes = getWreathSizes(wreath);
+  if (sizes.length === 0) return wreath.price;
+  return Math.min(...sizes.map((s) => s.price));
 }
 
 export function wreathSizeRangeLabel(
   wreath: Pick<Wreath, "price" | "size" | "sizes">,
 ) {
   const sizes = getWreathSizes(wreath);
+  if (sizes.length === 0) return "";
   if (sizes.length === 1) return sizes[0]!.label;
   const labels = sizes.map((s) => s.label.replace(/^Ø\s*/i, ""));
   return `Ø ${labels.join(" / ")}`;

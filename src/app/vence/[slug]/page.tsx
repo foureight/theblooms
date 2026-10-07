@@ -115,14 +115,20 @@ export default async function WreathDetailPage({ params }: Props) {
           <h1 className="mt-2 font-display text-5xl text-moss-deep sm:text-6xl">
             {wreath.name}
           </h1>
-          <p className="mt-4 text-lg text-muted-foreground">
-            od {formatPrice(minPrice)}
-          </p>
+          {sizes.length > 1 ? (
+            <p className="mt-4 text-lg text-muted-foreground">
+              od {formatPrice(minPrice)}
+            </p>
+          ) : null}
           <dl className="mt-8 space-y-3 border-y border-border py-6 text-sm">
-            <div className="flex justify-between gap-4">
-              <dt className="text-muted-foreground">Velikosti</dt>
-              <dd>{sizeLabel}</dd>
-            </div>
+            {sizeLabel ? (
+              <div className="flex justify-between gap-4">
+                <dt className="text-muted-foreground">
+                  {sizes.length > 1 ? "Velikosti" : "Rozměr"}
+                </dt>
+                <dd>{sizeLabel}</dd>
+              </div>
+            ) : null}
             <div className="flex justify-between gap-4">
               <dt className="text-muted-foreground">Dostupnost</dt>
               <dd>{wreath.available ? "Skladem" : "Momentálně nedostupné"}</dd>

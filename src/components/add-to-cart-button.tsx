@@ -9,7 +9,6 @@ import {
   type Wreath,
   type WreathSizeId,
 } from "@/data/wreaths";
-import { cn } from "@/lib/utils";
 
 export function AddToCartButton({ wreath }: { wreath: Wreath }) {
   const { addItem } = useCart();
@@ -18,7 +17,7 @@ export function AddToCartButton({ wreath }: { wreath: Wreath }) {
     sizes.find((s) => s.id === "m")?.id ?? sizes[0]?.id ?? "m",
   );
   const [added, setAdded] = useState(false);
-  const selected = sizes.find((s) => s.id === sizeId) ?? sizes[0]!;
+  const selected = sizes.find((s) => s.id === sizeId) ?? sizes[0];
 
   if (!wreath.available) {
     return (
@@ -28,40 +27,41 @@ export function AddToCartButton({ wreath }: { wreath: Wreath }) {
     );
   }
 
+  if (!selected) {
+    return (
+      <Button disabled className="w-full sm:w-auto">
+        Velikost není nastavena
+      </Button>
+    );
+  }
+
   return (
     <div className="space-y-4">
-      <div>
-        <p className="text-[10px] tracking-[0.16em] uppercase text-muted-foreground sm:text-xs">
-          Velikost
-        </p>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {sizes.map((s) => (
-            <button
-              key={s.id}
-              type="button"
-              onClick={() => setSizeId(s.id)}
-              className={cn(
-                "min-w-[6.5rem] border px-3 py-2.5 text-left transition-colors",
-                sizeId === s.id
-                  ? "border-moss-deep bg-moss-deep text-white"
-                  : "border-border bg-background text-moss-deep hover:border-moss-deep",
-              )}
-            >
-              <span className="block text-[10px] tracking-[0.14em] uppercase">
-                {s.label}
-              </span>
-              <span className="mt-0.5 block text-sm font-medium">
-                {formatPrice(s.price)}
-              </span>
-            </button>
-          ))}
-        </div>
-      </div>
+      {sizes.length > 1 ? (
+        <label className="block max-w-sm">
+          <span className="text-[10px] tracking-[0.16em] uppercase text-muted-foreground sm:text-xs">
+            Velikost
+          </span>
+          <select
+            value={sizeId}
+            onChange={(e) => setSizeId(e.target.value as WreathSizeId)}
+            className="mt-2 w-full border border-border bg-background px-3 py-3 text-sm outline-none focus:border-bloom"
+          >
+            {sizes.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.label} — {formatPrice(s.price)}
+              </option>
+            ))}
+          </select>
+        </label>
+      ) : (
+        <p className="text-sm text-muted-foreground">{selected.label}</p>
+      )}
       <p className="text-2xl font-medium">{formatPrice(selected.price)}</p>
       <Button
         className="w-full sm:w-auto"
         onClick={() => {
-          addItem(wreath.slug, sizeId);
+          addItem(wreath.slug, selected.id);
           setAdded(true);
           setTimeout(() => setAdded(false), 1800);
         }}
