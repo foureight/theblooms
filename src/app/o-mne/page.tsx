@@ -116,7 +116,7 @@ export default async function AboutPage() {
           <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
             Osobně
           </p>
-          <h1 className="mt-3 font-name text-5xl font-bold tracking-wide text-foreground sm:text-6xl md:text-7xl">
+          <h1 className="mt-3 font-display text-5xl text-foreground sm:text-6xl md:text-7xl">
             {site.owner}
           </h1>
           <div className="mt-8 space-y-5 text-base leading-relaxed text-muted-foreground sm:text-lg">
