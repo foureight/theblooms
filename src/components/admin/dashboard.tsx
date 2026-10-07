@@ -9,12 +9,24 @@ import { wreaths as baseWreaths } from "@/data/wreaths";
 import {
   PAGE_SLOTS,
   PAGE_TEXTS,
+  slugifyTitle,
   type CmsContent,
   type MediaItem,
 } from "@/lib/cms/types";
 import { cn } from "@/lib/utils";
 
-type Tab = "texty" | "fotky" | "svatby" | "vence" | "media";
+type Tab =
+  | "texty"
+  | "fotky"
+  | "svatby"
+  | "vence"
+  | "workshopy"
+  | "kytky"
+  | "media";
+
+const WREATH_PLACEHOLDER = "/wreaths/placeholder.svg";
+const WEDDING_PLACEHOLDER =
+  "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1600&q=80";
 
 type Props = {
   initialContent: CmsContent;
@@ -39,6 +51,8 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
     { id: "fotky", label: "Fotky stránek" },
     { id: "svatby", label: "Svatby" },
     { id: "vence", label: "Věnce" },
+    { id: "workshopy", label: "Workshopy" },
+    { id: "kytky", label: "Kytky" },
     { id: "media", label: "Knihovna" },
   ];
 
@@ -208,21 +222,101 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
     return groups;
   }, []);
 
+  const baseWeddingSlugs = useMemo(
+    () => new Set(baseWeddings.map((w) => w.slug)),
+    [],
+  );
+  const baseWreathSlugs = useMemo(
+    () => new Set(baseWreaths.map((w) => w.slug)),
+    [],
+  );
+
+  const allWeddings = useMemo(() => {
+    const customs = Object.entries(content.weddings ?? {})
+      .filter(([slug, o]) => !baseWeddingSlugs.has(slug) && Boolean(o.title?.trim()))
+      .map(([slug, o]) => ({
+        slug,
+        title: o.title!.trim(),
+        place: o.place?.trim() || "",
+        season: o.season?.trim() || "",
+        summary: o.summary?.trim() || "",
+        cover: o.cover?.trim() || WEDDING_PLACEHOLDER,
+        images:
+          o.images && o.images.length > 0
+            ? o.images.filter(Boolean)
+            : [o.cover?.trim() || WEDDING_PLACEHOLDER],
+        custom: true as const,
+      }));
+    return [
+      ...baseWeddings.map((w) => ({ ...w, custom: false as const })),
+      ...customs,
+    ];
+  }, [content.weddings, baseWeddingSlugs]);
+
   const orderedWreaths = useMemo(() => {
-    const all = baseWreaths.map((w) => w.slug);
+    const customs = Object.entries(content.wreaths ?? {})
+      .filter(([slug, o]) => !baseWreathSlugs.has(slug) && Boolean(o.name?.trim()))
+      .map(([slug, o]) => ({
+        slug,
+        name: o.name!.trim(),
+        description: o.description?.trim() || "",
+        price: typeof o.price === "number" ? o.price : 0,
+        size: o.size?.trim() || "Ø 33 cm",
+        season: (o.season || "Jaro") as "Jaro" | "Podzim" | "Advent",
+        available: typeof o.available === "boolean" ? o.available : true,
+        image: o.image?.trim() || WREATH_PLACEHOLDER,
+        custom: true as const,
+      }));
+    const merged = [
+      ...baseWreaths.map((w) => ({ ...w, custom: false as const })),
+      ...customs,
+    ];
+    const all = merged.map((w) => w.slug);
     const saved = (content.wreathOrder ?? []).filter((s) => all.includes(s));
     const order =
       saved.length === 0
         ? [
-            ...baseWreaths.filter((w) => w.available).map((w) => w.slug),
-            ...baseWreaths.filter((w) => !w.available).map((w) => w.slug),
+            ...merged.filter((w) => w.available).map((w) => w.slug),
+            ...merged.filter((w) => !w.available).map((w) => w.slug),
           ]
         : [...saved, ...all.filter((s) => !saved.includes(s))];
-    const bySlug = new Map(baseWreaths.map((w) => [w.slug, w]));
+    const bySlug = new Map(merged.map((w) => [w.slug, w]));
     return order
       .map((slug) => bySlug.get(slug))
-      .filter((w): w is (typeof baseWreaths)[number] => Boolean(w));
-  }, [content.wreathOrder]);
+      .filter((w): w is (typeof merged)[number] => Boolean(w));
+  }, [content.wreathOrder, content.wreaths, baseWreathSlugs]);
+
+  const workshopCards = useMemo(
+    () =>
+      Object.entries(content.workshops ?? {})
+        .filter(([, o]) => Boolean(o.title?.trim()))
+        .map(([slug, o]) => ({
+          slug,
+          title: o.title!.trim(),
+          text: o.text?.trim() || "",
+        })),
+    [content.workshops],
+  );
+
+  const flowerCards = useMemo(
+    () =>
+      Object.entries(content.flowers ?? {})
+        .filter(([, o]) => Boolean(o.title?.trim()))
+        .map(([slug, o]) => ({
+          slug,
+          title: o.title!.trim(),
+          text: o.text?.trim() || "",
+        })),
+    [content.flowers],
+  );
+
+  function uniqueSlug(title: string, taken: Set<string>, fallback: string) {
+    let slug = slugifyTitle(title, fallback);
+    if (!taken.has(slug)) return slug;
+    let n = 2;
+    while (taken.has(`${slug}-${n}`)) n += 1;
+    return `${slug}-${n}`;
+  }
 
   function moveWreath(slug: string, direction: -1 | 1) {
     const slugs = orderedWreaths.map((w) => w.slug);
@@ -232,6 +326,143 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
     const next = [...slugs];
     [next[i], next[j]] = [next[j]!, next[i]!];
     setContent((c) => ({ ...c, wreathOrder: next }));
+  }
+
+  function addWedding() {
+    const title = window.prompt("Název svatby (např. Eva & Petr)");
+    if (!title?.trim()) return;
+    const taken = new Set([
+      ...baseWeddingSlugs,
+      ...Object.keys(content.weddings ?? {}),
+    ]);
+    const slug = uniqueSlug(title, taken, "svatba");
+    setContent((c) => ({
+      ...c,
+      weddings: {
+        ...c.weddings,
+        [slug]: {
+          custom: true,
+          title: title.trim(),
+          place: "",
+          season: "",
+          summary: "",
+          cover: WEDDING_PLACEHOLDER,
+          images: [WEDDING_PLACEHOLDER],
+        },
+      },
+    }));
+    setStatus(`Přidána svatba „${title.trim()}“. Nezapomeňte uložit.`);
+    setTab("svatby");
+  }
+
+  function removeWedding(slug: string) {
+    if (!confirm("Smazat tuto svatbu z webu?")) return;
+    setContent((c) => {
+      const next = { ...c.weddings };
+      delete next[slug];
+      return { ...c, weddings: next };
+    });
+    setStatus("Svatba odebrána. Uložte změny.");
+  }
+
+  function addWreath() {
+    const name = window.prompt("Název věnce");
+    if (!name?.trim()) return;
+    const taken = new Set([
+      ...baseWreathSlugs,
+      ...Object.keys(content.wreaths ?? {}),
+    ]);
+    const slug = uniqueSlug(name, taken, "venec");
+    setContent((c) => {
+      const order = c.wreathOrder?.length
+        ? c.wreathOrder
+        : orderedWreaths.map((w) => w.slug);
+      return {
+        ...c,
+        wreaths: {
+          ...c.wreaths,
+          [slug]: {
+            custom: true,
+            name: name.trim(),
+            description: "",
+            price: 990,
+            size: "Ø 33 cm",
+            season: "Jaro",
+            available: true,
+            image: WREATH_PLACEHOLDER,
+          },
+        },
+        wreathOrder: [slug, ...order.filter((s) => s !== slug)],
+      };
+    });
+    setStatus(`Přidán věnec „${name.trim()}“. Nezapomeňte uložit.`);
+    setTab("vence");
+  }
+
+  function removeWreath(slug: string) {
+    if (!confirm("Smazat tento věnec z webu?")) return;
+    setContent((c) => {
+      const next = { ...c.wreaths };
+      delete next[slug];
+      return {
+        ...c,
+        wreaths: next,
+        wreathOrder: (c.wreathOrder ?? []).filter((s) => s !== slug),
+      };
+    });
+    setStatus("Věnec odebrán. Uložte změny.");
+  }
+
+  function addWorkshop() {
+    const title = window.prompt("Název workshopu / formátu");
+    if (!title?.trim()) return;
+    const taken = new Set(Object.keys(content.workshops ?? {}));
+    const slug = uniqueSlug(title, taken, "workshop");
+    setContent((c) => ({
+      ...c,
+      workshops: {
+        ...c.workshops,
+        [slug]: { custom: true, title: title.trim(), text: "" },
+      },
+    }));
+    setStatus(`Přidán workshop „${title.trim()}“. Nezapomeňte uložit.`);
+    setTab("workshopy");
+  }
+
+  function removeWorkshop(slug: string) {
+    if (!confirm("Smazat tuto položku?")) return;
+    setContent((c) => {
+      const next = { ...c.workshops };
+      delete next[slug];
+      return { ...c, workshops: next };
+    });
+    setStatus("Položka odebrána. Uložte změny.");
+  }
+
+  function addFlower() {
+    const title = window.prompt("Název služby / položky (kytky)");
+    if (!title?.trim()) return;
+    const taken = new Set(Object.keys(content.flowers ?? {}));
+    const slug = uniqueSlug(title, taken, "kytky");
+    setContent((c) => ({
+      ...c,
+      flowers: {
+        ...c.flowers,
+        [slug]: { custom: true, title: title.trim(), text: "" },
+      },
+    }));
+    setStatus(`Přidána položka „${title.trim()}“. Nezapomeňte uložit.`);
+    setTab("kytky");
+  }
+
+  function removeFlower(slug: string) {
+    if (!confirm("Smazat tuto položku?")) return;
+    setContent((c) => {
+      const next = { ...c.flowers };
+      delete next[slug];
+      return { ...c, flowers: next };
+    });
+    setStatus("Položka odebrána. Uložte změny.");
   }
 
   return (
@@ -247,14 +478,14 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
           <div className="flex flex-wrap items-center gap-2">
             <Link
               href="/"
-              className="px-3 py-2 text-xs tracking-[0.14em] uppercase text-muted-foreground hover:text-bloom-light"
+              className="px-3 py-2 text-xs tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
             >
               Web
             </Link>
             <button
               type="button"
               onClick={logout}
-              className="px-3 py-2 text-xs tracking-[0.14em] uppercase text-muted-foreground hover:text-foreground"
+              className="px-3 py-2 text-xs tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
             >
               Odhlásit
             </button>
@@ -262,7 +493,7 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
               type="button"
               onClick={save}
               disabled={saving}
-              className="bg-moss-deep px-5 py-2.5 text-xs font-medium tracking-[0.16em] uppercase text-white hover:bg-bloom-light disabled:opacity-60"
+              className="bg-moss-deep px-5 py-2.5 text-xs font-medium tracking-[0.16em] uppercase text-white transition-colors hover:bg-bloom-light disabled:opacity-60"
             >
               {saving ? "Ukládám…" : "Uložit změny"}
             </button>
@@ -285,8 +516,8 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
               className={cn(
                 "px-4 py-2 text-xs tracking-[0.14em] uppercase transition-colors",
                 tab === t.id
-                  ? "bg-moss-deep text-white"
-                  : "bg-muted text-muted-foreground hover:text-foreground",
+                  ? "bg-moss-deep text-white hover:bg-bloom-light"
+                  : "bg-muted text-muted-foreground hover:bg-moss-deep hover:text-white",
               )}
             >
               {t.label}
@@ -374,7 +605,7 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                       <button
                         type="button"
                         onClick={() => setSlot(slot.id, "")}
-                        className="px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-muted-foreground hover:text-foreground"
+                        className="px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
                       >
                         Obnovit výchozí
                       </button>
@@ -388,7 +619,19 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
 
         {tab === "svatby" ? (
           <div className="mt-8 space-y-10">
-            {baseWeddings.map((w) => {
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="text-sm text-muted-foreground">
+                Upravte existující realizace nebo přidejte novou svatbu.
+              </p>
+              <button
+                type="button"
+                onClick={addWedding}
+                className="bg-moss-deep px-4 py-2.5 text-[10px] tracking-[0.14em] uppercase text-white transition-colors hover:bg-bloom-light sm:text-xs"
+              >
+                + Přidat svatbu
+              </button>
+            </div>
+            {allWeddings.map((w) => {
               const o = content.weddings[w.slug] ?? {};
               const images = o.images ?? w.images;
               const cover = o.cover || w.cover;
@@ -397,9 +640,20 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                   key={w.slug}
                   className="border border-border/70 p-4 sm:p-6"
                 >
-                  <h2 className="font-display text-3xl text-moss-deep">
-                    {o.title || w.title}
-                  </h2>
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <h2 className="font-display text-3xl text-moss-deep">
+                      {o.title || w.title}
+                    </h2>
+                    {w.custom ? (
+                      <button
+                        type="button"
+                        onClick={() => removeWedding(w.slug)}
+                        className="px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
+                      >
+                        Smazat
+                      </button>
+                    ) : null}
+                  </div>
                   <div className="mt-6 grid gap-4 sm:grid-cols-2">
                     <Field
                       label="Název"
@@ -503,7 +757,7 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                             key: w.slug,
                           })
                         }
-                        className="text-[10px] tracking-[0.14em] uppercase text-moss-deep hover:text-bloom-light"
+                        className="px-2 py-1 text-[10px] tracking-[0.14em] uppercase text-moss-deep transition-colors hover:bg-moss-deep hover:text-white"
                       >
                         + přidat fotku
                       </button>
@@ -535,7 +789,7 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                                 },
                               }))
                             }
-                            className="mt-1 text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground"
+                            className="mt-1 px-1 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
                           >
                             Odebrat
                           </button>
@@ -551,10 +805,19 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
 
         {tab === "vence" ? (
           <div className="mt-8 space-y-8">
-            <p className="text-sm text-muted-foreground">
-              Pořadí určuje, jak se věnce zobrazí na webu — nahoře =
-              prodejnější. Šipkami posouvejte nahoru a dolů, pak uložte.
-            </p>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="text-sm text-muted-foreground">
+                Pořadí určuje, jak se věnce zobrazí na webu — nahoře =
+                prodejnější. Šipkami posouvejte nahoru a dolů, pak uložte.
+              </p>
+              <button
+                type="button"
+                onClick={addWreath}
+                className="bg-moss-deep px-4 py-2.5 text-[10px] tracking-[0.14em] uppercase text-white transition-colors hover:bg-bloom-light sm:text-xs"
+              >
+                + Přidat věnec
+              </button>
+            </div>
             {orderedWreaths.map((w, index) => {
               const o = content.wreaths[w.slug] ?? {};
               const image = o.image || w.image;
@@ -590,13 +853,14 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <p className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
                         Pořadí {index + 1} / {orderedWreaths.length}
+                        {w.custom ? " · nový" : ""}
                       </p>
-                      <div className="flex gap-2">
+                      <div className="flex flex-wrap gap-2">
                         <button
                           type="button"
                           disabled={atTop}
                           onClick={() => moveWreath(w.slug, -1)}
-                          className="border border-border px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-moss-deep hover:border-bloom-light hover:text-bloom-light disabled:cursor-not-allowed disabled:opacity-40"
+                          className="border border-border px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-moss-deep transition-colors hover:border-moss-deep hover:bg-moss-deep hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
                           aria-label="Posunout nahoru"
                         >
                           ↑ Nahoru
@@ -605,11 +869,20 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                           type="button"
                           disabled={atBottom}
                           onClick={() => moveWreath(w.slug, 1)}
-                          className="border border-border px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-moss-deep hover:border-bloom-light hover:text-bloom-light disabled:cursor-not-allowed disabled:opacity-40"
+                          className="border border-border px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-moss-deep transition-colors hover:border-moss-deep hover:bg-moss-deep hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
                           aria-label="Posunout dolů"
                         >
                           ↓ Dolů
                         </button>
+                        {w.custom ? (
+                          <button
+                            type="button"
+                            onClick={() => removeWreath(w.slug)}
+                            className="px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
+                          >
+                            Smazat
+                          </button>
+                        ) : null}
                       </div>
                     </div>
                     <Field
@@ -734,9 +1007,173 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
           </div>
         ) : null}
 
+        {tab === "workshopy" ? (
+          <div className="mt-8 space-y-8">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="max-w-xl text-sm text-muted-foreground">
+                Další formáty workshopů se zobrazí v sekci „Co spolu tvoříme“ na
+                stránce Workshopy.
+              </p>
+              <button
+                type="button"
+                onClick={addWorkshop}
+                className="bg-moss-deep px-4 py-2.5 text-[10px] tracking-[0.14em] uppercase text-white transition-colors hover:bg-bloom-light sm:text-xs"
+              >
+                + Přidat workshop
+              </button>
+            </div>
+            {workshopCards.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                Zatím žádné vlastní položky. Základní formáty zůstávají na webu.
+              </p>
+            ) : null}
+            {workshopCards.map((item) => (
+              <section
+                key={item.slug}
+                className="space-y-4 border border-border/70 p-4 sm:p-6"
+              >
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <h2 className="font-display text-2xl text-moss-deep">
+                    {item.title || "Nový workshop"}
+                  </h2>
+                  <button
+                    type="button"
+                    onClick={() => removeWorkshop(item.slug)}
+                    className="px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
+                  >
+                    Smazat
+                  </button>
+                </div>
+                <Field
+                  label="Název"
+                  value={content.workshops[item.slug]?.title ?? ""}
+                  onChange={(v) =>
+                    setContent((c) => ({
+                      ...c,
+                      workshops: {
+                        ...c.workshops,
+                        [item.slug]: {
+                          ...c.workshops[item.slug],
+                          custom: true,
+                          title: v,
+                        },
+                      },
+                    }))
+                  }
+                />
+                <label className="block">
+                  <span className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
+                    Popis
+                  </span>
+                  <textarea
+                    rows={3}
+                    value={content.workshops[item.slug]?.text ?? ""}
+                    onChange={(e) =>
+                      setContent((c) => ({
+                        ...c,
+                        workshops: {
+                          ...c.workshops,
+                          [item.slug]: {
+                            ...c.workshops[item.slug],
+                            custom: true,
+                            text: e.target.value,
+                          },
+                        },
+                      }))
+                    }
+                    className="mt-2 w-full border border-border bg-background px-3 py-3 text-sm outline-none focus:border-bloom"
+                  />
+                </label>
+              </section>
+            ))}
+          </div>
+        ) : null}
+
+        {tab === "kytky" ? (
+          <div className="mt-8 space-y-8">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="max-w-xl text-sm text-muted-foreground">
+                Další služby se zobrazí v sekci „Co můžu připravit“ na stránce
+                Kytky.
+              </p>
+              <button
+                type="button"
+                onClick={addFlower}
+                className="bg-moss-deep px-4 py-2.5 text-[10px] tracking-[0.14em] uppercase text-white transition-colors hover:bg-bloom-light sm:text-xs"
+              >
+                + Přidat položku
+              </button>
+            </div>
+            {flowerCards.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                Zatím žádné vlastní položky. Základní služby zůstávají na webu.
+              </p>
+            ) : null}
+            {flowerCards.map((item) => (
+              <section
+                key={item.slug}
+                className="space-y-4 border border-border/70 p-4 sm:p-6"
+              >
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <h2 className="font-display text-2xl text-moss-deep">
+                    {item.title || "Nová položka"}
+                  </h2>
+                  <button
+                    type="button"
+                    onClick={() => removeFlower(item.slug)}
+                    className="px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
+                  >
+                    Smazat
+                  </button>
+                </div>
+                <Field
+                  label="Název"
+                  value={content.flowers[item.slug]?.title ?? ""}
+                  onChange={(v) =>
+                    setContent((c) => ({
+                      ...c,
+                      flowers: {
+                        ...c.flowers,
+                        [item.slug]: {
+                          ...c.flowers[item.slug],
+                          custom: true,
+                          title: v,
+                        },
+                      },
+                    }))
+                  }
+                />
+                <label className="block">
+                  <span className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
+                    Popis
+                  </span>
+                  <textarea
+                    rows={3}
+                    value={content.flowers[item.slug]?.text ?? ""}
+                    onChange={(e) =>
+                      setContent((c) => ({
+                        ...c,
+                        flowers: {
+                          ...c.flowers,
+                          [item.slug]: {
+                            ...c.flowers[item.slug],
+                            custom: true,
+                            text: e.target.value,
+                          },
+                        },
+                      }))
+                    }
+                    className="mt-2 w-full border border-border bg-background px-3 py-3 text-sm outline-none focus:border-bloom"
+                  />
+                </label>
+              </section>
+            ))}
+          </div>
+        ) : null}
+
         {tab === "media" ? (
           <div className="mt-8">
-            <label className="inline-flex cursor-pointer items-center bg-moss-deep px-5 py-3 text-xs tracking-[0.16em] uppercase text-white hover:bg-bloom-light">
+            <label className="inline-flex cursor-pointer items-center bg-moss-deep px-5 py-3 text-xs tracking-[0.16em] uppercase text-white transition-colors hover:bg-bloom-light">
               {uploading ? "Nahrávám…" : "Nahrát fotku"}
               <input
                 type="file"
@@ -773,7 +1210,7 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                   <button
                     type="button"
                     onClick={() => removeMedia(m.name)}
-                    className="mt-1 text-[10px] tracking-[0.12em] uppercase text-muted-foreground hover:text-foreground"
+                    className="mt-1 px-1 py-0.5 text-[10px] tracking-[0.12em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
                   >
                     Smazat
                   </button>
@@ -799,12 +1236,12 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
               <button
                 type="button"
                 onClick={() => setPickerFor(null)}
-                className="text-xs tracking-[0.14em] uppercase text-muted-foreground"
+                className="px-3 py-2 text-xs tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
               >
                 Zavřít
               </button>
             </div>
-            <label className="mt-4 inline-flex cursor-pointer items-center border border-bloom/40 px-4 py-2 text-xs tracking-[0.14em] uppercase text-moss-deep hover:border-bloom-light hover:text-bloom-light">
+            <label className="mt-4 inline-flex cursor-pointer items-center border border-moss-deep/40 bg-transparent px-4 py-2 text-xs tracking-[0.14em] uppercase text-moss-deep transition-colors hover:border-moss-deep hover:bg-moss-deep hover:text-white">
               {uploading ? "Nahrávám…" : "Nahrát novou"}
               <input
                 type="file"

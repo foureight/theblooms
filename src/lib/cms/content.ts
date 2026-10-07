@@ -170,3 +170,42 @@ export function mergeDecoration(
 ): DecorationCategory | undefined {
   return mergeDecorations(cms).find((d) => d.slug === slug);
 }
+
+export type CmsCard = {
+  slug: string;
+  title: string;
+  text: string;
+  image?: string;
+  custom: boolean;
+};
+
+function mergeServiceCards(
+  overrides: Record<
+    string,
+    { custom?: boolean; title?: string; text?: string; image?: string }
+  >,
+): CmsCard[] {
+  const cards: CmsCard[] = [];
+  for (const [slug, o] of Object.entries(overrides ?? {})) {
+    const title = o.title?.trim();
+    if (!title) continue;
+    cards.push({
+      slug,
+      title,
+      text: o.text?.trim() || "",
+      image: o.image?.trim() || undefined,
+      custom: true,
+    });
+  }
+  return cards;
+}
+
+/** Extra workshop cards from CMS (appended after built-in formats). */
+export function mergeWorkshopCards(cms: CmsContent): CmsCard[] {
+  return mergeServiceCards(cms.workshops ?? {});
+}
+
+/** Extra flower-service cards from CMS (appended after built-in services). */
+export function mergeFlowerCards(cms: CmsContent): CmsCard[] {
+  return mergeServiceCards(cms.flowers ?? {});
+}

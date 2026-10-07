@@ -7,6 +7,7 @@ import { JsonLd } from "@/components/json-ld";
 import { site } from "@/data/site";
 import {
   getCmsContent,
+  mergeWorkshopCards,
   slotFrom,
   textFrom,
 } from "@/lib/cms/content";
@@ -123,6 +124,10 @@ export default async function WorkshopyPage() {
     "workshopy.side",
     "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=1400&q=80",
   );
+  const formatCards = [
+    ...formats,
+    ...mergeWorkshopCards(cms).map((c) => ({ title: c.title, text: c.text })),
+  ];
 
   return (
     <div>
@@ -163,7 +168,7 @@ export default async function WorkshopyPage() {
               Co spolu tvoříme
             </h2>
             <div className="mt-10 grid gap-10 md:grid-cols-3">
-              {formats.map((item) => (
+              {formatCards.map((item) => (
                 <div key={item.title} className="border-t border-bloom/40 pt-5">
                   <h3 className="font-display text-xl text-moss-deep sm:text-2xl">
                     {item.title}

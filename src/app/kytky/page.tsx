@@ -7,6 +7,7 @@ import { JsonLd } from "@/components/json-ld";
 import { site } from "@/data/site";
 import {
   getCmsContent,
+  mergeFlowerCards,
   slotFrom,
   textFrom,
 } from "@/lib/cms/content";
@@ -113,6 +114,10 @@ export default async function KytkyPage() {
     "kytky.eventy",
     "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=1200&q=80",
   );
+  const serviceCards = [
+    ...services,
+    ...mergeFlowerCards(cms).map((c) => ({ title: c.title, text: c.text })),
+  ];
 
   return (
     <div>
@@ -166,7 +171,7 @@ export default async function KytkyPage() {
               vždy na míru a podle konkrétní příležitosti.
             </p>
             <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {services.map((item) => (
+              {serviceCards.map((item) => (
                 <article
                   key={item.title}
                   className="border-t border-bloom/40 pt-5"

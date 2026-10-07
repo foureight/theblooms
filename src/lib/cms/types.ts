@@ -31,6 +31,14 @@ export type CmsDecorationOverride = {
   >;
 };
 
+/** Extra workshop / flower service cards (CMS-only) */
+export type CmsServiceItem = {
+  custom?: boolean;
+  title?: string;
+  text?: string;
+  image?: string;
+};
+
 export type CmsContent = {
   /** Page photo URLs by slot id */
   slots: Record<string, string>;
@@ -39,6 +47,10 @@ export type CmsContent = {
   weddings: Record<string, CmsWeddingOverride>;
   wreaths: Record<string, CmsWreathOverride>;
   decorations: Record<string, CmsDecorationOverride>;
+  /** Extra workshop format cards on /workshopy */
+  workshops: Record<string, CmsServiceItem>;
+  /** Extra service cards on /kytky */
+  flowers: Record<string, CmsServiceItem>;
   /** Pořadí věnců podle prodejnosti (slug → pozice) */
   wreathOrder: string[];
 };
@@ -56,8 +68,22 @@ export const emptyCms = (): CmsContent => ({
   weddings: {},
   wreaths: {},
   decorations: {},
+  workshops: {},
+  flowers: {},
   wreathOrder: [],
 });
+
+/** URL-safe slug from Czech title */
+export function slugifyTitle(input: string, fallback = "polozka"): string {
+  const base = input
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48);
+  return base || fallback;
+}
 
 /** Named page photo slots */
 export const PAGE_SLOTS = [

@@ -60,6 +60,8 @@ export async function readCms(): Promise<CmsContent> {
       weddings: parsed.weddings ?? {},
       wreaths: parsed.wreaths ?? {},
       decorations: parsed.decorations ?? {},
+      workshops: parsed.workshops ?? {},
+      flowers: parsed.flowers ?? {},
       wreathOrder: parsed.wreathOrder ?? [],
     };
   } catch {

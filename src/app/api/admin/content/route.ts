@@ -38,6 +38,8 @@ export async function PUT(req: Request) {
     weddings: body.content.weddings ?? {},
     wreaths: body.content.wreaths ?? {},
     decorations: body.content.decorations ?? {},
+    workshops: body.content.workshops ?? {},
+    flowers: body.content.flowers ?? {},
     wreathOrder: Array.isArray(body.content.wreathOrder)
       ? body.content.wreathOrder.filter((s) => typeof s === "string")
       : [],
