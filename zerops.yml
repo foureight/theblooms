@@ -1,6 +1,6 @@
-# THE BLOOMS — Next.js SSR na Zerops
+# THE BLOOMS — Next.js SSR na Zerops (build/run pipeline)
 # Docs: https://docs.zerops.io/zerops-yaml/specification
-# Poznámka: vytvořte Local Storage službu s hostname `vol` (fotky + CMS texty).
+# Import infrastruktury: zerops-import.yml (Local Storage `vol` + Node.js `app`)
 zerops:
   - setup: app
     build:
