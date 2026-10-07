@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { formatPrice, type Wreath } from "@/data/wreaths";
+import type { Wreath } from "@/data/wreaths";
 import { Badge } from "@/components/ui/badge";
 import { CmsImage } from "@/components/cms-image";
+import { WreathCardCaption } from "@/components/wreath-card-caption";
 import { cn } from "@/lib/utils";
 
 const seasons = ["Vše", "Jaro", "Podzim", "Advent"] as const;
@@ -67,17 +68,7 @@ export function WreathCatalog({ items }: { items: Wreath[] }) {
                   </div>
                 )}
               </div>
-              <div className="mt-4 flex items-start justify-between gap-3">
-                <div>
-                  <h3 className="font-display text-2xl text-moss-deep sm:text-3xl">
-                    {w.name}
-                  </h3>
-                  <h4 className="mt-1 text-[10px] font-normal tracking-[0.12em] uppercase text-muted-foreground sm:text-xs">
-                    {w.season} · {w.size}
-                  </h4>
-                </div>
-                <p className="text-sm font-medium">{formatPrice(w.price)}</p>
-              </div>
+              <WreathCardCaption wreath={w} />
             </Link>
           ))}
         </div>

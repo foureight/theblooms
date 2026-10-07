@@ -5,8 +5,8 @@ import { CmsImage } from "@/components/cms-image";
 import { FadeIn } from "@/components/fade-in";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
-import { formatPrice } from "@/data/wreaths";
 import { site } from "@/data/site";
+import { WreathCardCaption } from "@/components/wreath-card-caption";
 import {
   getCmsContent,
   mergeWeddings,
@@ -303,17 +303,10 @@ export default async function HomePage() {
                       </div>
                     ) : null}
                   </div>
-                  <div className="mt-4 flex items-start justify-between gap-3">
-                    <div>
-                      <h3 className="font-display text-2xl text-moss-deep sm:text-3xl">
-                        {w.name}
-                      </h3>
-                      <h4 className="mt-1 text-[10px] font-normal tracking-[0.12em] uppercase text-muted-foreground sm:text-xs">
-                        {w.season} · {w.size}
-                      </h4>
-                    </div>
-                    <p className="text-base font-medium">{formatPrice(w.price)}</p>
-                  </div>
+                  <WreathCardCaption
+                    wreath={w}
+                    priceClassName="text-base"
+                  />
                 </Link>
               </FadeIn>
             ))}
