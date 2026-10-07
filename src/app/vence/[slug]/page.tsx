@@ -131,7 +131,7 @@ export default async function WreathDetailPage({ params }: Props) {
             ) : null}
             <div className="flex justify-between gap-4">
               <dt className="text-muted-foreground">Dostupnost</dt>
-              <dd>{wreath.available ? "Skladem" : "Momentálně nedostupné"}</dd>
+              <dd>{wreath.available ? "4 dny" : "Momentálně nedostupné"}</dd>
             </div>
           </dl>
           <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
@@ -140,6 +140,9 @@ export default async function WreathDetailPage({ params }: Props) {
           <div className="mt-8">
             <AddToCartButton wreath={wreath} />
           </div>
+          <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
+            Výroba po obdržení objednávky do 4&nbsp;dnů + doprava
+          </p>
         </div>
       </div>
     </div>
