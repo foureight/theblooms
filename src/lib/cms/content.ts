@@ -152,7 +152,7 @@ export function mergeWreaths(cms: CmsContent): Wreath[] {
     const name = o.name?.trim();
     if (!name) continue;
     const basePrice = typeof o.price === "number" ? o.price : 990;
-    const baseSize = o.size?.trim() || "Ø 33 cm";
+    const baseSize = o.size?.trim() || "Ø 30 cm";
     const slots = mergeWreathSizeSlots(basePrice, baseSize, o);
     const synced = syncPriceFromSizes(slots, basePrice, baseSize);
     merged.push({

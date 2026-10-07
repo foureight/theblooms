@@ -35,9 +35,9 @@ export const WREATH_SIZE_NAMES: Record<WreathSizeId, string> = {
 };
 
 export const DEFAULT_SIZE_LABELS: Record<WreathSizeId, string> = {
-  s: "Ø 25 cm",
-  m: "Ø 33 cm",
-  l: "Ø 45 cm",
+  s: "Ø 20 cm",
+  m: "Ø 30 cm",
+  l: "Ø 40 cm",
 };
 
 function isFilledSize(s: {
@@ -160,7 +160,7 @@ export const wreaths: Wreath[] = [
     slug: "jarni-bylinkovy",
     name: "Jarní bylinkový",
     price: 990,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Jaro",
     available: false,
     description:
@@ -171,7 +171,7 @@ export const wreaths: Wreath[] = [
     slug: "jarni-pudrovy",
     name: "Jarní pudrový",
     price: 1190,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Jaro",
     available: false,
     description:
@@ -182,7 +182,7 @@ export const wreaths: Wreath[] = [
     slug: "jarni-louka",
     name: "Jarní louka",
     price: 1090,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Jaro",
     available: false,
     description:
@@ -193,7 +193,7 @@ export const wreaths: Wreath[] = [
     slug: "jarni-zeleny",
     name: "Jarní zelený",
     price: 890,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Jaro",
     available: false,
     description:
@@ -204,7 +204,7 @@ export const wreaths: Wreath[] = [
     slug: "jarni-pastelovy",
     name: "Jarní pastelový",
     price: 1290,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Jaro",
     available: false,
     description:
@@ -215,7 +215,7 @@ export const wreaths: Wreath[] = [
     slug: "jarni-rustikalni",
     name: "Jarní rustikální",
     price: 1190,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Jaro",
     available: false,
     description:
@@ -226,7 +226,7 @@ export const wreaths: Wreath[] = [
     slug: "jarni-kvetinovy",
     name: "Jarní květinový",
     price: 1390,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Jaro",
     available: false,
     description:
@@ -239,7 +239,7 @@ export const wreaths: Wreath[] = [
     slug: "podzim-cervene-sisky",
     name: "Podzimní s šípkami",
     price: 1490,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Podzim",
     available: true,
     description:
@@ -250,7 +250,7 @@ export const wreaths: Wreath[] = [
     slug: "podzim-mochyne",
     name: "Podzimní s mochyní",
     price: 1590,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Podzim",
     available: true,
     description:
@@ -261,7 +261,7 @@ export const wreaths: Wreath[] = [
     slug: "podzim-mechovy",
     name: "Podzimní mechový",
     price: 1390,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Podzim",
     available: false,
     description:
@@ -272,7 +272,7 @@ export const wreaths: Wreath[] = [
     slug: "podzim-oranzovy",
     name: "Podzimní oranžový",
     price: 1490,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Podzim",
     available: false,
     description:
@@ -283,7 +283,7 @@ export const wreaths: Wreath[] = [
     slug: "podzim-lesni",
     name: "Podzimní lesní",
     price: 1290,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Podzim",
     available: false,
     description:
@@ -294,7 +294,7 @@ export const wreaths: Wreath[] = [
     slug: "podzim-burgundy",
     name: "Podzimní burgundy",
     price: 1590,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Podzim",
     available: false,
     description:
@@ -305,7 +305,7 @@ export const wreaths: Wreath[] = [
     slug: "podzim-skorice",
     name: "Podzimní skořicový",
     price: 1390,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Podzim",
     available: false,
     description:
@@ -318,7 +318,7 @@ export const wreaths: Wreath[] = [
     slug: "advent-pudrovy-masle",
     name: "Adventní pudrový s mašlí",
     price: 1690,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Advent",
     available: true,
     description:
@@ -329,7 +329,7 @@ export const wreaths: Wreath[] = [
     slug: "advent-klasicky",
     name: "Adventní klasický",
     price: 1790,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Advent",
     available: false,
     description:
@@ -340,7 +340,7 @@ export const wreaths: Wreath[] = [
     slug: "advent-minimal",
     name: "Adventní minimal",
     price: 1490,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Advent",
     available: false,
     description:
@@ -351,7 +351,7 @@ export const wreaths: Wreath[] = [
     slug: "advent-cerny",
     name: "Adventní tmavý",
     price: 1690,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Advent",
     available: false,
     description:
@@ -362,7 +362,7 @@ export const wreaths: Wreath[] = [
     slug: "advent-bily",
     name: "Adventní bílý",
     price: 1690,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Advent",
     available: false,
     description:
@@ -373,7 +373,7 @@ export const wreaths: Wreath[] = [
     slug: "advent-zlaty",
     name: "Adventní zlatý",
     price: 1890,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Advent",
     available: false,
     description:
@@ -384,7 +384,7 @@ export const wreaths: Wreath[] = [
     slug: "advent-cerveny",
     name: "Adventní červený",
     price: 1790,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Advent",
     available: false,
     description:
@@ -395,7 +395,7 @@ export const wreaths: Wreath[] = [
     slug: "advent-natur",
     name: "Adventní natur",
     price: 1590,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Advent",
     available: false,
     description:
@@ -406,7 +406,7 @@ export const wreaths: Wreath[] = [
     slug: "advent-lux",
     name: "Adventní lux",
     price: 1990,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Advent",
     available: false,
     description:
@@ -417,7 +417,7 @@ export const wreaths: Wreath[] = [
     slug: "advent-stolni",
     name: "Adventní stolní",
     price: 1390,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Advent",
     available: false,
     description:
@@ -428,7 +428,7 @@ export const wreaths: Wreath[] = [
     slug: "advent-eukalyptus",
     name: "Adventní eukalyptus",
     price: 1690,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Advent",
     available: false,
     description:
@@ -439,7 +439,7 @@ export const wreaths: Wreath[] = [
     slug: "advent-boruvkovy",
     name: "Adventní borůvkový tón",
     price: 1690,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Advent",
     available: false,
     description:
@@ -450,7 +450,7 @@ export const wreaths: Wreath[] = [
     slug: "advent-venkovsky",
     name: "Adventní venkovský",
     price: 1590,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Advent",
     available: false,
     description:
@@ -461,7 +461,7 @@ export const wreaths: Wreath[] = [
     slug: "advent-svicky-premium",
     name: "Adventní se svícemi premium",
     price: 2090,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Advent",
     available: false,
     description:
@@ -472,7 +472,7 @@ export const wreaths: Wreath[] = [
     slug: "advent-jednoduchy",
     name: "Adventní jednoduchý",
     price: 1290,
-    size: "Ø 33 cm",
+    size: "Ø 30 cm",
     season: "Advent",
     available: false,
     description:

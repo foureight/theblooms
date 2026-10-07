@@ -1017,7 +1017,7 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
                               {isOpen ? (
                                 <div className="grid gap-3 border-t border-border/60 px-3 py-4 sm:grid-cols-2">
                                   <Field
-                                    label="Popisek (např. Ø 33 cm)"
+                                    label="Popisek (např. Ø 30 cm)"
                                     value={size.label}
                                     onChange={(v) => {
                                       const id = sizeKey;
