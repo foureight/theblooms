@@ -15,7 +15,7 @@ export function FaqSection({
   return (
     <FadeIn>
       <section
-        className="mt-14 bg-white py-10 sm:mt-20 sm:py-14"
+        className="relative left-1/2 mt-14 w-screen -translate-x-1/2 bg-white py-10 sm:mt-20 sm:py-14"
         aria-labelledby={id}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
