@@ -197,8 +197,6 @@ export default async function SvatbyPage() {
           </div>
         </section>
 
-        <FaqSection faqs={faqs} />
-
         <FadeIn>
           <section className="mt-20 border-t border-bloom/30 pt-12">
             <h2 className="font-display text-4xl text-moss-deep text-balance sm:text-5xl md:text-6xl">
@@ -213,6 +211,8 @@ export default async function SvatbyPage() {
             </CtaLink>
           </section>
         </FadeIn>
+
+        <FaqSection faqs={faqs} />
       </div>
     </div>
   );
