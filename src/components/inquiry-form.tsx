@@ -19,7 +19,7 @@ type Captcha = {
 };
 
 const fieldClass =
-  "h-11 rounded-none border-border/80 bg-background px-3 text-sm shadow-none focus-visible:border-bloom focus-visible:ring-0";
+  "h-11 rounded-none border-border/80 bg-white px-3 text-sm shadow-none focus-visible:border-bloom focus-visible:ring-0";
 
 const labelClass =
   "text-xs font-normal tracking-[0.16em] uppercase text-muted-foreground";
@@ -106,7 +106,7 @@ export function InquiryForm({
 
   if (status === "success") {
     return (
-      <div className="border-t border-bloom/40 bg-background px-1 py-12 text-center sm:px-2">
+      <div className="border-t border-bloom/40 bg-white px-1 py-12 text-center sm:px-2">
         <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
           Poptávka odeslána
         </p>
@@ -257,7 +257,7 @@ export function InquiryForm({
               name="weddingVision"
               rows={3}
               placeholder="Styl, barevnost, obřad, hostina…"
-              className="min-h-[5.5rem] rounded-none border-border/80 bg-background px-3 py-3 text-sm shadow-none focus-visible:border-bloom focus-visible:ring-0"
+              className="min-h-[5.5rem] rounded-none border-border/80 bg-white px-3 py-3 text-sm shadow-none focus-visible:border-bloom focus-visible:ring-0"
             />
           </div>
         </div>
