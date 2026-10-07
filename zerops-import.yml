@@ -3,10 +3,13 @@
 # Docs: https://docs.zerops.io/references/import
 #
 # Po importu:
-# 1. Napojte Git repo na službu `app` (pipeline → setup `app`, větev main)
-# 2. Nastavte silné heslo ADMIN_PASSWORD (a ideálně CAPTCHA_SECRET)
+# 1. Ve službě `app` → Pipelines & CI/CD napojte Git (větev main, setup `app`)
+# 2. Nastavte silné heslo ADMIN_PASSWORD
 # 3. Přidejte vlastní doménu / public HTTP access
-# 4. Zkontrolujte NEXT_PUBLIC_SITE_URL v zerops.yml nebo v env služby
+# 4. Zkontrolujte NEXT_PUBLIC_SITE_URL
+#
+# Pokud máte veřejné GitHub/GitLab repo, můžete místo kroku 1 odkomentovat
+# buildFromGit + zeropsSetup níže a build spustí hned při importu.
 
 project:
   name: theblooms
@@ -23,17 +26,16 @@ services:
       minDisk: 5
       maxDisk: 10
 
-  # Next.js SSR app
+  # Next.js SSR app (pipeline napojíte po importu v GUI)
   - hostname: app
     type: nodejs@22
     enableSubdomainAccess: true
-    zeropsSetup: app
     minContainers: 1
     maxContainers: 1
     priority: 1
-    # Po vytvoření projektu napojte Git v Pipelines & CI/CD.
-    # Volitelně odkomentujte a doplňte URL:
+    # Odcomentujte jen když máte veřejné GitHub/GitLab repo:
     # buildFromGit: https://github.com/ORG/REPO
+    # zeropsSetup: app
     envSecrets:
       ADMIN_PASSWORD: zmente-toto-heslo
       ADMIN_SECRET: <@generateRandomString(<48>)>

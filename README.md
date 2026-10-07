@@ -55,7 +55,7 @@ Na Zerops: Local Storage `vol` namountovaný na `/srv/uploads`, secret `ADMIN_PA
 3. Import vytvoří projekt **theblooms** se službami:
    - `vol` — Local Storage (CMS + fotky)
    - `app` — Node.js 22 (Next.js SSR)
-4. Ve službě `app` napojte Git (pipeline na větev `main`, setup `app`).
+4. Ve službě `app` → Pipelines & CI/CD napojte Git (větev `main`, setup `app`). Import sám o sobě Git nevyžaduje — `zeropsSetup` + `buildFromGit` použijte jen u veřejného GitHub/GitLab repa.
 5. V secrets změňte `ADMIN_PASSWORD` na silné heslo (výchozí z importu je jen placeholder).
 6. Přidejte vlastní doménu / public HTTP; zkontrolujte `NEXT_PUBLIC_SITE_URL`.
 
