@@ -13,8 +13,9 @@ export function SiteFooterView({ contact }: { contact: SiteContact }) {
 
   return (
     <footer className="mt-0 bg-moss-deep text-white">
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 xl:grid-cols-4 xl:gap-8 lg:px-8">
-        <div className="min-w-0 md:col-span-2 xl:col-span-1">
+      <div className="mx-auto flex max-w-7xl flex-col gap-12 px-4 py-14 sm:px-6 lg:px-8 xl:flex-row xl:items-start xl:justify-between xl:gap-16">
+        {/* Brand — left edge */}
+        <div className="min-w-0 max-w-sm shrink-0">
           <Link
             href="/"
             aria-label="THE BLOOMS — úvod"
@@ -25,83 +26,87 @@ export function SiteFooterView({ contact }: { contact: SiteContact }) {
           <p className="mt-4 font-display text-lg text-bloom-yellow">
             {contact.owner}
           </p>
-          <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/85">
+          <p className="mt-3 text-sm leading-relaxed text-white/85">
             {fixCzechOrphans(
               "Floristické studio. Svatby, květinové zakázky, věnce a workshopy — osobně a na míru.",
             )}
           </p>
         </div>
-        <div>
-          <p className="text-xs tracking-[0.2em] uppercase text-[#ef7d61]">
-            Menu
-          </p>
-          <ul className="mt-4 space-y-2">
-            {nav.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="text-sm text-white/90 transition-colors hover:text-bloom-light"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <p className="text-xs tracking-[0.2em] uppercase text-[#ef7d61]">
-            Informace
-          </p>
-          <ul className="mt-4 space-y-2">
-            {legalNav.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="text-sm text-white/90 transition-colors hover:text-bloom-light"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <p className="text-xs tracking-[0.2em] uppercase text-[#ef7d61]">
-            Kontakt
-          </p>
-          <address className="mt-4 not-italic">
-            <ul className="space-y-2 text-sm text-white/90">
-              <li className="font-medium text-white">{contact.name}</li>
-              <li>{contact.owner}</li>
-              <li>{contact.location}</li>
-              <li>
-                <a
-                  href={`mailto:${contact.email}`}
-                  className="transition-colors hover:text-bloom-light"
-                >
-                  {contact.email}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={`tel:${contact.phone.replace(/\s/g, "")}`}
-                  className="transition-colors hover:text-bloom-light"
-                >
-                  {contact.phone}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={contact.instagram}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="transition-colors hover:text-bloom-light"
-                >
-                  @{contact.instagramHandle}
-                </a>
-              </li>
+
+        {/* Menu / Informace / Kontakt — nudged right on desktop */}
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-3 sm:gap-10 xl:w-full xl:max-w-3xl xl:gap-12">
+          <div>
+            <p className="text-xs tracking-[0.2em] uppercase text-[#ef7d61]">
+              Menu
+            </p>
+            <ul className="mt-4 space-y-2">
+              {nav.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="text-sm text-white/90 transition-colors hover:text-bloom-light"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
-          </address>
+          </div>
+          <div>
+            <p className="text-xs tracking-[0.2em] uppercase text-[#ef7d61]">
+              Informace
+            </p>
+            <ul className="mt-4 space-y-2">
+              {legalNav.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="text-sm text-white/90 transition-colors hover:text-bloom-light"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p className="text-xs tracking-[0.2em] uppercase text-[#ef7d61]">
+              Kontakt
+            </p>
+            <address className="mt-4 not-italic">
+              <ul className="space-y-2 text-sm text-white/90">
+                <li className="font-medium text-white">{contact.name}</li>
+                <li>{contact.owner}</li>
+                <li>{contact.location}</li>
+                <li>
+                  <a
+                    href={`mailto:${contact.email}`}
+                    className="transition-colors hover:text-bloom-light"
+                  >
+                    {contact.email}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={`tel:${contact.phone.replace(/\s/g, "")}`}
+                    className="transition-colors hover:text-bloom-light"
+                  >
+                    {contact.phone}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={contact.instagram}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="transition-colors hover:text-bloom-light"
+                  >
+                    @{contact.instagramHandle}
+                  </a>
+                </li>
+              </ul>
+            </address>
+          </div>
         </div>
       </div>
 
