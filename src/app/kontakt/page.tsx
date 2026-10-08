@@ -75,7 +75,7 @@ export default async function KontaktPage({ searchParams }: Props) {
 
   return (
     <>
-    <div className="mx-auto max-w-7xl px-4 pt-14 pb-0 sm:px-6 lg:px-8">
+    <div className="mx-auto w-full max-w-7xl px-4 pt-14 pb-0 sm:px-6 lg:px-8">
       <JsonLd data={jsonLd} />
       <div className="grid gap-14 lg:grid-cols-[0.85fr_1.15fr]">
         <FadeIn>
