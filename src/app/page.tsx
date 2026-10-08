@@ -124,6 +124,16 @@ export default async function HomePage() {
     "home.cta",
     "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=1400&q=80",
   );
+  const twoWaysTitle = textFrom(cms, "home.twoWaysTitle");
+  const twoWaysComma = twoWaysTitle.indexOf(",");
+  const twoWaysLine1 =
+    twoWaysComma === -1
+      ? twoWaysTitle
+      : twoWaysTitle.slice(0, twoWaysComma + 1);
+  const twoWaysLine2 =
+    twoWaysComma === -1
+      ? null
+      : twoWaysTitle.slice(twoWaysComma + 1).trimStart();
 
   return (
     <>
@@ -166,7 +176,13 @@ export default async function HomePage() {
       <section className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         {/* Title left; two columns full content width (same edges as Realizace below) */}
         <h2 className="w-full text-left font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
-          {textFrom(cms, "home.twoWaysTitle")}
+          {twoWaysLine1}
+          {twoWaysLine2 ? (
+            <>
+              <br />
+              {twoWaysLine2}
+            </>
+          ) : null}
         </h2>
         <div className="mt-10 flex w-full flex-col gap-10 sm:mt-12 sm:flex-row sm:gap-16 lg:gap-20">
           <div className="min-w-0 flex-1 border-t border-bloom/40 pt-6 text-left">
