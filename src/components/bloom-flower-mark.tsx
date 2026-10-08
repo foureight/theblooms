@@ -16,7 +16,8 @@ export function BloomFlowerMark({ className, tone = "default" }: Props) {
       height={84}
       aria-hidden
       className={cn(
-        tone === "white" ? "text-white" : "logo-flower-spin text-moss",
+        "logo-flower-spin",
+        tone === "white" ? "text-white" : "text-moss",
         className,
       )}
     >

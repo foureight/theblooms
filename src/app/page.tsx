@@ -163,37 +163,35 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
-        <FadeIn>
-          {/* Title left; two service columns span full page width */}
-          <h2 className="text-left font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
-            {textFrom(cms, "home.twoWaysTitle")}
-          </h2>
-          <div className="mt-10 grid grid-cols-1 gap-10 sm:mt-12 sm:grid-cols-2 sm:gap-14 lg:gap-20">
-            <div className="border-t border-bloom/40 pt-6 text-left">
-              <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
-                {textFrom(cms, "home.twoWaysWeddingsTitle")}
-              </h3>
-              <p className="mt-3 max-w-md text-base leading-relaxed text-muted-foreground">
-                {textFrom(cms, "home.twoWaysWeddingsText")}
-              </p>
-              <CtaLink href="/kontakt" variant="outline" className="mt-5">
-                Poslat poptávku
-              </CtaLink>
-            </div>
-            <div className="border-t border-bloom/40 pt-6 text-left">
-              <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
-                {textFrom(cms, "home.twoWaysWreathsTitle")}
-              </h3>
-              <p className="mt-3 max-w-md text-base leading-relaxed text-muted-foreground">
-                {textFrom(cms, "home.twoWaysWreathsText")}
-              </p>
-              <CtaLink href="/vence" variant="outline" className="mt-5">
-                Do e-shopu
-              </CtaLink>
-            </div>
+      <section className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        {/* Title left; two columns full content width (same edges as Realizace below) */}
+        <h2 className="w-full text-left font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
+          {textFrom(cms, "home.twoWaysTitle")}
+        </h2>
+        <div className="mt-10 flex w-full flex-col gap-10 sm:mt-12 sm:flex-row sm:gap-16 lg:gap-20">
+          <div className="min-w-0 flex-1 border-t border-bloom/40 pt-6 text-left">
+            <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
+              {textFrom(cms, "home.twoWaysWeddingsTitle")}
+            </h3>
+            <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+              {textFrom(cms, "home.twoWaysWeddingsText")}
+            </p>
+            <CtaLink href="/kontakt" variant="outline" className="mt-5">
+              Poslat poptávku
+            </CtaLink>
           </div>
-        </FadeIn>
+          <div className="min-w-0 flex-1 border-t border-bloom/40 pt-6 text-left">
+            <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
+              {textFrom(cms, "home.twoWaysWreathsTitle")}
+            </h3>
+            <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+              {textFrom(cms, "home.twoWaysWreathsText")}
+            </p>
+            <CtaLink href="/vence" variant="outline" className="mt-5">
+              Do e-shopu
+            </CtaLink>
+          </div>
+        </div>
       </section>
 
       <section className="bg-moss-deep text-primary-foreground">

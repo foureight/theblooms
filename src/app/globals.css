@@ -224,7 +224,6 @@
   }
   .logo-flower-spin {
     transform-origin: center center;
-    color: var(--bloom);
     animation: bloom-flower-spin 6.5s ease-in-out infinite;
   }
   @media (prefers-reduced-motion: reduce) {
