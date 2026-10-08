@@ -220,16 +220,25 @@
       transform: translateY(0);
     }
   }
-  @keyframes soft-zoom {
+  /* Hero: slightly cropped-in, biased right toward the flower, slow drift */
+  @keyframes hero-drift {
     from {
-      transform: scale(1.06);
+      transform: scale(1.16) translate3d(1.5%, 0, 0);
     }
     to {
-      transform: scale(1);
+      transform: scale(1.22) translate3d(-1.5%, 0, 0);
     }
   }
   .hero-media {
-    animation: soft-zoom 1.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transform-origin: 78% center;
+    will-change: transform;
+    animation: hero-drift 22s ease-in-out infinite alternate;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-media {
+      animation: none;
+      transform: scale(1.12) translate3d(1%, 0, 0);
+    }
   }
   /* Logo flower: ~5s pause, then one slow turn in green, repeat */
   @keyframes bloom-flower-spin {

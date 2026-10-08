@@ -151,7 +151,7 @@ export default async function HomePage() {
           alt="Svatební květinová instalace"
           fill
           priority
-          className="hero-media object-cover"
+          className="hero-media object-cover object-[78%_center]"
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/20" />
