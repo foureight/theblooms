@@ -165,31 +165,34 @@ export default async function HomePage() {
 
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
         <FadeIn>
-          <h2 className="text-left font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
-            {textFrom(cms, "home.twoWaysTitle")}
-          </h2>
-          <div className="mx-auto mt-10 grid max-w-3xl gap-12 sm:grid-cols-2 sm:gap-14">
-            <div className="border-t border-bloom/40 pt-6 text-left">
-              <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
-                {textFrom(cms, "home.twoWaysWeddingsTitle")}
-              </h3>
-              <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-                {textFrom(cms, "home.twoWaysWeddingsText")}
-              </p>
-              <CtaLink href="/kontakt" variant="outline" className="mt-5">
-                Poslat poptávku
-              </CtaLink>
-            </div>
-            <div className="border-t border-bloom/40 pt-6 text-left">
-              <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
-                {textFrom(cms, "home.twoWaysWreathsTitle")}
-              </h3>
-              <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-                {textFrom(cms, "home.twoWaysWreathsText")}
-              </p>
-              <CtaLink href="/vence" variant="outline" className="mt-5">
-                Do e-shopu
-              </CtaLink>
+          {/* Title + both services share one left edge; columns sit side by side */}
+          <div className="max-w-3xl text-left">
+            <h2 className="font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
+              {textFrom(cms, "home.twoWaysTitle")}
+            </h2>
+            <div className="mt-10 grid gap-10 sm:grid-cols-2 sm:gap-12">
+              <div className="border-t border-bloom/40 pt-6">
+                <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
+                  {textFrom(cms, "home.twoWaysWeddingsTitle")}
+                </h3>
+                <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+                  {textFrom(cms, "home.twoWaysWeddingsText")}
+                </p>
+                <CtaLink href="/kontakt" variant="outline" className="mt-5">
+                  Poslat poptávku
+                </CtaLink>
+              </div>
+              <div className="border-t border-bloom/40 pt-6">
+                <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
+                  {textFrom(cms, "home.twoWaysWreathsTitle")}
+                </h3>
+                <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+                  {textFrom(cms, "home.twoWaysWreathsText")}
+                </p>
+                <CtaLink href="/vence" variant="outline" className="mt-5">
+                  Do e-shopu
+                </CtaLink>
+              </div>
             </div>
           </div>
         </FadeIn>
@@ -316,10 +319,10 @@ export default async function HomePage() {
       </section>
 
       <section>
+        {/* Mirror of Kytky & eventy (photo|text): here text|photo, same gap */}
         <div className="mx-auto grid max-w-7xl items-start gap-12 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-2 lg:gap-14 lg:px-8 lg:py-40">
-          {/* Mirror of Kytky & eventy: text hugs the photo from the left */}
-          <FadeIn className="lg:flex lg:justify-end">
-            <div className="max-w-md">
+          <FadeIn className="w-full lg:flex lg:justify-end">
+            <div className="w-full max-w-md lg:max-w-none lg:w-[min(100%,28rem)]">
               <h2 className="font-display text-4xl leading-[1.4] text-moss-deep text-balance sm:text-5xl md:text-6xl">
                 Domluvte si svatbu, kytky nebo věnec
               </h2>
@@ -337,7 +340,7 @@ export default async function HomePage() {
               </div>
             </div>
           </FadeIn>
-          <FadeIn delay={80}>
+          <FadeIn delay={80} className="w-full">
             <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[5/4] lg:aspect-[4/5]">
               <CmsImage
                 src={ctaImg}
