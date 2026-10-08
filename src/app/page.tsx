@@ -134,6 +134,13 @@ export default async function HomePage() {
     twoWaysComma === -1
       ? null
       : twoWaysTitle.slice(twoWaysComma + 1).trimStart();
+  const heroTitleRaw = textFrom(cms, "home.heroTitle");
+  const heroTitleFlat = heroTitleRaw.replace(/\s+/g, " ").trim();
+  const heroTitle =
+    heroTitleFlat ===
+    "Floristické studio pro svatby, květinové realizace nebo věnce"
+      ? "Floristické studio\npro svatby,\nkvětinové realizace\nnebo věnce"
+      : heroTitleRaw;
 
   return (
     <>
@@ -148,19 +155,9 @@ export default async function HomePage() {
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/20" />
-        <div className="relative mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-end px-4 pb-[114px] pt-28 sm:px-6 lg:px-8 lg:pb-[146px]">
+        <div className="relative mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-end px-4 pb-[314px] pt-28 sm:px-6 lg:px-8 lg:pb-[346px]">
           <h1 className="reveal max-w-3xl whitespace-pre-line font-sans text-4xl font-normal tracking-wide text-white sm:text-5xl md:text-6xl">
-            {(() => {
-              const raw = textFrom(cms, "home.heroTitle");
-              const flat = raw.replace(/\s+/g, " ").trim();
-              if (
-                flat ===
-                "Floristické studio pro svatby, květinové realizace nebo věnce"
-              ) {
-                return "Floristické studio\npro svatby,\nkvětinové realizace\nnebo věnce";
-              }
-              return raw;
-            })()}
+            {heroTitle}
           </h1>
           <p className="reveal reveal-delay-1 mt-3 max-w-lg text-base leading-relaxed text-white/70">
             {textFrom(cms, "home.heroLead")}
