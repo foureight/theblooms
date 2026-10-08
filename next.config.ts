@@ -10,6 +10,16 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.theblooms.cz" }],
+        destination: "https://theblooms.cz/:path*",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
