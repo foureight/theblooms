@@ -139,7 +139,7 @@ export default async function HomePage() {
   const heroTitle =
     heroTitleFlat ===
     "Floristické studio pro svatby, květinové realizace nebo věnce"
-      ? "Floristické studio\npro svatby,\nkvětinové realizace\nnebo věnce"
+      ? "Floristické studio\npro svatby, květinové\nrealizace nebo věnce"
       : heroTitleRaw;
 
   return (
@@ -160,14 +160,7 @@ export default async function HomePage() {
             {heroTitle}
           </h1>
           <p className="reveal reveal-delay-1 mt-3 max-w-lg text-base leading-relaxed text-white/70">
-            {(() => {
-              const lead = textFrom(cms, "home.heroLead");
-              // Prefer the short Prague line when CMS still has the old long Czech copy
-              if (lead.includes("v Česku") || lead.length > 120) {
-                return "THE BLOOMS je studio Aleny Šmejkalové v Praze.";
-              }
-              return lead;
-            })()}
+            {textFrom(cms, "home.heroLead")}
           </p>
           <div className="reveal reveal-delay-2 mt-8 flex flex-wrap gap-3">
             <CtaLink

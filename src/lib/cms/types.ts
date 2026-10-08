@@ -127,7 +127,7 @@ export const PAGE_TEXTS = [
     label: "Úvod — hlavní nadpis (H1)",
     multiline: true,
     defaultValue:
-      "Floristické studio\npro svatby,\nkvětinové realizace\nnebo věnce",
+      "Floristické studio\npro svatby, květinové\nrealizace nebo věnce",
   },
   {
     id: "home.heroLead",
