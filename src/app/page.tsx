@@ -314,17 +314,17 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section>
-        {/* Text left, photo right — columns pulled together (≈80px gap) */}
-        <div className="mx-auto flex max-w-7xl flex-col items-start gap-10 px-4 py-20 sm:px-6 sm:py-28 lg:flex-row lg:items-start lg:justify-center lg:gap-20 lg:px-8 lg:py-40">
-          <FadeIn className="w-full max-w-md shrink-0 text-left lg:w-[28rem]">
+      <section className="overflow-x-clip">
+        {/* Text left, photo right */}
+        <div className="mx-auto grid max-w-7xl grid-cols-1 items-start gap-10 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-2 lg:gap-14 lg:px-8 lg:py-40">
+          <FadeIn className="min-w-0 text-left">
             <h2 className="font-display text-4xl text-moss-deep text-balance sm:text-5xl md:text-6xl">
               Domluvte si svatbu, kytky nebo věnec
             </h2>
-            <p className="mt-5 font-display text-2xl leading-[1.35] text-moss-deep/85 text-balance sm:text-3xl">
+            <p className="mt-5 font-display text-2xl leading-snug text-moss-deep/85 text-balance sm:text-3xl sm:leading-snug">
               {textFrom(cms, "home.ctaTitle")}
             </p>
-            <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:mt-5">
+            <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground sm:mt-5">
               {textFrom(cms, "home.ctaText")}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
@@ -334,14 +334,14 @@ export default async function HomePage() {
               <CtaLink href="/kontakt">Napsat</CtaLink>
             </div>
           </FadeIn>
-          <FadeIn delay={80} className="w-full max-w-lg shrink-0 lg:max-w-none lg:w-[min(100%,28rem)]">
-            <div className="relative aspect-[4/5] overflow-hidden">
+          <FadeIn delay={80} className="min-w-0 w-full">
+            <div className="relative aspect-[4/5] w-full overflow-hidden sm:aspect-[5/4] lg:aspect-[4/5]">
               <CmsImage
                 src={ctaImg}
                 alt="Svatební květinová realizace"
                 fill
                 className="object-cover"
-                sizes="(max-width:1024px) 100vw, 28rem"
+                sizes="(max-width:1024px) 100vw, 50vw"
               />
             </div>
           </FadeIn>

@@ -35,7 +35,10 @@ export function BloomLogo({
 
   return (
     <span
-      className={cn("relative inline-block leading-none", className)}
+      className={cn(
+        "relative inline-block max-w-full overflow-hidden leading-none",
+        className,
+      )}
       style={{ aspectRatio: "553 / 85" }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -46,7 +49,7 @@ export function BloomLogo({
         height={85}
         decoding={priority ? "sync" : "async"}
         fetchPriority={priority ? "high" : "auto"}
-        className="block h-full w-auto"
+        className="block h-full w-auto max-w-none"
       />
       <BloomFlowerMark
         tone={tone}

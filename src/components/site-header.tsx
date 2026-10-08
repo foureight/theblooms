@@ -19,21 +19,21 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:gap-4 sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="flex items-center"
+          className="min-w-0 shrink"
           onClick={() => setOpen(false)}
           aria-label="THE BLOOMS — úvod"
         >
           <BloomLogo
             variant="full"
             priority
-            className="h-[1.8rem] w-auto sm:h-[2.1rem]"
+            className="h-7 w-auto max-w-[9.5rem] sm:h-[2.1rem] sm:max-w-[12rem]"
           />
         </Link>
 
-        <nav className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 xl:flex">
+        <nav className="ml-auto hidden items-center justify-end gap-0.5 lg:flex">
           {nav.map((item) => {
             const active =
               pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -42,7 +42,7 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "shrink-0 whitespace-nowrap px-2.5 py-2 text-[11px] font-bold tracking-[0.14em] uppercase underline-offset-4 transition-colors hover:text-bloom-light hover:underline",
+                  "shrink-0 whitespace-nowrap px-1.5 py-2 text-[10px] font-bold tracking-[0.12em] uppercase underline-offset-4 transition-colors hover:text-bloom-light hover:underline xl:px-2.5 xl:text-[11px] xl:tracking-[0.14em]",
                   active
                     ? "text-bloom underline"
                     : "text-muted-foreground",
@@ -54,7 +54,7 @@ export function SiteHeader() {
           })}
         </nav>
 
-        <div className="flex items-center gap-1">
+        <div className="flex shrink-0 items-center gap-1 lg:ml-1">
           <Link
             href="/kosik"
             aria-label="Košík"
@@ -70,7 +70,7 @@ export function SiteHeader() {
           <Button
             variant="ghost"
             size="icon"
-            className="xl:hidden"
+            className="lg:hidden"
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Zavřít menu" : "Otevřít menu"}
           >
@@ -80,7 +80,7 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <div className="border-t border-border/60 bg-background xl:hidden">
+        <div className="border-t border-border/60 bg-background lg:hidden">
           <nav className="mx-auto flex max-w-7xl flex-col px-4 py-4">
             {nav.map((item) => (
               <Link

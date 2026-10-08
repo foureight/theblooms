@@ -13,17 +13,14 @@ export function SiteFooterView({ contact }: { contact: SiteContact }) {
 
   return (
     <footer className="mt-0 bg-moss-deep text-white">
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-4 lg:gap-8 lg:px-8">
-        <div className="min-w-0 overflow-hidden">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 xl:grid-cols-4 xl:gap-8 lg:px-8">
+        <div className="min-w-0 md:col-span-2 xl:col-span-1">
           <Link
             href="/"
             aria-label="THE BLOOMS — úvod"
-            className="inline-block max-w-full transition-opacity hover:opacity-90"
+            className="inline-block max-w-[12.5rem] transition-opacity hover:opacity-90 sm:max-w-[14rem]"
           >
-            <BloomLogo
-              tone="white"
-              className="h-[2.4rem] w-auto max-w-full"
-            />
+            <BloomLogo tone="white" className="h-8 w-auto sm:h-[2.4rem]" />
           </Link>
           <p className="mt-4 font-display text-lg text-bloom-yellow">
             {contact.owner}

@@ -61,10 +61,10 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
-  /* Display sizes: agreed 80px leading site-wide (overrides default lh:1) */
-  --text-5xl--line-height: 80px;
-  --text-6xl--line-height: 80px;
-  --text-7xl--line-height: 80px;
+  /* Display sizes: keep readable lh on small screens; 80px from md via utilities */
+  --text-5xl--line-height: 1.15;
+  --text-6xl--line-height: 1.12;
+  --text-7xl--line-height: 1.1;
 }
 
 :root {
@@ -164,6 +164,24 @@
 }
 
 @layer utilities {
+  /* Agreed 80px display leading — desktop only so mobile/tablet don’t clip */
+  @media (min-width: 768px) {
+    .text-5xl,
+    .text-6xl,
+    .text-7xl,
+    .md\:text-5xl,
+    .md\:text-6xl,
+    .md\:text-7xl,
+    .lg\:text-5xl,
+    .lg\:text-6xl,
+    .lg\:text-7xl,
+    .sm\:text-5xl,
+    .sm\:text-6xl,
+    .sm\:text-7xl {
+      line-height: 80px;
+    }
+  }
+
   .text-balance {
     text-wrap: balance;
   }
