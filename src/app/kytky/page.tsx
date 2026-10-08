@@ -153,6 +153,9 @@ export default async function KytkyPage() {
             vlastní dílně — bez výlohy a bez e-shopu na kytky. Každá zakázka je
             poptávka: domluvíme styl, termín, rozpočet a doručení nebo instalaci.
           </p>
+          <CtaLink href="/kontakt?typ=kytky" className="mt-8">
+            Poslat poptávku
+          </CtaLink>
         </FadeIn>
 
         <FadeIn delay={60}>
