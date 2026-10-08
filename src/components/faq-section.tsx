@@ -8,16 +8,22 @@ type Props = {
   faqs: FaqItem[];
 };
 
-/** FAQ block — no full-bleed w-screen (that caused the left gray stripe). */
+/**
+ * White FAQ through to the green footer (no gray strip under FAQ).
+ * Uses 100% width — not w-screen — so no left overflow stripe.
+ */
 export function FaqSection({
   id = "faq",
   title = "FAQ",
   faqs,
 }: Props) {
   return (
-    <section className="mt-20 bg-white py-14 sm:mt-28 sm:py-20" aria-labelledby={id}>
+    <section
+      className="relative mt-20 bg-white py-14 pb-0 shadow-[0_100vh_0_0_#fff] sm:mt-28 sm:py-20 sm:pb-0"
+      aria-labelledby={id}
+    >
       <FadeIn>
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 pb-14 sm:px-6 sm:pb-20 lg:px-8">
           <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
             Časté otázky
           </p>

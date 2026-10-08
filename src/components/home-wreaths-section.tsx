@@ -34,7 +34,7 @@ export function HomeWreathsSection({
   }, [items, season, limit]);
 
   return (
-    <section className="border-y border-border/60 bg-white">
+    <section className="border-y border-border/60 bg-card/50">
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
         <FadeIn>
           <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
