@@ -9,8 +9,9 @@ type Props = {
 };
 
 /**
- * White FAQ through to the green footer (no gray strip under FAQ).
- * Uses 100% width — not w-screen — so no left overflow stripe.
+ * Full-bleed white FAQ (breaks out of max-w-7xl parents).
+ * ml calc + overflow-x:clip on html → edge-to-edge, no left stripe.
+ * White shadow continues to the green footer.
  */
 export function FaqSection({
   id = "faq",
@@ -19,7 +20,7 @@ export function FaqSection({
 }: Props) {
   return (
     <section
-      className="relative mt-20 bg-white py-14 pb-0 shadow-[0_100vh_0_0_#fff] sm:mt-28 sm:py-20 sm:pb-0"
+      className="relative mt-20 ml-[calc(50%-50vw)] w-screen bg-white py-14 pb-0 shadow-[0_100vh_0_0_#fff] sm:mt-28 sm:py-20 sm:pb-0"
       aria-labelledby={id}
     >
       <FadeIn>

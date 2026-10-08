@@ -153,8 +153,9 @@ export default async function WeddingDetailPage({ params }: Props) {
           </section>
         )}
 
-        <FaqSection faqs={weddingFaqs} />
       </div>
+
+      <FaqSection faqs={weddingFaqs} />
     </div>
   );
 }

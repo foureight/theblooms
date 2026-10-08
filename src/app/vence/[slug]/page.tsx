@@ -150,7 +150,8 @@ export default async function WreathDetailPage({ params }: Props) {
         </div>
       </div>
 
-      <FaqSection faqs={wreathFaqs} />
     </div>
+
+      <FaqSection faqs={wreathFaqs} />
   );
 }

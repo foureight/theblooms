@@ -102,8 +102,9 @@ export default async function DecorationDetailPage({ params }: Props) {
           <DecorationVariantPicker category={category} />
         </div>
 
-        <FaqSection faqs={weddingFaqs} />
       </div>
+
+      <FaqSection faqs={weddingFaqs} />
     </div>
   );
 }

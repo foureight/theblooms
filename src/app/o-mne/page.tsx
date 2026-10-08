@@ -109,7 +109,8 @@ export default async function AboutPage() {
         </FadeIn>
       </div>
 
-      <FaqSection faqs={aboutFaqs} />
     </div>
+
+      <FaqSection faqs={aboutFaqs} />
   );
 }

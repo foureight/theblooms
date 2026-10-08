@@ -193,8 +193,9 @@ export default async function SvatbyPage() {
           </section>
         </FadeIn>
 
-        <FaqSection faqs={weddingFaqs} />
       </div>
+
+      <FaqSection faqs={weddingFaqs} />
     </div>
   );
 }

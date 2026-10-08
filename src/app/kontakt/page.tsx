@@ -144,7 +144,8 @@ export default async function KontaktPage({ searchParams }: Props) {
         </FadeIn>
       </div>
 
-      <FaqSection faqs={contactFaqs} />
     </div>
+
+      <FaqSection faqs={contactFaqs} />
   );
 }

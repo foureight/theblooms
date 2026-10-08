@@ -104,7 +104,8 @@ export default async function VencePage() {
         <h2 className="sr-only">Nabídka věnců</h2>
         <WreathCatalog items={wreaths} />
       </div>
-      <FaqSection faqs={wreathFaqs} />
     </div>
+
+      <FaqSection faqs={wreathFaqs} />
   );
 }
