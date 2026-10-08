@@ -166,7 +166,7 @@ export const PAGE_TEXTS = [
     label: "Úvod — karta Věnce (text)",
     multiline: true,
     defaultValue:
-      "Hotové sezónní věnce — vyberete, přidáte do košíku a koupíte přímo na webu.",
+      "Nabídka sezónních věnců — vyberete, přidáte do košíku a koupíte přímo na webu.",
   },
   {
     id: "home.flowersTitle",

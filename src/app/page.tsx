@@ -165,31 +165,33 @@ export default async function HomePage() {
 
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
         <FadeIn>
-          <h2 className="text-left font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
-            {textFrom(cms, "home.twoWaysTitle")}
-          </h2>
-          <div className="mt-10 grid gap-12 md:grid-cols-2">
-            <div className="border-t border-bloom/40 pt-6">
-              <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
-                {textFrom(cms, "home.twoWaysWeddingsTitle")}
-              </h3>
-              <p className="mt-3 max-w-sm text-base leading-relaxed text-muted-foreground">
-                {textFrom(cms, "home.twoWaysWeddingsText")}
-              </p>
-              <CtaLink href="/kontakt" variant="outline" className="mt-5">
-                Poslat poptávku
-              </CtaLink>
-            </div>
-            <div className="border-t border-bloom/40 pt-6">
-              <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
-                {textFrom(cms, "home.twoWaysWreathsTitle")}
-              </h3>
-              <p className="mt-3 max-w-sm text-base leading-relaxed text-muted-foreground">
-                {textFrom(cms, "home.twoWaysWreathsText")}
-              </p>
-              <CtaLink href="/vence" variant="outline" className="mt-5">
-                Do e-shopu
-              </CtaLink>
+          <div className="max-w-4xl text-left">
+            <h2 className="font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
+              {textFrom(cms, "home.twoWaysTitle")}
+            </h2>
+            <div className="mt-10 grid gap-12 sm:grid-cols-2 sm:gap-14">
+              <div className="border-t border-bloom/40 pt-6 text-left">
+                <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
+                  {textFrom(cms, "home.twoWaysWeddingsTitle")}
+                </h3>
+                <p className="mt-3 max-w-sm text-base leading-relaxed text-muted-foreground">
+                  {textFrom(cms, "home.twoWaysWeddingsText")}
+                </p>
+                <CtaLink href="/kontakt" variant="outline" className="mt-5">
+                  Poslat poptávku
+                </CtaLink>
+              </div>
+              <div className="border-t border-bloom/40 pt-6 text-left">
+                <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
+                  {textFrom(cms, "home.twoWaysWreathsTitle")}
+                </h3>
+                <p className="mt-3 max-w-sm text-base leading-relaxed text-muted-foreground">
+                  {textFrom(cms, "home.twoWaysWreathsText")}
+                </p>
+                <CtaLink href="/vence" variant="outline" className="mt-5">
+                  Do e-shopu
+                </CtaLink>
+              </div>
             </div>
           </div>
         </FadeIn>
@@ -316,8 +318,19 @@ export default async function HomePage() {
       </section>
 
       <section>
-        <div className="mx-auto grid max-w-7xl items-start gap-12 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-2 lg:gap-24 lg:px-8 lg:py-40">
+        <div className="mx-auto grid max-w-7xl items-start gap-12 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-2 lg:gap-14 lg:px-8 lg:py-40">
           <FadeIn>
+            <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[5/4] lg:aspect-[4/5]">
+              <CmsImage
+                src={ctaImg}
+                alt="Svatební květinová realizace"
+                fill
+                className="object-cover"
+                sizes="(max-width:1024px) 100vw, 50vw"
+              />
+            </div>
+          </FadeIn>
+          <FadeIn delay={80}>
             <h2 className="font-display text-4xl leading-[1.4] text-moss-deep text-balance sm:text-5xl md:text-6xl">
               {textFrom(cms, "home.ctaTitle")}
             </h2>
@@ -329,17 +342,6 @@ export default async function HomePage() {
                 Realizace
               </CtaLink>
               <CtaLink href="/kontakt">Napsat</CtaLink>
-            </div>
-          </FadeIn>
-          <FadeIn delay={80}>
-            <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[5/4] lg:aspect-[4/5]">
-              <CmsImage
-                src={ctaImg}
-                alt="Svatební květinová realizace"
-                fill
-                className="object-cover"
-                sizes="(max-width:1024px) 100vw, 50vw"
-              />
             </div>
           </FadeIn>
         </div>
