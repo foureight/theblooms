@@ -33,10 +33,11 @@ export function FaqSection({
           >
             {title}
           </h2>
-          <div className="mt-8 max-w-3xl sm:mt-10">
-            {faqs.map((faq) => (
+          <div className="mt-8 w-full sm:mt-10">
+            {faqs.map((faq, index) => (
               <details
                 key={faq.question}
+                open={index === 0 ? true : undefined}
                 className="group border-t border-bloom/30 open:pb-1"
               >
                 <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-4 sm:py-5 [&::-webkit-details-marker]:hidden">
@@ -50,7 +51,7 @@ export function FaqSection({
                     +
                   </span>
                 </summary>
-                <p className="pb-5 text-sm leading-relaxed text-muted-foreground sm:pb-6">
+                <p className="max-w-3xl pb-5 text-sm leading-relaxed text-muted-foreground sm:pb-6">
                   {fixCzechOrphans(faq.answer)}
                 </p>
               </details>
