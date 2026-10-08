@@ -165,33 +165,31 @@ export default async function HomePage() {
 
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
         <FadeIn>
-          <div className="max-w-4xl text-left">
-            <h2 className="font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
-              {textFrom(cms, "home.twoWaysTitle")}
-            </h2>
-            <div className="mt-10 grid gap-12 sm:grid-cols-2 sm:gap-14">
-              <div className="border-t border-bloom/40 pt-6 text-left">
-                <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
-                  {textFrom(cms, "home.twoWaysWeddingsTitle")}
-                </h3>
-                <p className="mt-3 max-w-sm text-base leading-relaxed text-muted-foreground">
-                  {textFrom(cms, "home.twoWaysWeddingsText")}
-                </p>
-                <CtaLink href="/kontakt" variant="outline" className="mt-5">
-                  Poslat poptávku
-                </CtaLink>
-              </div>
-              <div className="border-t border-bloom/40 pt-6 text-left">
-                <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
-                  {textFrom(cms, "home.twoWaysWreathsTitle")}
-                </h3>
-                <p className="mt-3 max-w-sm text-base leading-relaxed text-muted-foreground">
-                  {textFrom(cms, "home.twoWaysWreathsText")}
-                </p>
-                <CtaLink href="/vence" variant="outline" className="mt-5">
-                  Do e-shopu
-                </CtaLink>
-              </div>
+          <h2 className="text-left font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
+            {textFrom(cms, "home.twoWaysTitle")}
+          </h2>
+          <div className="mx-auto mt-10 grid max-w-3xl gap-12 sm:grid-cols-2 sm:gap-14">
+            <div className="border-t border-bloom/40 pt-6 text-left">
+              <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
+                {textFrom(cms, "home.twoWaysWeddingsTitle")}
+              </h3>
+              <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+                {textFrom(cms, "home.twoWaysWeddingsText")}
+              </p>
+              <CtaLink href="/kontakt" variant="outline" className="mt-5">
+                Poslat poptávku
+              </CtaLink>
+            </div>
+            <div className="border-t border-bloom/40 pt-6 text-left">
+              <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
+                {textFrom(cms, "home.twoWaysWreathsTitle")}
+              </h3>
+              <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+                {textFrom(cms, "home.twoWaysWreathsText")}
+              </p>
+              <CtaLink href="/vence" variant="outline" className="mt-5">
+                Do e-shopu
+              </CtaLink>
             </div>
           </div>
         </FadeIn>
