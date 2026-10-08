@@ -21,7 +21,7 @@ export function SiteFooterView({ contact }: { contact: SiteContact }) {
             aria-label="THE BLOOMS — úvod"
             className="inline-block transition-opacity hover:opacity-90"
           >
-            <BloomLogo tone="white" className="h-9 w-auto sm:h-10" />
+            <BloomLogo tone="white" className="h-[2.025rem] w-auto sm:h-[2.25rem]" />
           </Link>
           <p className="mt-4 font-display text-lg text-bloom-yellow">
             {contact.owner}
