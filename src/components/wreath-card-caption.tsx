@@ -66,8 +66,7 @@ export function WreathCardCaption({
         </p>
       </div>
       <p className="mt-3 text-[10px] leading-relaxed tracking-[0.06em] text-muted-foreground sm:text-xs">
-        Dostupnost 4&nbsp;dny · Výroba po obdržení objednávky do 4&nbsp;dnů +
-        doprava
+        Výroba po obdržení objednávky do 4&nbsp;dnů + doprava
       </p>
     </div>
   );
