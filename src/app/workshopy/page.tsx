@@ -210,7 +210,9 @@ export default async function WorkshopyPage() {
         <FadeIn delay={120}>
           <section className="mt-24 sm:mt-28">
             <h2 className="font-display text-4xl text-moss-deep text-balance sm:text-5xl md:text-6xl">
-              Napište, pro koho workshop plánujete
+              Napište, pro koho
+              <br />
+              workshop plánujete
             </h2>
             <p className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground">
               <Typo>
