@@ -82,6 +82,7 @@ export default async function VencePage() {
   ];
 
   return (
+    <>
     <div className="mx-auto max-w-7xl px-4 pt-10 pb-0 sm:px-6 sm:pt-14 lg:px-8">
       <JsonLd data={jsonLd} />
       <FadeIn>
@@ -105,7 +106,7 @@ export default async function VencePage() {
         <WreathCatalog items={wreaths} />
       </div>
     </div>
-
-      <FaqSection faqs={wreathFaqs} />
+    <FaqSection faqs={wreathFaqs} />
+    </>
   );
 }

@@ -251,8 +251,9 @@ export default async function WorkshopyPage() {
           </section>
         </FadeIn>
 
-        <FaqSection faqs={workshopFaqs} />
       </div>
+
+      <FaqSection faqs={workshopFaqs} />
     </div>
   );
 }

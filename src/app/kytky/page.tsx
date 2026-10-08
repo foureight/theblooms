@@ -333,8 +333,9 @@ export default async function KytkyPage() {
           </section>
         </FadeIn>
 
-        <FaqSection faqs={flowerFaqs} />
       </div>
+
+      <FaqSection faqs={flowerFaqs} />
     </div>
   );
 }

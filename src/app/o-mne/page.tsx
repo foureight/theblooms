@@ -76,6 +76,7 @@ export default async function AboutPage() {
   );
 
   return (
+    <>
     <div className="mx-auto max-w-7xl px-4 pt-14 pb-0 sm:px-6 lg:px-8">
       <JsonLd data={jsonLd} />
       <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
@@ -108,9 +109,8 @@ export default async function AboutPage() {
           </CtaLink>
         </FadeIn>
       </div>
-
     </div>
-
-      <FaqSection faqs={aboutFaqs} />
+    <FaqSection faqs={aboutFaqs} />
+    </>
   );
 }

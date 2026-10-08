@@ -93,6 +93,7 @@ export default async function WreathDetailPage({ params }: Props) {
   ];
 
   return (
+    <>
     <div className="mx-auto max-w-7xl px-4 pt-14 pb-0 sm:px-6 lg:px-8">
       <JsonLd data={jsonLd} />
       <Link
@@ -151,7 +152,7 @@ export default async function WreathDetailPage({ params }: Props) {
       </div>
 
     </div>
-
-      <FaqSection faqs={wreathFaqs} />
+    <FaqSection faqs={wreathFaqs} />
+    </>
   );
 }
