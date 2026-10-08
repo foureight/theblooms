@@ -161,7 +161,7 @@ export default async function WorkshopyPage() {
         </FadeIn>
 
         <FadeIn delay={100}>
-          <section className="mt-20 grid gap-10 lg:grid-cols-2 lg:items-center">
+          <section className="mt-20 grid gap-10 lg:grid-cols-2 lg:items-start">
             <div className="relative aspect-[4/5] overflow-hidden">
               <CmsImage
                 src={side}
