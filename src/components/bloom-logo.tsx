@@ -10,8 +10,8 @@ type Props = {
 };
 
 /**
- * Official vector lockup — wordmark + flower.
- * Flower spins once every ~6.5s (stays brand green).
+ * Official vector lockup (wordmark + flower).
+ * Full SVG for correct S/flower join; spinning flower overlays the static one.
  */
 export function BloomLogo({
   className,
@@ -28,29 +28,25 @@ export function BloomLogo({
     );
   }
 
-  const wordmark =
-    tone === "white"
-      ? "/theblooms-wordmark-white.svg"
-      : "/theblooms-wordmark.svg";
+  const lockup =
+    tone === "white" ? "/theblooms-white.svg" : "/theblooms.svg";
 
   return (
     <span
-      className={cn(
-        "relative inline-block max-w-full overflow-hidden leading-none",
-        className,
-      )}
+      className={cn("relative inline-block leading-none", className)}
       style={{ aspectRatio: "553 / 85" }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={wordmark}
+        src={lockup}
         alt="THE BLOOMS"
         width={553}
         height={85}
         decoding={priority ? "sync" : "async"}
         fetchPriority={priority ? "high" : "auto"}
-        className="block h-full w-auto max-w-none"
+        className="block h-full w-auto"
       />
+      {/* Covers the static flower in the SVG and spins */}
       <BloomFlowerMark
         tone={tone}
         className="pointer-events-none absolute top-[0.6%] left-[84.31%] h-[98.7%] w-auto"

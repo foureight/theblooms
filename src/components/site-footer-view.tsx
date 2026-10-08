@@ -19,9 +19,9 @@ export function SiteFooterView({ contact }: { contact: SiteContact }) {
           <Link
             href="/"
             aria-label="THE BLOOMS — úvod"
-            className="inline-block max-w-[14rem] transition-opacity hover:opacity-90"
+            className="inline-block transition-opacity hover:opacity-90"
           >
-            <BloomLogo tone="white" className="h-8 w-auto sm:h-9" />
+            <BloomLogo tone="white" className="h-9 w-auto sm:h-10" />
           </Link>
           <p className="mt-4 font-display text-lg text-bloom-yellow">
             {contact.owner}
