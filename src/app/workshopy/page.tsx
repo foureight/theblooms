@@ -127,7 +127,7 @@ export default async function WorkshopyPage() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 pt-14 pb-0 sm:px-6 lg:px-8">
         <FadeIn>
           <p className="max-w-2xl text-lg leading-relaxed text-muted-foreground">
             {textFrom(cms, "workshopy.intro")}
@@ -209,7 +209,7 @@ export default async function WorkshopyPage() {
         </FadeIn>
 
         <FadeIn delay={140}>
-          <section className="mt-14 sm:mt-20">
+          <section className="mt-14 border-t border-bloom/30 pt-12 sm:mt-20">
             <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
               Kde
             </p>

@@ -165,7 +165,7 @@ export default async function HomePage() {
 
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
         <FadeIn>
-          <h2 className="font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
+          <h2 className="text-left font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
             {textFrom(cms, "home.twoWaysTitle")}
           </h2>
           <div className="mt-8 grid gap-10 md:grid-cols-2">
@@ -252,7 +252,7 @@ export default async function HomePage() {
 
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
         <FadeIn>
-          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-10">
+          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start lg:gap-10">
             <div>
               <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
                 Workshopy
@@ -283,7 +283,7 @@ export default async function HomePage() {
       <section className="bg-white">
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
           <FadeIn>
-            <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-10">
+            <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-10">
               <div className="relative aspect-[4/5] overflow-hidden">
                 <CmsImage
                   src={flowersImg}
@@ -316,8 +316,8 @@ export default async function HomePage() {
       </section>
 
       <section>
-        <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:py-28">
-          <FadeIn className="lg:py-4">
+        <div className="mx-auto grid max-w-7xl items-start gap-8 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:py-28">
+          <FadeIn>
             <h2 className="font-display text-4xl leading-[1.05] text-moss-deep text-balance sm:text-5xl md:text-6xl">
               {textFrom(cms, "home.ctaTitle")}
             </h2>

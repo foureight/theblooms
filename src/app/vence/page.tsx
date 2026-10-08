@@ -81,7 +81,7 @@ export default async function VencePage() {
   ];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+    <div className="mx-auto max-w-7xl px-4 pt-10 pb-0 sm:px-6 sm:pt-14 lg:px-8">
       <JsonLd data={jsonLd} />
       <FadeIn>
         <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">

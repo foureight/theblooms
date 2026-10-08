@@ -143,7 +143,7 @@ export default async function KytkyPage() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 pt-14 pb-0 sm:px-6 lg:px-8">
         <FadeIn>
           <p className="max-w-2xl text-lg leading-relaxed text-muted-foreground">
             {textFrom(cms, "kytky.intro")}

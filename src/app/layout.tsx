@@ -87,7 +87,7 @@ export default function RootLayout({
           <SiteHeader />
           <main className="flex min-h-[70vh] flex-col">
             {children}
-            {/* White fill so body gradient never shows as a gray strip above the footer */}
+            {/* White fill after FAQ so site background never shows above the footer */}
             <div className="min-h-0 flex-1 bg-white" aria-hidden />
           </main>
           <SiteFooter />

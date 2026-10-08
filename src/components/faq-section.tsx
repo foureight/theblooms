@@ -7,17 +7,21 @@ type Props = {
   faqs: FaqItem[];
 };
 
+/**
+ * Full-bleed white FAQ. White continues to the green footer via a downward
+ * box-shadow plus the layout flex filler — no gray body strip in between.
+ */
 export function FaqSection({
   id = "faq",
   title = "FAQ",
   faqs,
 }: Props) {
   return (
-    <FadeIn>
-      <section
-        className="relative left-1/2 mt-14 w-screen -translate-x-1/2 bg-white py-10 sm:mt-20 sm:py-14"
-        aria-labelledby={id}
-      >
+    <section
+      className="relative left-1/2 mt-14 mb-0 w-screen -translate-x-1/2 bg-white py-10 shadow-[0_100vh_0_0_#fff] sm:mt-20 sm:py-14"
+      aria-labelledby={id}
+    >
+      <FadeIn>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
             Časté otázky
@@ -44,7 +48,7 @@ export function FaqSection({
             ))}
           </div>
         </div>
-      </section>
-    </FadeIn>
+      </FadeIn>
+    </section>
   );
 }

@@ -88,7 +88,7 @@ export default async function DecorationDetailPage({ params }: Props) {
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 pt-10 pb-0 sm:px-6 sm:pt-14 lg:px-8">
         <FadeIn>
           <p className="max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
             {category.description}

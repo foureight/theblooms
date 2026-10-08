@@ -74,79 +74,77 @@ export default async function KontaktPage({ searchParams }: Props) {
   const contact = mergeSiteContact(cms);
 
   return (
-    <div className="relative left-1/2 w-screen -translate-x-1/2 bg-white">
-      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <JsonLd data={jsonLd} />
-        <div className="grid gap-14 lg:grid-cols-[0.85fr_1.15fr]">
-          <FadeIn>
-            <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
-              Domluvíme se
-            </p>
-            <h1 className="mt-3 font-display text-5xl text-moss-deep sm:text-6xl">
-              Kontakt
-            </h1>
-            <p className="mt-3 font-display text-2xl text-foreground">
-              {contact.owner}
-            </p>
-            <p className="mt-5 max-w-md text-sm leading-relaxed text-muted-foreground">
-              {textFrom(cms, "kontakt.intro")}
-            </p>
-            <dl className="mt-10 space-y-4 text-sm">
-              <div>
-                <dt className="text-xs tracking-[0.16em] uppercase text-muted-foreground">
-                  E-mail
-                </dt>
-                <dd className="mt-1">
-                  <a
-                    href={`mailto:${contact.email}`}
-                    className="hover:underline"
-                  >
-                    {contact.email}
-                  </a>
-                </dd>
-              </div>
-              <div>
-                <dt className="text-xs tracking-[0.16em] uppercase text-muted-foreground">
-                  Telefon
-                </dt>
-                <dd className="mt-1">
-                  <a
-                    href={`tel:${contact.phone.replace(/\s/g, "")}`}
-                    className="hover:underline"
-                  >
-                    {contact.phone}
-                  </a>
-                </dd>
-              </div>
-              <div>
-                <dt className="text-xs tracking-[0.16em] uppercase text-muted-foreground">
-                  Instagram
-                </dt>
-                <dd className="mt-1">
-                  <a
-                    href={contact.instagram}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:underline"
-                  >
-                    @{contact.instagramHandle}
-                  </a>
-                </dd>
-              </div>
-            </dl>
-          </FadeIn>
-          <FadeIn delay={80}>
-            <div className="border-t border-bloom/35 bg-white px-1 pt-8 sm:border-t-0 sm:border-l sm:border-bloom/35 sm:px-0 sm:pl-10 sm:pt-0">
-              <InquiryForm
-                defaultType={defaultType}
-                defaultMessage={defaultMessage}
-              />
+    <div className="mx-auto max-w-7xl px-4 pt-14 pb-0 sm:px-6 lg:px-8">
+      <JsonLd data={jsonLd} />
+      <div className="grid gap-14 lg:grid-cols-[0.85fr_1.15fr]">
+        <FadeIn>
+          <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
+            Domluvíme se
+          </p>
+          <h1 className="mt-3 font-display text-5xl text-moss-deep sm:text-6xl">
+            Kontakt
+          </h1>
+          <p className="mt-3 font-display text-2xl text-foreground">
+            {contact.owner}
+          </p>
+          <p className="mt-5 max-w-md text-sm leading-relaxed text-muted-foreground">
+            {textFrom(cms, "kontakt.intro")}
+          </p>
+          <dl className="mt-10 space-y-4 text-sm">
+            <div>
+              <dt className="text-xs tracking-[0.16em] uppercase text-muted-foreground">
+                E-mail
+              </dt>
+              <dd className="mt-1">
+                <a
+                  href={`mailto:${contact.email}`}
+                  className="hover:underline"
+                >
+                  {contact.email}
+                </a>
+              </dd>
             </div>
-          </FadeIn>
-        </div>
-
-        <FaqSection faqs={contactFaqs} />
+            <div>
+              <dt className="text-xs tracking-[0.16em] uppercase text-muted-foreground">
+                Telefon
+              </dt>
+              <dd className="mt-1">
+                <a
+                  href={`tel:${contact.phone.replace(/\s/g, "")}`}
+                  className="hover:underline"
+                >
+                  {contact.phone}
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs tracking-[0.16em] uppercase text-muted-foreground">
+                Instagram
+              </dt>
+              <dd className="mt-1">
+                <a
+                  href={contact.instagram}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:underline"
+                >
+                  @{contact.instagramHandle}
+                </a>
+              </dd>
+            </div>
+          </dl>
+        </FadeIn>
+        <FadeIn delay={80}>
+          <div className="border-t border-bloom/35 px-1 pt-8 sm:border-t-0 sm:border-l sm:border-bloom/35 sm:px-0 sm:pl-10 sm:pt-0">
+            <InquiryForm
+              defaultType={defaultType}
+              defaultMessage={defaultMessage}
+            />
+          </div>
+        </FadeIn>
       </div>
+
+      <FaqSection faqs={contactFaqs} />
     </div>
   );
 }
