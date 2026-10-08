@@ -15,7 +15,31 @@ export type OrderCustomer = {
   note?: string;
 };
 
-export type OrderStatus = "new" | "done" | "cancelled";
+export type OrderShipping = {
+  method: "zasilkovna";
+  fee: number;
+  packetaId: string;
+  packetaName: string;
+  packetaCity: string;
+  packetaStreet: string;
+  packetaZip: string;
+  packetaUrl?: string;
+};
+
+export type OrderPayment = {
+  method: "card";
+  provider: "stripe" | "mock";
+  status: "pending" | "paid" | "failed" | "cancelled";
+  stripeSessionId?: string;
+  paidAt?: string;
+};
+
+/** new = paid & ready to fulfill; pending_payment = waiting for card */
+export type OrderStatus =
+  | "pending_payment"
+  | "new"
+  | "done"
+  | "cancelled";
 
 export type Order = {
   id: string;
@@ -23,6 +47,11 @@ export type Order = {
   status: OrderStatus;
   customer: OrderCustomer;
   items: OrderItem[];
+  /** Items subtotal (without shipping). */
+  subtotal: number;
+  shipping?: OrderShipping;
+  payment?: OrderPayment;
+  /** Grand total including shipping. */
   total: number;
 };
 

@@ -45,6 +45,7 @@ const WEDDING_PLACEHOLDER =
   "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1600&q=80";
 
 const ORDER_STATUS_LABEL: Record<OrderStatus, string> = {
+  pending_payment: "Čeká na platbu",
   new: "Nová",
   done: "Hotovo",
   cancelled: "Zrušeno",
@@ -664,6 +665,24 @@ export function AdminDashboard({
                         {order.customer.note}
                       </p>
                     ) : null}
+                    {order.shipping ? (
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        Zásilkovna: {order.shipping.packetaName}
+                        {order.shipping.packetaStreet
+                          ? ` — ${order.shipping.packetaStreet}, ${order.shipping.packetaZip} ${order.shipping.packetaCity}`
+                          : ""}
+                      </p>
+                    ) : null}
+                    {order.payment ? (
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        Platba kartou ({order.payment.provider}) ·{" "}
+                        {order.payment.status === "paid"
+                          ? "zaplaceno"
+                          : order.payment.status === "pending"
+                            ? "čeká"
+                            : order.payment.status}
+                      </p>
+                    ) : null}
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
                     <span
@@ -671,6 +690,8 @@ export function AdminDashboard({
                         "px-3 py-1.5 text-[10px] tracking-[0.14em] uppercase",
                         order.status === "new"
                           ? "bg-bloom-orange text-white"
+                          : order.status === "pending_payment"
+                            ? "bg-bloom-yellow text-moss-deep"
                           : order.status === "done"
                             ? "bg-moss-deep text-white"
                             : "bg-muted text-muted-foreground",
@@ -731,9 +752,26 @@ export function AdminDashboard({
                     </li>
                   ))}
                 </ul>
-                <div className="flex justify-between border-t border-border pt-3 text-sm">
-                  <span className="text-muted-foreground">Celkem</span>
-                  <span className="font-medium">{formatPrice(order.total)}</span>
+                <div className="space-y-1 border-t border-border pt-3 text-sm">
+                  {typeof order.subtotal === "number" &&
+                  order.shipping?.fee ? (
+                    <>
+                      <div className="flex justify-between text-muted-foreground">
+                        <span>Zboží</span>
+                        <span>{formatPrice(order.subtotal)}</span>
+                      </div>
+                      <div className="flex justify-between text-muted-foreground">
+                        <span>Doprava</span>
+                        <span>{formatPrice(order.shipping.fee)}</span>
+                      </div>
+                    </>
+                  ) : null}
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Celkem</span>
+                    <span className="font-medium">
+                      {formatPrice(order.total)}
+                    </span>
+                  </div>
                 </div>
               </section>
             ))}

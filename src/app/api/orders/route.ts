@@ -60,14 +60,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Neplatný e-mail." }, { status: 400 });
     }
 
-    const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
     const order = await createOrder({
       customer: { name, email, phone, note: note || undefined },
       items,
-      total,
+      subtotal,
+      total: subtotal,
+      status: "new",
     });
 
-    console.info("[THE BLOOMS order]", order.id, order.customer.email, total);
+    console.info("[THE BLOOMS order]", order.id, order.customer.email, subtotal);
     return NextResponse.json({ ok: true, order });
   } catch {
     return NextResponse.json(

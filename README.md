@@ -15,7 +15,7 @@ Otevřete [http://127.0.0.1:43123](http://127.0.0.1:43123).
 
 - Homepage s jasným rozdělením: **věnce = koupit**, ostatní = **poptávka**
 - Galerie svateb s detailními stránkami realizací
-- E-shop věnců (filtrování dle sezóny, košík, demo checkout)
+- E-shop věnců (filtrování dle sezóny, košík, Zásilkovna, platba kartou)
 - Sekce Kytky, Workshopy, O mně, Kontakt
 - Formulář poptávky s typy SVATBA / KYTKY / EVENT / WORKSHOP / JINÉ a poli pro svatbu
 
@@ -23,7 +23,15 @@ Otevřete [http://127.0.0.1:43123](http://127.0.0.1:43123).
 
 Next.js (App Router), TypeScript, Tailwind CSS, shadcn/ui.
 
-Poptávky se logují na server (`/api/inquiry`) — e-mailová služba a platební brána zatím nejsou napojené. Formulář má matematickou captchu (HMAC) a honeypot; volitelně nastavte `CAPTCHA_SECRET` v prostředí.
+Poptávky se logují na server (`/api/inquiry`). Formulář má matematickou captchu (HMAC) a honeypot; volitelně nastavte `CAPTCHA_SECRET` v prostředí.
+
+### Košík, Zásilkovna a platba kartou
+
+1. V košíku (`/kosik`) zákazník vyplní kontakt, vybere výdejní místo Zásilkovny a zaplatí kartou.
+2. **Zásilkovna** — nastavte `NEXT_PUBLIC_PACKETA_API_KEY` (Packeta widget). Bez klíče se zobrazí demo výběr míst.
+3. **Platba kartou** — Stripe Checkout (`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` + `STRIPE_SECRET_KEY`). Bez klíčů běží lokální demo na `/pokladna/mock`.
+4. Webhook (produkce): `STRIPE_WEBHOOK_SECRET` → endpoint `/api/stripe/webhook` (event `checkout.session.completed`).
+5. Objednávky (včetně místa Zásilkovny a stavu platby) uvidíte v adminu.
 
 SEO / GEO / AIO: stránky mají rozšířené texty, FAQ a JSON-LD (`Service`, `FAQPage`, `BreadcrumbList`, u věnců `Product`). Canonical URL nastavte přes `NEXT_PUBLIC_SITE_URL` (výchozí `https://theblooms.cz`).
 
@@ -33,7 +41,7 @@ Alena spravuje obsah na [`/admin`](http://127.0.0.1:43123/admin).
 
 **Priorita dat:** co je uložené v adminu (`uploads/cms.json`) má vždy přednost před hodnotami v kódu. Kód slouží jen jako záloha, když pole v CMS chybí.
 
-- **Objednávky** — kdo co objednal z e-shopu věnců (jméno, e-mail, položky, stav)
+- **Objednávky** — kdo co objednal (položky, Zásilkovna, platba kartou, stav)
 - **Texty** — nadpisy a odstavce (úvod, svatby, kytky, věnce, workshopy, o mně, kontakt). V sekci Kontakt i e-mail, telefon, jméno a Instagram — ty se ukazují v patičce.
 - **Fotky stránek** — hero a sekční fotky
 - **Svatby / Věnce** — názvy, popisy, ceny, cover i galerie; u věnců šipky ↑↓ pro pořadí na webu

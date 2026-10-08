@@ -26,7 +26,7 @@ export function floristOrganization() {
     logo: absoluteUrl("/theblooms.svg"),
     priceRange: "$$",
     currenciesAccepted: "CZK",
-    paymentAccepted: "Hotovost, bankovní převod",
+    paymentAccepted: "Platební karta, bankovní převod",
     founder: {
       "@type": "Person",
       "@id": `${siteUrl}/#person`,

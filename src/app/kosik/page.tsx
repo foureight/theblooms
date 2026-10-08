@@ -2,13 +2,23 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { formatPrice } from "@/data/wreaths";
-import { cartKey, resolveLine, useCart } from "@/lib/cart";
+import { PacketaPicker } from "@/components/packeta-picker";
+import { CtaLink } from "@/components/cta-link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CtaLink } from "@/components/cta-link";
+import {
+  SHIPPING_FEE_CZK,
+  type PacketaPoint,
+} from "@/lib/checkout";
+import { cartKey, resolveLine, useCart } from "@/lib/cart";
+
+const packetaKey =
+  typeof process !== "undefined"
+    ? process.env.NEXT_PUBLIC_PACKETA_API_KEY?.trim() || ""
+    : "";
 
 export default function CartPage() {
   const {
@@ -20,39 +30,21 @@ export default function CartPage() {
     hydrated,
     catalog,
   } = useCart();
-  const [ordered, setOrdered] = useState(false);
-  const [orderId, setOrderId] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [note, setNote] = useState("");
+  const [packeta, setPacketa] = useState<PacketaPoint | null>(null);
+
+  const shipping = SHIPPING_FEE_CZK;
+  const grandTotal = useMemo(() => total + shipping, [total, shipping]);
 
   if (!hydrated) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-20 text-center text-sm text-muted-foreground">
         Načítám košík…
-      </div>
-    );
-  }
-
-  if (ordered) {
-    return (
-      <div className="mx-auto max-w-xl px-4 py-20 text-center">
-        <h1 className="font-display text-5xl text-moss-deep">Objednávka přijata</h1>
-        <p className="mt-4 text-sm text-muted-foreground">
-          Děkuji. Brzy se ozvu s potvrzením a detaily doručení.
-          {orderId ? (
-            <>
-              {" "}
-              Číslo objednávky: <span className="font-medium text-foreground">{orderId}</span>.
-            </>
-          ) : null}
-        </p>
-        <CtaLink href="/vence" className="mt-8">
-          Zpět k věncům
-        </CtaLink>
       </div>
     );
   }
@@ -71,12 +63,17 @@ export default function CartPage() {
     );
   }
 
-  async function submitOrder() {
+  async function payWithCard() {
     setError("");
     if (!name.trim() || !email.trim()) {
       setError("Vyplňte prosím jméno a e-mail.");
       return;
     }
+    if (!packeta) {
+      setError("Vyberte výdejní místo Zásilkovny.");
+      return;
+    }
+
     const payloadItems = items
       .map((item) => {
         const product = resolveLine(item, catalog);
@@ -100,7 +97,7 @@ export default function CartPage() {
 
     setSubmitting(true);
     try {
-      const res = await fetch("/api/orders", {
+      const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -109,21 +106,21 @@ export default function CartPage() {
           phone: phone.trim(),
           note: note.trim(),
           items: payloadItems,
+          packeta,
         }),
       });
       const data = (await res.json()) as {
         error?: string;
-        order?: { id?: string };
+        url?: string;
       };
-      if (!res.ok) {
-        setError(data.error || "Objednávku se nepodařilo odeslat.");
+      if (!res.ok || !data.url) {
+        setError(data.error || "Checkout se nepodařilo spustit.");
         return;
       }
-      setOrderId(data.order?.id || "");
       clear();
-      setOrdered(true);
+      window.location.href = data.url;
     } catch {
-      setError("Síťová chyba při odesílání objednávky.");
+      setError("Síťová chyba při spouštění platby.");
     } finally {
       setSubmitting(false);
     }
@@ -199,16 +196,23 @@ export default function CartPage() {
         })}
       </ul>
 
-      <div className="mt-8 flex items-center justify-between border-t border-border pt-6">
-        <p className="text-sm text-muted-foreground">Celkem</p>
-        <p className="text-xl font-medium">{formatPrice(total)}</p>
+      <div className="mt-8 space-y-2 border-t border-border pt-6 text-sm">
+        <div className="flex items-center justify-between">
+          <p className="text-muted-foreground">Zboží</p>
+          <p className="font-medium">{formatPrice(total)}</p>
+        </div>
+        <div className="flex items-center justify-between">
+          <p className="text-muted-foreground">Zásilkovna</p>
+          <p className="font-medium">{formatPrice(shipping)}</p>
+        </div>
+        <div className="flex items-center justify-between border-t border-border pt-3 text-base">
+          <p className="text-muted-foreground">Celkem</p>
+          <p className="text-xl font-medium">{formatPrice(grandTotal)}</p>
+        </div>
       </div>
 
       <section className="mt-10 space-y-5 border-t border-border pt-8">
         <h2 className="font-display text-3xl text-moss-deep">Kontaktní údaje</h2>
-        <p className="text-sm text-muted-foreground">
-          Abych věděla, komu objednávku potvrdit.
-        </p>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="order-name">Jméno</Label>
@@ -248,7 +252,7 @@ export default function CartPage() {
           </div>
           <div className="space-y-2 sm:col-span-2">
             <Label htmlFor="order-note">
-              Poznámka / adresa{" "}
+              Poznámka{" "}
               <span className="text-muted-foreground">(volitelně)</span>
             </Label>
             <textarea
@@ -257,15 +261,23 @@ export default function CartPage() {
               value={note}
               onChange={(e) => setNote(e.target.value)}
               className="w-full border border-border bg-white px-3 py-3 text-sm outline-none focus:border-bloom"
-              placeholder="Doručovací adresa, termín, cokoliv důležitého…"
+              placeholder="Termín, vzkaz k balení…"
             />
           </div>
         </div>
       </section>
 
+      <section className="mt-10 space-y-5 border-t border-border pt-8">
+        <PacketaPicker
+          value={packeta}
+          onChange={setPacketa}
+          apiKey={packetaKey}
+        />
+      </section>
+
       <div className="mt-8 flex flex-wrap gap-3">
-        <Button onClick={() => void submitOrder()} disabled={submitting}>
-          {submitting ? "Odesílám…" : "Dokončit objednávku"}
+        <Button onClick={() => void payWithCard()} disabled={submitting}>
+          {submitting ? "Přesměrovávám…" : "Zaplatit kartou"}
         </Button>
         <Link
           href="/vence"
@@ -278,7 +290,9 @@ export default function CartPage() {
         <p className="mt-4 text-sm text-destructive">{error}</p>
       ) : null}
       <p className="mt-4 text-xs text-muted-foreground">
-        Platební brána zatím není napojená — objednávku potvrdím e-mailem.
+        Platba kartou přes Stripe
+        {packetaKey ? "" : " (lokálně demo bez API klíčů)"}. Doprava Zásilkovnou
+        na výdejní místo.
       </p>
     </div>
   );
