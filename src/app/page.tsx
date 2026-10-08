@@ -160,7 +160,14 @@ export default async function HomePage() {
             {heroTitle}
           </h1>
           <p className="reveal reveal-delay-1 mt-3 max-w-lg text-base leading-relaxed text-white/70">
-            {textFrom(cms, "home.heroLead")}
+            {(() => {
+              const lead = textFrom(cms, "home.heroLead");
+              // Prefer the short Prague line when CMS still has the old long Czech copy
+              if (lead.includes("v Česku") || lead.length > 120) {
+                return "THE BLOOMS je studio Aleny Šmejkalové v Praze.";
+              }
+              return lead;
+            })()}
           </p>
           <div className="reveal reveal-delay-2 mt-8 flex flex-wrap gap-3">
             <CtaLink

@@ -133,8 +133,7 @@ export const PAGE_TEXTS = [
     id: "home.heroLead",
     label: "Úvod — podnadpis pod H1",
     multiline: true,
-    defaultValue:
-      "THE BLOOMS je floristické studio Aleny Šmejkalové v Česku. Vznikají tu svatby a větší květinové realizace na míru a sezónní věnce, které koupíte přímo online. Osobní práce v dílně, od konceptu po hotový výsledek — pro páry i klienty, kteří chtějí květiny s charakterem a pečlivým detailem.",
+    defaultValue: "THE BLOOMS je studio Aleny Šmejkalové v Praze.",
   },
   {
     id: "home.twoWaysTitle",
