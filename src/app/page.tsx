@@ -139,7 +139,7 @@ export default async function HomePage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/20" />
         <div className="relative mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-end px-4 pb-16 pt-28 sm:px-6 lg:px-8 lg:pb-24">
-          <h1 className="reveal max-w-3xl font-sans text-4xl font-normal leading-tight tracking-wide text-white sm:text-5xl sm:leading-[80px] md:text-6xl md:leading-[80px]">
+          <h1 className="reveal max-w-3xl font-sans text-4xl font-normal tracking-wide text-white sm:text-5xl md:text-6xl">
             {textFrom(cms, "home.heroTitle")}
           </h1>
           <p className="reveal reveal-delay-1 mt-3 max-w-lg text-base leading-relaxed text-white/70">
@@ -320,7 +320,7 @@ export default async function HomePage() {
         {/* Text left, photo right — columns pulled together (≈80px gap) */}
         <div className="mx-auto flex max-w-7xl flex-col items-start gap-10 px-4 py-20 sm:px-6 sm:py-28 lg:flex-row lg:items-start lg:justify-center lg:gap-20 lg:px-8 lg:py-40">
           <FadeIn className="w-full max-w-md shrink-0 text-left lg:w-[28rem]">
-            <h2 className="font-display text-4xl leading-[80px] text-moss-deep text-balance sm:text-5xl md:text-6xl">
+            <h2 className="font-display text-4xl text-moss-deep text-balance sm:text-5xl md:text-6xl">
               Domluvte si svatbu, kytky nebo věnec
             </h2>
             <p className="mt-5 font-display text-2xl leading-[1.35] text-moss-deep/85 text-balance sm:text-3xl">

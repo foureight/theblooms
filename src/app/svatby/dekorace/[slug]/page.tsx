@@ -82,7 +82,7 @@ export default async function DecorationDetailPage({ params }: Props) {
           <p className="text-[10px] tracking-[0.22em] uppercase text-white/70 sm:text-xs">
             Inventář · Dekorace
           </p>
-          <h1 className="mt-2 font-display text-4xl leading-[1.4] text-white sm:text-6xl md:text-7xl">
+          <h1 className="mt-2 font-display text-4xl text-white sm:text-6xl md:text-7xl">
             {category.title}
           </h1>
         </div>
