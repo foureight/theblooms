@@ -297,36 +297,34 @@ export default async function HomePage() {
       </section>
 
       <section className="bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
-          <FadeIn>
-            {/* Alternate: photo left | text right */}
-            <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-14">
-              <div className="relative aspect-[4/5] overflow-hidden">
-                <CmsImage
-                  src={flowersImg}
-                  alt="Květinové aranžmá"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width:1024px) 100vw, 50vw"
-                />
-              </div>
-              <div>
-                <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
-                  Kytky & eventy
-                </p>
-                <h2 className="mt-2 font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
-                  {textFrom(cms, "home.flowersTitle")}
-                </h2>
-                <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground sm:mt-5">
-                  {textFrom(cms, "home.flowersText")}
-                </p>
-                <div className="mt-8 flex flex-wrap gap-3">
-                  <CtaLink href="/kytky">Kytky</CtaLink>
-                  <CtaLink href="/kontakt?typ=event" variant="outline">
-                    Eventy
-                  </CtaLink>
-                </div>
-              </div>
+        {/* Alternate: photo left | text right — same grid as Workshopy/Kontakt */}
+        <div className="mx-auto grid max-w-7xl grid-cols-1 items-start gap-10 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-2 lg:gap-14 lg:px-8 lg:py-40">
+          <FadeIn className="min-w-0 w-full">
+            <div className="relative aspect-[4/5] w-full overflow-hidden sm:aspect-[5/4] lg:aspect-[4/5]">
+              <CmsImage
+                src={flowersImg}
+                alt="Květinové aranžmá"
+                fill
+                className="object-cover"
+                sizes="(max-width:1024px) 100vw, 50vw"
+              />
+            </div>
+          </FadeIn>
+          <FadeIn delay={80} className="min-w-0 text-left">
+            <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
+              Kytky & eventy
+            </p>
+            <h2 className="mt-2 font-display text-4xl text-moss-deep text-balance sm:text-5xl md:text-6xl">
+              {textFrom(cms, "home.flowersTitle")}
+            </h2>
+            <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground sm:mt-5">
+              {textFrom(cms, "home.flowersText")}
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <CtaLink href="/kytky">Kytky</CtaLink>
+              <CtaLink href="/kontakt?typ=event" variant="outline">
+                Eventy
+              </CtaLink>
             </div>
           </FadeIn>
         </div>
