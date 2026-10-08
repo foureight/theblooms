@@ -265,34 +265,35 @@ export default async function HomePage() {
         items={allWreaths}
       />
 
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
-        <FadeIn>
-          <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-start lg:gap-14">
-            <div>
-              <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
-                Workshopy
-              </p>
-              <h2 className="mt-2 font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
-                {textFrom(cms, "home.workshopsTitle")}
-              </h2>
-              <p className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground sm:mt-5">
-                {textFrom(cms, "home.workshopsText")}
-              </p>
-              <CtaLink href="/workshopy" className="mt-8">
-                Workshopy
-              </CtaLink>
+      <section className="overflow-x-clip">
+        {/* Same stack as closing CTA: title → subhead → text → button | photo */}
+        <div className="mx-auto grid max-w-7xl grid-cols-1 items-start gap-10 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-2 lg:gap-14 lg:px-8 lg:py-40">
+          <FadeIn className="min-w-0 text-left">
+            <h2 className="font-display text-4xl text-moss-deep text-balance sm:text-5xl md:text-6xl">
+              Workshopy
+            </h2>
+            <p className="mt-5 font-display text-2xl leading-snug text-moss-deep/85 text-balance sm:text-3xl sm:leading-snug">
+              {textFrom(cms, "home.workshopsTitle")}
+            </p>
+            <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground sm:mt-5">
+              {textFrom(cms, "home.workshopsText")}
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <CtaLink href="/workshopy">Workshopy</CtaLink>
             </div>
-            <div className="relative aspect-[5/4] overflow-hidden">
+          </FadeIn>
+          <FadeIn delay={80} className="min-w-0 w-full">
+            <div className="relative aspect-[4/5] w-full overflow-hidden sm:aspect-[5/4] lg:aspect-[4/5]">
               <CmsImage
                 src={workshopsImg}
                 alt="Floristický workshop"
                 fill
                 className="object-cover"
-                sizes="(max-width:1024px) 100vw, 45vw"
+                sizes="(max-width:1024px) 100vw, 50vw"
               />
             </div>
-          </div>
-        </FadeIn>
+          </FadeIn>
+        </div>
       </section>
 
       <section className="bg-white">
