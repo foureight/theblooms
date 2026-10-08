@@ -27,7 +27,7 @@ import {
   formatOrderDate,
   type Order,
   type OrderStatus,
-} from "@/lib/orders";
+} from "@/lib/orders-types";
 import { cn } from "@/lib/utils";
 
 type Tab =
