@@ -8,6 +8,7 @@ import { weddings as baseWeddings } from "@/data/weddings";
 import {
   DEFAULT_SIZE_LABELS,
   emptyWreathSizeSlots,
+  formatPrice,
   getWreathSizeSlots,
   getWreathSizes,
   WREATH_SIZE_NAMES,
@@ -22,9 +23,15 @@ import {
   type CmsContent,
   type MediaItem,
 } from "@/lib/cms/types";
+import {
+  formatOrderDate,
+  type Order,
+  type OrderStatus,
+} from "@/lib/orders";
 import { cn } from "@/lib/utils";
 
 type Tab =
+  | "objednavky"
   | "texty"
   | "fotky"
   | "svatby"
@@ -37,20 +44,32 @@ const WREATH_PLACEHOLDER = "/wreaths/placeholder.svg";
 const WEDDING_PLACEHOLDER =
   "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1600&q=80";
 
+const ORDER_STATUS_LABEL: Record<OrderStatus, string> = {
+  new: "Nová",
+  done: "Hotovo",
+  cancelled: "Zrušeno",
+};
+
 type Props = {
   initialContent: CmsContent;
   initialMedia: MediaItem[];
+  initialOrders?: Order[];
 };
 
-export function AdminDashboard({ initialContent, initialMedia }: Props) {
+export function AdminDashboard({
+  initialContent,
+  initialMedia,
+  initialOrders = [],
+}: Props) {
   const router = useRouter();
-  const [tab, setTab] = useState<Tab>("texty");
+  const [tab, setTab] = useState<Tab>("objednavky");
   /** Which size row is expanded in admin (closed by default). */
   const [openWreathSize, setOpenWreathSize] = useState<
     Record<string, WreathSizeId | null>
   >({});
   const [content, setContent] = useState<CmsContent>(initialContent);
   const [media, setMedia] = useState<MediaItem[]>(initialMedia);
+  const [orders, setOrders] = useState<Order[]>(initialOrders);
   const [status, setStatus] = useState("");
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -60,6 +79,13 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
   }>(null);
 
   const tabs: { id: Tab; label: string }[] = [
+    {
+      id: "objednavky",
+      label:
+        orders.filter((o) => o.status === "new").length > 0
+          ? `Objednávky (${orders.filter((o) => o.status === "new").length})`
+          : "Objednávky",
+    },
     { id: "texty", label: "Texty" },
     { id: "fotky", label: "Fotky stránek" },
     { id: "svatby", label: "Svatby" },
@@ -68,6 +94,28 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
     { id: "kytky", label: "Kytky" },
     { id: "media", label: "Knihovna" },
   ];
+
+  async function setOrderStatus(id: string, nextStatus: OrderStatus) {
+    setStatus("");
+    try {
+      const res = await fetch("/api/admin/orders", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status: nextStatus }),
+      });
+      const data = (await res.json()) as { error?: string; order?: Order };
+      if (!res.ok || !data.order) {
+        setStatus(data.error || "Stav objednávky se nepodařilo změnit.");
+        return;
+      }
+      setOrders((prev) =>
+        prev.map((o) => (o.id === id ? data.order! : o)),
+      );
+      setStatus("Stav objednávky uložen.");
+    } catch {
+      setStatus("Síťová chyba při změně stavu.");
+    }
+  }
 
   async function save() {
     setSaving(true);
@@ -531,14 +579,16 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
             >
               Odhlásit
             </button>
-            <button
-              type="button"
-              onClick={save}
-              disabled={saving}
-              className="bg-moss-deep px-5 py-2.5 text-xs font-medium tracking-[0.16em] uppercase text-white transition-colors hover:bg-bloom-light disabled:opacity-60"
-            >
-              {saving ? "Ukládám…" : "Uložit změny"}
-            </button>
+            {tab !== "objednavky" ? (
+              <button
+                type="button"
+                onClick={save}
+                disabled={saving}
+                className="bg-moss-deep px-5 py-2.5 text-xs font-medium tracking-[0.16em] uppercase text-white transition-colors hover:bg-bloom-light disabled:opacity-60"
+              >
+                {saving ? "Ukládám…" : "Uložit změny"}
+              </button>
+            ) : null}
           </div>
         </div>
         {status ? (
@@ -566,6 +616,129 @@ export function AdminDashboard({ initialContent, initialMedia }: Props) {
             </button>
           ))}
         </nav>
+
+        {tab === "objednavky" ? (
+          <div className="mt-8 space-y-6">
+            <p className="max-w-2xl text-sm text-muted-foreground">
+              Objednávky z e-shopu věnců — kdo co objednal, kontakt a stav.
+            </p>
+            {orders.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                Zatím žádné objednávky.
+              </p>
+            ) : null}
+            {orders.map((order) => (
+              <section
+                key={order.id}
+                className="space-y-4 border border-border/70 p-4 sm:p-6"
+              >
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
+                      {formatOrderDate(order.createdAt)} · #{order.id}
+                    </p>
+                    <h2 className="mt-1 font-display text-2xl text-moss-deep">
+                      {order.customer.name}
+                    </h2>
+                    <p className="mt-1 text-sm">
+                      <a
+                        href={`mailto:${order.customer.email}`}
+                        className="underline-offset-2 hover:underline"
+                      >
+                        {order.customer.email}
+                      </a>
+                      {order.customer.phone ? (
+                        <>
+                          {" · "}
+                          <a
+                            href={`tel:${order.customer.phone.replace(/\s/g, "")}`}
+                            className="underline-offset-2 hover:underline"
+                          >
+                            {order.customer.phone}
+                          </a>
+                        </>
+                      ) : null}
+                    </p>
+                    {order.customer.note ? (
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        {order.customer.note}
+                      </p>
+                    ) : null}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span
+                      className={cn(
+                        "px-3 py-1.5 text-[10px] tracking-[0.14em] uppercase",
+                        order.status === "new"
+                          ? "bg-bloom-orange text-white"
+                          : order.status === "done"
+                            ? "bg-moss-deep text-white"
+                            : "bg-muted text-muted-foreground",
+                      )}
+                    >
+                      {ORDER_STATUS_LABEL[order.status]}
+                    </span>
+                    {order.status !== "done" ? (
+                      <button
+                        type="button"
+                        onClick={() => void setOrderStatus(order.id, "done")}
+                        className="border border-border px-3 py-1.5 text-[10px] tracking-[0.14em] uppercase transition-colors hover:bg-moss-deep hover:text-white"
+                      >
+                        Hotovo
+                      </button>
+                    ) : null}
+                    {order.status !== "cancelled" ? (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          void setOrderStatus(order.id, "cancelled")
+                        }
+                        className="border border-border px-3 py-1.5 text-[10px] tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
+                      >
+                        Zrušit
+                      </button>
+                    ) : null}
+                    {order.status !== "new" ? (
+                      <button
+                        type="button"
+                        onClick={() => void setOrderStatus(order.id, "new")}
+                        className="border border-border px-3 py-1.5 text-[10px] tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
+                      >
+                        Znovu nová
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
+                <ul className="divide-y divide-border border-t border-border">
+                  {order.items.map((item, idx) => (
+                    <li
+                      key={`${order.id}-${item.slug}-${item.sizeId}-${idx}`}
+                      className="flex items-start justify-between gap-3 py-3 text-sm"
+                    >
+                      <div>
+                        <p className="font-medium text-moss-deep">
+                          {item.name}
+                        </p>
+                        <p className="mt-0.5 text-xs text-muted-foreground">
+                          {[item.sizeLabel, `${item.quantity}×`]
+                            .filter(Boolean)
+                            .join(" · ")}
+                        </p>
+                      </div>
+                      <p className="shrink-0 font-medium">
+                        {formatPrice(item.price * item.quantity)}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+                <div className="flex justify-between border-t border-border pt-3 text-sm">
+                  <span className="text-muted-foreground">Celkem</span>
+                  <span className="font-medium">{formatPrice(order.total)}</span>
+                </div>
+              </section>
+            ))}
+          </div>
+        ) : null}
 
         {tab === "texty" ? (
           <div className="mt-8 space-y-12">

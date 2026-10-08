@@ -8,6 +8,7 @@ import {
   readCms,
   verifySessionToken,
 } from "@/lib/cms/store";
+import { readOrders } from "@/lib/orders";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +20,17 @@ export default async function AdminPage() {
   const ok = verifySessionToken(jar.get(ADMIN_COOKIE)?.value);
   if (!ok) redirect("/admin/login");
 
-  const [content, media] = await Promise.all([readCms(), listMedia()]);
+  const [content, media, orders] = await Promise.all([
+    readCms(),
+    listMedia(),
+    readOrders(),
+  ]);
 
-  return <AdminDashboard initialContent={content} initialMedia={media} />;
+  return (
+    <AdminDashboard
+      initialContent={content}
+      initialMedia={media}
+      initialOrders={orders}
+    />
+  );
 }
