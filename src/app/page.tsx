@@ -139,7 +139,7 @@ export default async function HomePage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/20" />
         <div className="relative mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-end px-4 pb-16 pt-28 sm:px-6 lg:px-8 lg:pb-24">
-          <h1 className="reveal max-w-3xl font-sans text-4xl font-normal leading-[1.15] tracking-wide text-white sm:text-5xl sm:leading-[1.12] md:text-6xl md:leading-[80px]">
+          <h1 className="reveal max-w-3xl font-sans text-4xl font-normal leading-tight tracking-wide text-white sm:text-5xl sm:leading-[80px] md:text-6xl md:leading-[80px]">
             {textFrom(cms, "home.heroTitle")}
           </h1>
           <p className="reveal reveal-delay-1 mt-3 max-w-lg text-base leading-relaxed text-white/70">
@@ -165,34 +165,32 @@ export default async function HomePage() {
 
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
         <FadeIn>
-          {/* Left-aligned cluster — title + both columns share one left edge */}
-          <div className="w-full max-w-[42rem] text-left">
-            <h2 className="font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
-              {textFrom(cms, "home.twoWaysTitle")}
-            </h2>
-            <div className="mt-8 grid grid-cols-1 gap-8 sm:mt-10 sm:grid-cols-2 sm:gap-8">
-              <div className="border-t border-bloom/40 pt-6 text-left">
-                <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
-                  {textFrom(cms, "home.twoWaysWeddingsTitle")}
-                </h3>
-                <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-                  {textFrom(cms, "home.twoWaysWeddingsText")}
-                </p>
-                <CtaLink href="/kontakt" variant="outline" className="mt-5">
-                  Poslat poptávku
-                </CtaLink>
-              </div>
-              <div className="border-t border-bloom/40 pt-6 text-left">
-                <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
-                  {textFrom(cms, "home.twoWaysWreathsTitle")}
-                </h3>
-                <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-                  {textFrom(cms, "home.twoWaysWreathsText")}
-                </p>
-                <CtaLink href="/vence" variant="outline" className="mt-5">
-                  Do e-shopu
-                </CtaLink>
-              </div>
+          {/* Title left; two service columns span full page width */}
+          <h2 className="text-left font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
+            {textFrom(cms, "home.twoWaysTitle")}
+          </h2>
+          <div className="mt-10 grid grid-cols-1 gap-10 sm:mt-12 sm:grid-cols-2 sm:gap-14 lg:gap-20">
+            <div className="border-t border-bloom/40 pt-6 text-left">
+              <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
+                {textFrom(cms, "home.twoWaysWeddingsTitle")}
+              </h3>
+              <p className="mt-3 max-w-md text-base leading-relaxed text-muted-foreground">
+                {textFrom(cms, "home.twoWaysWeddingsText")}
+              </p>
+              <CtaLink href="/kontakt" variant="outline" className="mt-5">
+                Poslat poptávku
+              </CtaLink>
+            </div>
+            <div className="border-t border-bloom/40 pt-6 text-left">
+              <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
+                {textFrom(cms, "home.twoWaysWreathsTitle")}
+              </h3>
+              <p className="mt-3 max-w-md text-base leading-relaxed text-muted-foreground">
+                {textFrom(cms, "home.twoWaysWreathsText")}
+              </p>
+              <CtaLink href="/vence" variant="outline" className="mt-5">
+                Do e-shopu
+              </CtaLink>
             </div>
           </div>
         </FadeIn>
@@ -322,7 +320,7 @@ export default async function HomePage() {
         {/* Text left, photo right — columns pulled together (≈80px gap) */}
         <div className="mx-auto flex max-w-7xl flex-col items-start gap-10 px-4 py-20 sm:px-6 sm:py-28 lg:flex-row lg:items-start lg:justify-center lg:gap-20 lg:px-8 lg:py-40">
           <FadeIn className="w-full max-w-md shrink-0 text-left lg:w-[28rem]">
-            <h2 className="font-display text-4xl leading-[1.15] text-moss-deep text-balance sm:text-5xl md:text-6xl md:leading-[80px]">
+            <h2 className="font-display text-4xl leading-[80px] text-moss-deep text-balance sm:text-5xl md:text-6xl">
               Domluvte si svatbu, kytky nebo věnec
             </h2>
             <p className="mt-5 font-display text-2xl leading-[1.35] text-moss-deep/85 text-balance sm:text-3xl">
