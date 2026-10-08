@@ -25,8 +25,8 @@ export function SiteFooterView({ contact }: { contact: SiteContact }) {
             {contact.owner}
           </p>
           <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/85">
-            Floristické studio. Svatby, větší květinové zakázky, věnce a
-            workshopy — osobně a na míru.
+            Floristické studio. Svatby, květinové zakázky, věnce a workshopy —
+            osobně a na míru.
           </p>
         </div>
         <div>
