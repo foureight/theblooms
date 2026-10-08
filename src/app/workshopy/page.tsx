@@ -12,6 +12,8 @@ import {
   textFrom,
 } from "@/lib/cms/content";
 import { workshopFaqs } from "@/data/faqs";
+import { fixCzechOrphans } from "@/lib/typography";
+import { Typo } from "@/components/typo";
 import {
   breadcrumbJsonLd,
   faqJsonLd,
@@ -103,9 +105,17 @@ export default async function WorkshopyPage() {
     "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=1400&q=80",
   );
   const formatCards = [
-    ...formats,
+    ...formats.map((f) => ({
+      title: fixCzechOrphans(f.title),
+      text: fixCzechOrphans(f.text),
+    })),
     ...mergeWorkshopCards(cms).map((c) => ({ title: c.title, text: c.text })),
   ];
+  const placeCards = places.map((p) => ({
+    title: fixCzechOrphans(p.title),
+    text: fixCzechOrphans(p.text),
+  }));
+  const includedItems = included.map(fixCzechOrphans);
 
   return (
     <div>
@@ -179,11 +189,12 @@ export default async function WorkshopyPage() {
                 Přivezu vše potřebné
               </h2>
               <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground">
-                Nemusíte shánět květiny ani nůžky. Postarám se o materiál i o to,
-                aby si každý odnesl hotovou práci, na kterou bude vzpomínat.
+                <Typo>
+                  Nemusíte shánět květiny ani nůžky. Postarám se o materiál i o to, aby si každý odnesl hotovou práci, na kterou bude vzpomínat.
+                </Typo>
               </p>
               <ul className="mt-8 space-y-3">
-                {included.map((item) => (
+                {includedItems.map((item) => (
                   <li
                     key={item}
                     className="border-l-2 border-moss/40 pl-4 text-sm tracking-wide"
@@ -202,8 +213,9 @@ export default async function WorkshopyPage() {
               Napište, pro koho workshop plánujete
             </h2>
             <p className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground">
-              Počet lidí, termín, místo a jestli chcete kytice, věnce, nebo něco
-              mezi tím. Domluvíme zbytek společně.
+              <Typo>
+                Počet lidí, termín, místo a jestli chcete kytice, věnce, nebo něco mezi tím. Domluvíme zbytek společně.
+              </Typo>
             </p>
           </section>
         </FadeIn>
@@ -217,11 +229,12 @@ export default async function WorkshopyPage() {
               Přijedu za vámi
             </h2>
             <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
-              Workshop nemusí být u mě. Stačí stůl, světlo a prostor, kde se
-              pohodlně vejdete.
+              <Typo>
+                Workshop nemusí být u mě. Stačí stůl, světlo a prostor, kde se pohodlně vejdete.
+              </Typo>
             </p>
             <ul className="mt-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-              {places.map((place) => (
+              {placeCards.map((place) => (
                 <li key={place.title} className="border-t border-bloom/40 pt-4">
                   <h3 className="font-display text-xl text-moss-deep sm:text-2xl">
                     {place.title}

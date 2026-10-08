@@ -19,6 +19,7 @@ import {
   type CmsContent,
 } from "@/lib/cms/types";
 import { readCms, resolveSlot, resolveText } from "@/lib/cms/store";
+import { fixCzechOrphans } from "@/lib/typography";
 
 /**
  * Admin / CMS always wins when a value is present.
@@ -30,9 +31,9 @@ function cmsString(
 ): string {
   if (typeof override === "string") {
     const trimmed = override.trim();
-    if (trimmed) return trimmed;
+    if (trimmed) return fixCzechOrphans(trimmed);
   }
-  return fallback;
+  return fixCzechOrphans(fallback);
 }
 
 function cmsNumber(
@@ -329,8 +330,8 @@ function mergeServiceCards(
     if (!title) continue;
     cards.push({
       slug,
-      title,
-      text: o.text?.trim() || "",
+      title: fixCzechOrphans(title),
+      text: fixCzechOrphans(o.text?.trim() || ""),
       image: o.image?.trim() || undefined,
       custom: true,
     });

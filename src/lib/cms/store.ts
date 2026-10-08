@@ -6,6 +6,7 @@ import {
   type CmsContent,
   type MediaItem,
 } from "@/lib/cms/types";
+import { fixCzechOrphans } from "@/lib/typography";
 
 const COOKIE = "blooms_admin";
 const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
@@ -187,6 +188,6 @@ export function resolveSlot(
 
 export function resolveText(cms: CmsContent, id: string, fallback: string) {
   const v = cms.texts[id];
-  if (typeof v === "string" && v.trim()) return v;
-  return fallback;
+  if (typeof v === "string" && v.trim()) return fixCzechOrphans(v);
+  return fixCzechOrphans(fallback);
 }

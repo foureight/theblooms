@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { BloomLogo } from "@/components/bloom-logo";
 import { legalNav, nav } from "@/data/site";
 import type { SiteContact } from "@/lib/cms/content";
+import { fixCzechOrphans } from "@/lib/typography";
 
 export function SiteFooterView({ contact }: { contact: SiteContact }) {
   const pathname = usePathname();
@@ -12,21 +13,25 @@ export function SiteFooterView({ contact }: { contact: SiteContact }) {
 
   return (
     <footer className="mt-0 bg-moss-deep text-white">
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-8">
-        <div>
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-4 lg:gap-8 lg:px-8">
+        <div className="min-w-0 overflow-hidden">
           <Link
             href="/"
             aria-label="THE BLOOMS — úvod"
-            className="inline-block transition-opacity hover:opacity-90"
+            className="inline-block max-w-full transition-opacity hover:opacity-90"
           >
-            <BloomLogo tone="white" className="h-[2.4rem] w-auto" />
+            <BloomLogo
+              tone="white"
+              className="h-[2.4rem] w-auto max-w-full"
+            />
           </Link>
           <p className="mt-4 font-display text-lg text-bloom-yellow">
             {contact.owner}
           </p>
           <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/85">
-            Floristické studio. Svatby, květinové zakázky, věnce a workshopy —
-            osobně a na míru.
+            {fixCzechOrphans(
+              "Floristické studio. Svatby, květinové zakázky, věnce a workshopy — osobně a na míru.",
+            )}
           </p>
         </div>
         <div>

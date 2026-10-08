@@ -22,6 +22,7 @@ import {
   floristOrganization,
   serviceJsonLd,
 } from "@/lib/seo";
+import { Typo } from "@/components/typo";
 
 const pageDescription =
   "Svatební floristika THE BLOOMS: celý květinový a dekorační koncept svatby — kytice, obřad, hostina, instalace a vlastní inventář. Poptávka u Aleny Šmejkalové.";
@@ -108,9 +109,9 @@ export default async function SvatbyPage() {
             {textFrom(cms, "svatby.intro")}
           </p>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
-            Za studiem {site.name} stojí floristka {site.owner}. Každá svatba je
-            individuální poptávka — bez balíčků z katalogu a bez kamenné
-            prodejny.
+            <Typo>
+              {`Za studiem ${site.name} stojí floristka ${site.owner}. Každá svatba je individuální poptávka — bez balíčků z katalogu a bez kamenné prodejny.`}
+            </Typo>
           </p>
           <CtaLink href="/kontakt?typ=svatba" className="mt-8">
             Poptat svatbu
@@ -166,8 +167,9 @@ export default async function SvatbyPage() {
               Dekorace
             </h2>
             <p className="mt-3 max-w-xl text-sm text-muted-foreground">
-              Vlastní inventář, který můžu nabídnout v rámci svatby. Rozklikněte
-              kategorii, vyberte varianty a pošlete poptávku.
+              <Typo>
+                Vlastní inventář, který můžu nabídnout v rámci svatby. Rozklikněte kategorii, vyberte varianty a pošlete poptávku.
+              </Typo>
             </p>
           </FadeIn>
           <div className="mt-12">
@@ -181,8 +183,9 @@ export default async function SvatbyPage() {
               Domluvíme vaši svatbu
             </h2>
             <p className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground">
-              Napište datum, místo a představu. Ozvu se a společně nastavíme
-              rozsah floristky i dekorací.
+              <Typo>
+                Napište datum, místo a představu. Ozvu se a společně nastavíme rozsah floristky i dekorací.
+              </Typo>
             </p>
             <CtaLink href="/kontakt?typ=svatba" className="mt-8">
               Poptat svatbu

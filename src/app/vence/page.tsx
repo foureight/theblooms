@@ -16,6 +16,7 @@ import {
   faqJsonLd,
   floristOrganization,
 } from "@/lib/seo";
+import { Typo } from "@/components/typo";
 
 const pageDescription =
   "Sezónní věnce THE BLOOMS — jarní, letní, podzimní i adventní. Fotografie, cena, rozměr a dostupnost. Kupte věnec online od floristky Aleny Šmejkalové.";
@@ -94,8 +95,9 @@ export default async function VencePage() {
           {textFrom(cms, "vence.intro")}
         </p>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-          Věnce jsou hotové floristické výrobky studia {site.name}. Ostatní
-          služby (svatby, kytky, eventy, workshopy) řešíme přes poptávku.
+          <Typo>
+            {`Věnce jsou hotové floristické výrobky studia ${site.name}. Ostatní služby (svatby, kytky, eventy, workshopy) řešíme přes poptávku.`}
+          </Typo>
         </p>
       </FadeIn>
       <div className="mt-10 sm:mt-12">

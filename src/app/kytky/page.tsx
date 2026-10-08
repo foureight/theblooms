@@ -11,6 +11,8 @@ import {
   slotFrom,
   textFrom,
 } from "@/lib/cms/content";
+import { fixCzechOrphans } from "@/lib/typography";
+import { Typo } from "@/components/typo";
 import { flowerFaqs } from "@/data/faqs";
 import {
   breadcrumbJsonLd,
@@ -111,8 +113,8 @@ export default async function KytkyPage() {
     "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=1200&q=80",
   );
   const builtInCards = services.map((s) => ({
-    title: s.title,
-    text: s.text,
+    title: fixCzechOrphans(s.title),
+    text: fixCzechOrphans(s.text),
     image: slotFrom(cms, s.slot, s.image),
   }));
   const customCards = mergeFlowerCards(cms).map((c) => ({
@@ -149,9 +151,9 @@ export default async function KytkyPage() {
             {textFrom(cms, "kytky.intro")}
           </p>
           <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">
-            Za studiem {site.name} stojí floristka {site.owner}. Pracuji ve
-            vlastní dílně — bez výlohy a bez e-shopu na kytky. Každá zakázka je
-            poptávka: domluvíme styl, termín, rozpočet a doručení nebo instalaci.
+            <Typo>
+              {`Za studiem ${site.name} stojí floristka ${site.owner}. Pracuji ve vlastní dílně — bez výlohy a bez e-shopu na kytky. Každá zakázka je poptávka: domluvíme styl, termín, rozpočet a doručení nebo instalaci.`}
+            </Typo>
           </p>
           <CtaLink href="/kontakt?typ=kytky" className="mt-8">
             Poslat poptávku
@@ -202,8 +204,9 @@ export default async function KytkyPage() {
               Co můžu připravit
             </h2>
             <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
-              Od květin do domu přes firemní floristiku až po výzdobu eventu —
-              vždy na míru a podle konkrétní příležitosti.
+              <Typo>
+                Od květin do domu přes firemní floristiku až po výzdobu eventu — vždy na míru a podle konkrétní příležitosti.
+              </Typo>
             </p>
             <div className="mt-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
               {serviceCards.map((item) => (
@@ -242,9 +245,9 @@ export default async function KytkyPage() {
                 Výzdoba firemních akcí
               </h2>
               <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-                Květiny i celková dekorace prostoru — včetně vlastního inventáře.
-                Firemní eventy, launch party a větší události řešíme společně
-                přes poptávku: od krátkého briefu po instalaci na místě.
+                <Typo>
+                  Květiny i celková dekorace prostoru — včetně vlastního inventáře. Firemní eventy, launch party a větší události řešíme společně přes poptávku: od krátkého briefu po instalaci na místě.
+                </Typo>
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <CtaLink href="/kontakt?typ=kytky">Poptat kytky</CtaLink>
@@ -262,8 +265,9 @@ export default async function KytkyPage() {
               Napište, pro jakou příležitost květiny hledáte
             </h2>
             <p className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground">
-              Domů, do firmy, na event nebo jako speciální objednávku. Ozvu se a
-              domluvíme zbytek.
+              <Typo>
+                Domů, do firmy, na event nebo jako speciální objednávku. Ozvu se a domluvíme zbytek.
+              </Typo>
             </p>
           </section>
         </FadeIn>
@@ -291,8 +295,9 @@ export default async function KytkyPage() {
                   Napíšete poptávku
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  Termín, příležitost, představa o stylu a orientační rozpočet.
-                  Čím víc detailů, tím rychleji se domluvíme.
+                  <Typo>
+                    Termín, příležitost, představa o stylu a orientační rozpočet. Čím víc detailů, tím rychleji se domluvíme.
+                  </Typo>
                 </p>
               </li>
               <li className="border-t border-bloom/40 pt-5">
@@ -303,8 +308,9 @@ export default async function KytkyPage() {
                   Domluvíme koncept
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  Ozvu se s návrhem květin, rozsahu a ceny. U větších akcí
-                  doladíme i inventář a instalaci.
+                  <Typo>
+                    Ozvu se s návrhem květin, rozsahu a ceny. U větších akcí doladíme i inventář a instalaci.
+                  </Typo>
                 </p>
               </li>
               <li className="border-t border-bloom/40 pt-5">
@@ -315,8 +321,9 @@ export default async function KytkyPage() {
                   Realizace
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  Květiny připravím ve své dílně a podle domluvy předám,
-                  doručím, nebo nainstaluji na místě.
+                  <Typo>
+                    Květiny připravím ve své dílně a podle domluvy předám, doručím, nebo nainstaluji na místě.
+                  </Typo>
                 </p>
               </li>
             </ol>

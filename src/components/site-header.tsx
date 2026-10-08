@@ -33,7 +33,7 @@ export function SiteHeader() {
           />
         </Link>
 
-        <nav className="hidden items-center gap-1 lg:flex">
+        <nav className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 xl:flex">
           {nav.map((item) => {
             const active =
               pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -42,7 +42,7 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "px-3 py-2 text-xs font-bold tracking-[0.18em] uppercase underline-offset-4 transition-colors hover:text-bloom-light hover:underline",
+                  "shrink-0 whitespace-nowrap px-2.5 py-2 text-[11px] font-bold tracking-[0.14em] uppercase underline-offset-4 transition-colors hovering:text-bloom-light hover:text-bloom-light hover:underline",
                   active
                     ? "text-bloom underline"
                     : "text-muted-foreground",

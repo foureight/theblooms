@@ -1,5 +1,6 @@
 import { FadeIn } from "@/components/fade-in";
 import type { FaqItem } from "@/lib/seo";
+import { fixCzechOrphans } from "@/lib/typography";
 
 type Props = {
   id?: string;
@@ -39,10 +40,10 @@ export function FaqSection({
                 className="border-t border-bloom/30 pt-4 sm:pt-5"
               >
                 <h3 className="font-display text-xl text-moss-deep sm:text-2xl">
-                  {faq.question}
+                  {fixCzechOrphans(faq.question)}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:mt-3">
-                  {faq.answer}
+                  {fixCzechOrphans(faq.answer)}
                 </p>
               </div>
             ))}
