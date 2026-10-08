@@ -10,8 +10,7 @@ type Props = {
 
 /**
  * Full-bleed white FAQ (breaks out of max-w-7xl parents).
- * ml calc + overflow-x:clip on html → edge-to-edge, no left stripe.
- * White shadow continues to the green footer.
+ * Questions start collapsed; answers open on click.
  */
 export function FaqSection({
   id = "faq",
@@ -34,19 +33,27 @@ export function FaqSection({
           >
             {title}
           </h2>
-          <div className="mt-8 max-w-3xl space-y-6 sm:mt-10 sm:space-y-8">
+          <div className="mt-8 max-w-3xl sm:mt-10">
             {faqs.map((faq) => (
-              <div
+              <details
                 key={faq.question}
-                className="border-t border-bloom/30 pt-4 sm:pt-5"
+                className="group border-t border-bloom/30 open:pb-1"
               >
-                <h3 className="font-display text-xl text-moss-deep sm:text-2xl">
-                  {fixCzechOrphans(faq.question)}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:mt-3">
+                <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-4 sm:py-5 [&::-webkit-details-marker]:hidden">
+                  <h3 className="font-display text-xl text-moss-deep sm:text-2xl">
+                    {fixCzechOrphans(faq.question)}
+                  </h3>
+                  <span
+                    aria-hidden
+                    className="mt-1.5 shrink-0 text-lg leading-none text-moss-deep/50 transition-transform group-open:rotate-45 sm:mt-2 sm:text-xl"
+                  >
+                    +
+                  </span>
+                </summary>
+                <p className="pb-5 text-sm leading-relaxed text-muted-foreground sm:pb-6">
                   {fixCzechOrphans(faq.answer)}
                 </p>
-              </div>
+              </details>
             ))}
           </div>
         </div>
