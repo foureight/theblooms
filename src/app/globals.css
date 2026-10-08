@@ -220,24 +220,24 @@
       transform: translateY(0);
     }
   }
-  /* Hero: crop toward the left (flower); positive X shifts framing left */
+  /* Hero: big enough crop that drift never reveals empty grey edges */
   @keyframes hero-drift {
     from {
-      transform: scale(1.18) translate3d(4%, 0, 0);
+      transform: scale(1.32) translate3d(2%, 0, 0);
     }
     to {
-      transform: scale(1.24) translate3d(7%, 0, 0);
+      transform: scale(1.38) translate3d(5%, 0, 0);
     }
   }
   .hero-media {
-    transform-origin: 28% center;
+    transform-origin: 32% center;
     will-change: transform;
     animation: hero-drift 22s ease-in-out infinite alternate;
   }
   @media (prefers-reduced-motion: reduce) {
     .hero-media {
       animation: none;
-      transform: scale(1.14) translate3d(5%, 0, 0);
+      transform: scale(1.28) translate3d(3%, 0, 0);
     }
   }
   /* Logo flower: ~5s pause, then one slow turn in green, repeat */
