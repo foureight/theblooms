@@ -146,14 +146,16 @@ export default async function HomePage() {
     <>
       <JsonLd data={jsonLd} />
       <section className="relative min-h-[100svh] overflow-hidden grain">
-        <CmsImage
-          src={hero}
-          alt="Svatební květinová instalace"
-          fill
-          priority
-          className="hero-media object-cover object-[28%_center]"
-          sizes="100vw"
-        />
+        <div className="absolute inset-y-0 -left-[10%] -right-[10%] w-[120%]">
+          <CmsImage
+            src={hero}
+            alt="Svatební květinová instalace"
+            fill
+            priority
+            className="hero-media object-cover object-[28%_center]"
+            sizes="120vw"
+          />
+        </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/20" />
         <div className="relative mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-end px-4 pb-[314px] pt-28 sm:px-6 lg:px-8 lg:pb-[346px]">
           <h1 className="reveal max-w-3xl whitespace-pre-line font-sans text-4xl font-normal tracking-wide text-white sm:text-5xl md:text-6xl">
