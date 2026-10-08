@@ -316,22 +316,25 @@ export default async function HomePage() {
       </section>
 
       <section>
-        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-2 lg:gap-14 lg:px-8 lg:py-40">
-          <FadeIn className="lg:pr-2">
-            <h2 className="font-display text-4xl leading-[1.4] text-moss-deep text-balance sm:text-5xl md:text-6xl">
-              Domluvte si svatbu, kytky nebo věnec
-            </h2>
-            <p className="mt-5 font-display text-2xl leading-[1.4] text-moss-deep/85 text-balance sm:text-3xl">
-              {textFrom(cms, "home.ctaTitle")}
-            </p>
-            <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground sm:mt-5">
-              {textFrom(cms, "home.ctaText")}
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <CtaLink href="/svatby" variant="outline">
-                Realizace
-              </CtaLink>
-              <CtaLink href="/kontakt">Napsat</CtaLink>
+        <div className="mx-auto grid max-w-7xl items-start gap-12 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-2 lg:gap-14 lg:px-8 lg:py-40">
+          {/* Mirror of Kytky & eventy: text hugs the photo from the left */}
+          <FadeIn className="lg:flex lg:justify-end">
+            <div className="max-w-md">
+              <h2 className="font-display text-4xl leading-[1.4] text-moss-deep text-balance sm:text-5xl md:text-6xl">
+                Domluvte si svatbu, kytky nebo věnec
+              </h2>
+              <p className="mt-5 font-display text-2xl leading-[1.4] text-moss-deep/85 text-balance sm:text-3xl">
+                {textFrom(cms, "home.ctaTitle")}
+              </p>
+              <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:mt-5">
+                {textFrom(cms, "home.ctaText")}
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <CtaLink href="/svatby" variant="outline">
+                  Realizace
+                </CtaLink>
+                <CtaLink href="/kontakt">Napsat</CtaLink>
+              </div>
             </div>
           </FadeIn>
           <FadeIn delay={80}>
