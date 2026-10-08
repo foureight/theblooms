@@ -39,26 +39,44 @@ const services = [
   {
     title: "Větší kytice a aranžmá",
     text: "Individuální květinové práce podle příležitosti — ne klasické malé kytice z květinářství, ale větší a promyšlené realizace.",
+    slot: "kytky.gallery1",
+    image:
+      "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=1200&q=80",
   },
   {
     title: "Květiny do domu",
     text: "Aranžmá do bytu nebo domu: na stůl, komodu, vstupní prostor nebo jako dárek. Vždy podle vaší představy a sezóny.",
+    slot: "kytky.gallery2",
+    image:
+      "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=1200&q=80",
   },
   {
     title: "Květiny do firmy",
     text: "Pravidelná i jednorázová floristika pro kanceláře, recepci, meeting rooms nebo firemní prostory.",
+    slot: "kytky.gallery3",
+    image:
+      "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=1200&q=80",
   },
   {
     title: "Pravidelná floristika",
     text: "Opakované dodávky čerstvých květin. Domluvíme frekvenci, styl a rozpočet tak, aby to dávalo smysl dlouhodobě.",
+    slot: "kytky.gallery4",
+    image:
+      "https://images.unsplash.com/photo-1455659817273-f96807741569?w=1200&q=80",
   },
   {
     title: "Speciální objednávky",
     text: "Narozeniny, výročí, poděkování, otevření provozu — každá zakázka vzniká na míru konkrétní příležitosti.",
+    slot: "kytky.gallery5",
+    image:
+      "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=1200&q=80",
   },
   {
     title: "Výzdoba eventů",
     text: "Firemní akce, launch party, konference i soukromé události. Květiny i dekorace včetně vlastního inventáře.",
+    slot: "kytky.gallery6",
+    image:
+      "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&q=80",
   },
 ];
 
@@ -114,10 +132,17 @@ export default async function KytkyPage() {
     "kytky.eventy",
     "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=1200&q=80",
   );
-  const serviceCards = [
-    ...services,
-    ...mergeFlowerCards(cms).map((c) => ({ title: c.title, text: c.text })),
-  ];
+  const builtInCards = services.map((s) => ({
+    title: s.title,
+    text: s.text,
+    image: slotFrom(cms, s.slot, s.image),
+  }));
+  const customCards = mergeFlowerCards(cms).map((c) => ({
+    title: c.title,
+    text: c.text,
+    image: c.image,
+  }));
+  const serviceCards = [...builtInCards, ...customCards];
 
   return (
     <div>
@@ -155,8 +180,34 @@ export default async function KytkyPage() {
           </CtaLink>
         </FadeIn>
 
+        <FadeIn delay={60}>
+          <section
+            className="mt-16 sm:mt-20"
+            aria-label="Ukázky uvážených květin"
+          >
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+              {builtInCards.map((item) => (
+                <figure key={item.title} className="group">
+                  <div className="relative aspect-[4/5] overflow-hidden bg-stone">
+                    <CmsImage
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      sizes="(max-width:640px) 50vw, 33vw"
+                    />
+                  </div>
+                  <figcaption className="mt-3 font-display text-lg text-moss-deep sm:text-xl">
+                    {item.title}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </section>
+        </FadeIn>
+
         <FadeIn delay={80}>
-          <section className="mt-20" aria-labelledby="kytky-sluzby">
+          <section className="mt-16 sm:mt-20" aria-labelledby="kytky-sluzby">
             <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
               Služby
             </p>

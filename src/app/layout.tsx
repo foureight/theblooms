@@ -85,7 +85,11 @@ export default function RootLayout({
       <body className={`${encodeExpanded.variable} antialiased`}>
         <CartProvider>
           <SiteHeader />
-          <main className="min-h-[70vh]">{children}</main>
+          <main className="flex min-h-[70vh] flex-col">
+            {children}
+            {/* White fill so body gradient never shows as a gray strip above the footer */}
+            <div className="min-h-0 flex-1 bg-white" aria-hidden />
+          </main>
           <SiteFooter />
         </CartProvider>
       </body>

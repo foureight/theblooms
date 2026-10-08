@@ -339,18 +339,7 @@ export default async function HomePage() {
 
       <section className="border-t border-bloom/30">
         <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:py-28">
-          <FadeIn>
-            <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[5/4] lg:aspect-[4/5]">
-              <CmsImage
-                src={ctaImg}
-                alt="Svatební květinová realizace"
-                fill
-                className="object-cover"
-                sizes="(max-width:1024px) 100vw, 50vw"
-              />
-            </div>
-          </FadeIn>
-          <FadeIn delay={80} className="lg:py-4">
+          <FadeIn className="lg:py-4">
             <h2 className="font-display text-4xl leading-[1.05] text-moss-deep text-balance sm:text-5xl md:text-6xl">
               {textFrom(cms, "home.ctaTitle")}
             </h2>
@@ -362,6 +351,17 @@ export default async function HomePage() {
                 Realizace
               </CtaLink>
               <CtaLink href="/kontakt">Napsat</CtaLink>
+            </div>
+          </FadeIn>
+          <FadeIn delay={80}>
+            <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[5/4] lg:aspect-[4/5]">
+              <CmsImage
+                src={ctaImg}
+                alt="Svatební květinová realizace"
+                fill
+                className="object-cover"
+                sizes="(max-width:1024px) 100vw, 50vw"
+              />
             </div>
           </FadeIn>
         </div>
