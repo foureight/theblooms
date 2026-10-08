@@ -57,6 +57,7 @@ export function AddToCartButton({ wreath }: { wreath: Wreath }) {
       ) : (
         <p className="text-sm text-muted-foreground">{selected.label}</p>
       )}
+      <p className="text-sm text-muted-foreground">Dostupnost 4&nbsp;dny</p>
       <p className="text-2xl font-medium">{formatPrice(selected.price)}</p>
       <Button
         className="w-full sm:w-auto"
