@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { Typo } from "@/components/typo";
 
 type Props = {
   defaultType?: InquiryType;
@@ -114,7 +115,7 @@ export function InquiryForm({
           Děkuji
         </p>
         <p className="mx-auto mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
-          Vaše poptávka je u mě. Ozvu se co nejdřív.
+          <Typo>Vaše poptávka je u mě. Ozvu se co nejdřív.</Typo>
         </p>
         <button
           type="button"
@@ -137,7 +138,9 @@ export function InquiryForm({
           Napište mi
         </h2>
         <p className="mt-5 max-w-md text-sm leading-relaxed text-muted-foreground">
-          Vyberte typ poptávky a pár vět stačí — ozvu se s dalšími detaily.
+          <Typo>
+            Vyberte typ poptávky a pár vět stačí — ozvu se s dalšími detaily.
+          </Typo>
         </p>
       </div>
 
@@ -324,8 +327,16 @@ export function InquiryForm({
       {status === "error" ? (
         <p className="text-sm text-destructive">
           {errorKind === "captcha"
-            ? "Ověření nesedí. Zkuste nový příklad a odešlete znovu."
-            : "Odeslání se nepovedlo. Zkuste to prosím znovu, nebo napište přímo na e-mail."}
+            ? (
+                <Typo>
+                  Ověření nesedí. Zkuste nový příklad a odešlete znovu.
+                </Typo>
+              )
+            : (
+                <Typo>
+                  Odeslání se nepovedlo. Zkuste to prosím znovu, nebo napište přímo na e-mail.
+                </Typo>
+              )}
         </p>
       ) : null}
     </form>
