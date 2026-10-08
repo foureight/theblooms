@@ -3,7 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 import { CmsImage } from "@/components/cms-image";
+import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
+import { wreathFaqs } from "@/data/faqs";
 import { site } from "@/data/site";
 import {
   formatPrice,
@@ -16,6 +18,7 @@ import { getCmsContent, mergeWreath } from "@/lib/cms/content";
 import {
   absoluteUrl,
   breadcrumbJsonLd,
+  faqJsonLd,
   floristOrganization,
 } from "@/lib/seo";
 
@@ -86,6 +89,7 @@ export default async function WreathDetailPage({ params }: Props) {
         seller: floristOrganization(),
       })),
     },
+    faqJsonLd(wreathFaqs),
   ];
 
   return (
@@ -145,6 +149,8 @@ export default async function WreathDetailPage({ params }: Props) {
           </p>
         </div>
       </div>
+
+      <FaqSection faqs={wreathFaqs} />
     </div>
   );
 }

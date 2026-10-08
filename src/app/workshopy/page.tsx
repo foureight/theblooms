@@ -11,6 +11,7 @@ import {
   slotFrom,
   textFrom,
 } from "@/lib/cms/content";
+import { workshopFaqs } from "@/data/faqs";
 import {
   breadcrumbJsonLd,
   faqJsonLd,
@@ -32,29 +33,6 @@ export const metadata: Metadata = {
   },
 };
 
-const faqs = [
-  {
-    question: "Kde workshop probíhá?",
-    answer:
-      "Přijedu za vámi — domů, do firmy, na soukromou akci nebo firemní event. Vy zajistíte místo a účastníky, já přivezu materiál i program.",
-  },
-  {
-    question: "Co je v ceně workshopu?",
-    answer:
-      "Květiny a sezónní materiál, nástroje, vedení workshopu a tipy, jak o hotovou práci pečovat. Domluvíme počet lidí, téma a délku.",
-  },
-  {
-    question: "Jaké formáty nabízíte?",
-    answer:
-      "Květinové workshopy (kytice a aranžmá), věncové workshopy a firemní / týmové workshopy jako team building nebo zážitek pro klienty.",
-  },
-  {
-    question: "Jak workshop objednám?",
-    answer:
-      "Přes kontaktní formulář — napište počet lidí, termín, místo a jestli chcete kytice, věnce, nebo kombinaci. Domluvíme zbytek.",
-  },
-];
-
 const jsonLd = [
   breadcrumbJsonLd([
     { name: "Úvod", path: "/" },
@@ -66,7 +44,7 @@ const jsonLd = [
     path: "/workshopy",
     serviceType: "Floristický workshop",
   }),
-  faqJsonLd(faqs),
+  faqJsonLd(workshopFaqs),
 ];
 
 const formats = [
@@ -260,7 +238,7 @@ export default async function WorkshopyPage() {
           </section>
         </FadeIn>
 
-        <FaqSection faqs={faqs} />
+        <FaqSection faqs={workshopFaqs} />
       </div>
     </div>
   );

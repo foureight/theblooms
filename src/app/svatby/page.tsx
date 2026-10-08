@@ -6,6 +6,7 @@ import { DecorationCarousel } from "@/components/decoration-carousel";
 import { FadeIn } from "@/components/fade-in";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
+import { weddingFaqs } from "@/data/faqs";
 import { site } from "@/data/site";
 import {
   getCmsContent,
@@ -36,29 +37,6 @@ export const metadata: Metadata = {
     locale: "cs_CZ",
   },
 };
-
-const faqs = [
-  {
-    question: "Co všechno řešíte u svatby?",
-    answer:
-      "Celý floristický a dekorační koncept: svatební kytici, obřadní instalace, stoly, brány, vázy, svícny, textil a další dekorace z vlastního inventáře — nebo realizaci podle vaší představy.",
-  },
-  {
-    question: "Jak probíhá poptávka svatby?",
-    answer:
-      "Přes kontaktní formulář napište datum, místo a základní představu. Ozvu se s dalšími otázkami a návrhem rozsahu. Objednání neprobíhá přes e-shop.",
-  },
-  {
-    question: "Máte vlastní inventář dekorací?",
-    answer:
-      "Ano. V rámci svatby můžu nabídnout vázy, svícny, svíčky, nádoby, brány, textil a další kusy z vlastního inventáře.",
-  },
-  {
-    question: "Kde THE BLOOMS svatby realizuje?",
-    answer:
-      "Floristické studio THE BLOOMS působí v České republice. Konkrétní lokalitu a logistiku domlouváme individuálně podle místa svatby.",
-  },
-];
 
 export const dynamic = "force-dynamic";
 
@@ -100,7 +78,7 @@ export default async function SvatbyPage() {
         })),
       },
     },
-    faqJsonLd(faqs),
+    faqJsonLd(weddingFaqs),
   ];
 
   return (
@@ -212,7 +190,7 @@ export default async function SvatbyPage() {
           </section>
         </FadeIn>
 
-        <FaqSection faqs={faqs} />
+        <FaqSection faqs={weddingFaqs} />
       </div>
     </div>
   );

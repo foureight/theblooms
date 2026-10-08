@@ -3,6 +3,7 @@ import { InquiryForm } from "@/components/inquiry-form";
 import { FadeIn } from "@/components/fade-in";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
+import { contactFaqs } from "@/data/faqs";
 import { site, type InquiryType } from "@/data/site";
 import {
   getCmsContent,
@@ -30,28 +31,6 @@ export const metadata: Metadata = {
   },
 };
 
-const faqs = [
-  {
-    question: "Jak rychle se ozvete?",
-    answer:
-      "Ozývám se co nejdřív, obvykle během několika pracovních dnů. U blížícího se termínu uveďte datum hned v poptávce.",
-  },
-  {
-    question: "Co napsat do poptávky svatby?",
-    answer:
-      "Datum, místo a základní představu o stylu. Čím konkrétnější brief, tím přesnější odpověď k rozsahu a ceně.",
-  },
-  {
-    question: "Dá se objednat i jinak než formulářem?",
-    answer: `Ano. Můžete napsat na ${site.email}, zavolat na ${site.phone}, nebo napsat na Instagram @${site.instagramHandle}.`,
-  },
-  {
-    question: "Proč je ve formuláři ověření?",
-    answer:
-      "Jednoduchá captcha a honeypot chrání schránku před spamem, aby zůstal čas na skutečné poptávky.",
-  },
-];
-
 const jsonLd = [
   breadcrumbJsonLd([
     { name: "Úvod", path: "/" },
@@ -66,7 +45,7 @@ const jsonLd = [
     about: floristOrganization(),
     mainEntity: floristOrganization(),
   },
-  faqJsonLd(faqs),
+  faqJsonLd(contactFaqs),
 ];
 
 type Props = {
@@ -166,7 +145,7 @@ export default async function KontaktPage({ searchParams }: Props) {
           </FadeIn>
         </div>
 
-        <FaqSection faqs={faqs} />
+        <FaqSection faqs={contactFaqs} />
       </div>
     </div>
   );

@@ -11,6 +11,7 @@ import {
   slotFrom,
   textFrom,
 } from "@/lib/cms/content";
+import { flowerFaqs } from "@/data/faqs";
 import {
   breadcrumbJsonLd,
   faqJsonLd,
@@ -80,29 +81,6 @@ const services = [
   },
 ];
 
-const faqs = [
-  {
-    question: "Je THE BLOOMS klasické květinářství?",
-    answer:
-      "Ne. THE BLOOMS je floristické studio Aleny Šmejkalové. Květiny tvoří vždy na objednávku a podle představy klienta — bez kamenné prodejny a bez běžných malých kytic z výlohy.",
-  },
-  {
-    question: "Od jaké částky se květinové zakázky pohybují?",
-    answer:
-      "Orientačně od 2 000 Kč. Finální cena závisí na rozsahu, sezóně, květinách a tom, jestli jde o aranžmá, pravidelnou floristiku, nebo výzdobu eventu.",
-  },
-  {
-    question: "Jak si objednám kytky?",
-    answer:
-      "Objednání neprobíhá přes e-shop. Stačí poslat poptávku přes kontaktní formulář — napište příležitost, termín a představu. Domluvíme detaily a cenu společně.",
-  },
-  {
-    question: "Děláte i výzdobu firemních eventů?",
-    answer:
-      "Ano. Připravuji květiny i celkovou dekoraci prostoru, případně včetně vlastního inventáře (vázy, svícny, textil a další).",
-  },
-];
-
 const jsonLd = [
   breadcrumbJsonLd([
     { name: "Úvod", path: "/" },
@@ -115,7 +93,7 @@ const jsonLd = [
     serviceType: "Floristická zakázka",
     minPrice: "2000",
   }),
-  faqJsonLd(faqs),
+  faqJsonLd(flowerFaqs),
 ];
 
 export const dynamic = "force-dynamic";
@@ -269,8 +247,6 @@ export default async function KytkyPage() {
           </section>
         </FadeIn>
 
-        <FaqSection faqs={faqs} />
-
         <FadeIn delay={120}>
           <section className="mt-16 sm:mt-20">
             <h2 className="font-display text-4xl text-moss-deep text-balance sm:text-5xl md:text-6xl">
@@ -340,6 +316,8 @@ export default async function KytkyPage() {
             </div>
           </section>
         </FadeIn>
+
+        <FaqSection faqs={flowerFaqs} />
       </div>
     </div>
   );

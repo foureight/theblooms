@@ -14,6 +14,7 @@ import {
   slotFrom,
   textFrom,
 } from "@/lib/cms/content";
+import { homeFaqs } from "@/data/faqs";
 import {
   breadcrumbJsonLd,
   defaultOgImage,
@@ -55,29 +56,6 @@ export const metadata: Metadata = {
   },
 };
 
-const faqs = [
-  {
-    question: "Je THE BLOOMS klasické květinářství?",
-    answer:
-      "Ne. Jde o floristické studio Aleny Šmejkalové. Svatby, větší kytky a eventy vznikají na objednávku přes poptávku; sezónní věnce koupíte v e-shopu.",
-  },
-  {
-    question: "Co si můžu koupit online?",
-    answer:
-      "Online jsou sezónní věnce — s fotografií, cenou, rozměrem a dostupností. Ostatní služby řešíme individuálně.",
-  },
-  {
-    question: "Jak poptám svatbu nebo kytky?",
-    answer:
-      "Přes stránku Kontakt. U svatby uveďte datum a místo, u kytek příležitost a představu. Ozvu se s dalšími detaily.",
-  },
-  {
-    question: "Děláte i workshopy?",
-    answer:
-      "Ano. Květinové a věncové workshopy — přijedu domů, do firmy nebo na akci a přivezu vše potřebné.",
-  },
-];
-
 const jsonLd = [
   {
     "@context": "https://schema.org",
@@ -107,7 +85,7 @@ const jsonLd = [
   },
   personJsonLd(),
   breadcrumbJsonLd([{ name: "Úvod", path: "/" }]),
-  faqJsonLd(faqs),
+  faqJsonLd(homeFaqs),
 ];
 
 function absoluteOg() {
@@ -368,7 +346,7 @@ export default async function HomePage() {
       </section>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <FaqSection faqs={faqs} />
+        <FaqSection faqs={homeFaqs} />
       </div>
     </>
   );

@@ -3,6 +3,7 @@ import { FadeIn } from "@/components/fade-in";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
 import { WreathCatalog } from "@/components/wreath-catalog";
+import { wreathFaqs } from "@/data/faqs";
 import { site } from "@/data/site";
 import {
   getCmsContent,
@@ -30,29 +31,6 @@ export const metadata: Metadata = {
     locale: "cs_CZ",
   },
 };
-
-const faqs = [
-  {
-    question: "Jak se věnce objednávají?",
-    answer:
-      "Věnce jsou jediná část nabídky THE BLOOMS, kterou koupíte přímo na webu. Vyberete věnec, přidáte do košíku a dokončíte objednávku.",
-  },
-  {
-    question: "Mění se nabídka podle sezóny?",
-    answer:
-      "Ano. Věnce připravuji sezónně — jaro, léto, podzim i advent. U každého věnce vidíte fotografii, cenu, rozměr a aktuální dostupnost.",
-  },
-  {
-    question: "Jsou adventní věnce dostupné celý rok?",
-    answer:
-      "Ne. Adventní věnce jsou sezónní nabídka a bývají dostupné od listopadu. Mimo sezónu je u nich uvedená nedostupnost.",
-  },
-  {
-    question: "Děláte i věnce na míru?",
-    answer:
-      "Hotové věnce jsou v e-shopu. Individuální přání nebo větší množství řešíme přes poptávku v kontaktu.",
-  },
-];
 
 export const dynamic = "force-dynamic";
 
@@ -99,7 +77,7 @@ export default async function VencePage() {
         })),
       },
     },
-    faqJsonLd(faqs),
+    faqJsonLd(wreathFaqs),
   ];
 
   return (
@@ -124,7 +102,7 @@ export default async function VencePage() {
         <h2 className="sr-only">Nabídka věnců</h2>
         <WreathCatalog items={wreaths} />
       </div>
-      <FaqSection faqs={faqs} />
+      <FaqSection faqs={wreathFaqs} />
     </div>
   );
 }

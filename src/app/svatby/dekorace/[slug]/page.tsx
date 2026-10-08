@@ -3,10 +3,12 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { DecorationVariantPicker } from "@/components/decoration-variant-picker";
 import { FadeIn } from "@/components/fade-in";
+import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
+import { weddingFaqs } from "@/data/faqs";
 import { decorations, getDecoration } from "@/data/weddings";
 import { site } from "@/data/site";
-import { absoluteUrl, breadcrumbJsonLd } from "@/lib/seo";
+import { absoluteUrl, breadcrumbJsonLd, faqJsonLd } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -60,6 +62,7 @@ export default async function DecorationDetailPage({ params }: Props) {
         })),
       },
     },
+    faqJsonLd(weddingFaqs),
   ];
 
   return (
@@ -98,6 +101,8 @@ export default async function DecorationDetailPage({ params }: Props) {
         <div className="mt-8 sm:mt-10">
           <DecorationVariantPicker category={category} />
         </div>
+
+        <FaqSection faqs={weddingFaqs} />
       </div>
     </div>
   );

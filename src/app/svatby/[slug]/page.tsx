@@ -3,13 +3,16 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CtaLink } from "@/components/cta-link";
 import { CmsImage } from "@/components/cms-image";
+import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
+import { weddingFaqs } from "@/data/faqs";
 import { weddings as baseWeddings } from "@/data/weddings";
 import { site } from "@/data/site";
 import { getCmsContent, mergeWedding, mergeWeddings } from "@/lib/cms/content";
 import {
   absoluteUrl,
   breadcrumbJsonLd,
+  faqJsonLd,
   floristOrganization,
 } from "@/lib/seo";
 
@@ -70,6 +73,7 @@ export default async function WeddingDetailPage({ params }: Props) {
       contentLocation: wedding.place,
       keywords: ["svatba", wedding.season, "floristika", site.name].join(", "),
     },
+    faqJsonLd(weddingFaqs),
   ];
 
   return (
@@ -148,6 +152,8 @@ export default async function WeddingDetailPage({ params }: Props) {
             </div>
           </section>
         )}
+
+        <FaqSection faqs={weddingFaqs} />
       </div>
     </div>
   );

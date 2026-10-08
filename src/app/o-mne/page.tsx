@@ -4,6 +4,7 @@ import { CmsImage } from "@/components/cms-image";
 import { FadeIn } from "@/components/fade-in";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
+import { aboutFaqs } from "@/data/faqs";
 import { site } from "@/data/site";
 import {
   getCmsContent,
@@ -30,28 +31,6 @@ export const metadata: Metadata = {
     locale: "cs_CZ",
   },
 };
-
-const faqs = [
-  {
-    question: `Kdo stojí za ${site.name}?`,
-    answer: `Za studiem ${site.name} stojí floristka ${site.owner}. Pracuje ve vlastní dílně — bez kamenné prodejny a bez klasického květinářství.`,
-  },
-  {
-    question: "Čemu se studio věnuje?",
-    answer:
-      "Především svatbám, větším květinovým zakázkám, eventům, sezónním věncům a workshopům. Ráda skládá celý koncept: květiny, prostor, světlo a dekorace.",
-  },
-  {
-    question: "Jaký je styl práce?",
-    answer:
-      "Spíš editorial a klidný než okázale květinový. Součástí nabídky je i vlastní inventář dekorací.",
-  },
-  {
-    question: "Jak se domluvím na spolupráci?",
-    answer:
-      "Nejjednodušší je napsat přes kontaktní formulář. U svatby uveďte datum a místo, u kytek příležitost, u workshopu počet lidí a termín.",
-  },
-];
 
 const jsonLd = [
   breadcrumbJsonLd([
@@ -83,7 +62,7 @@ const jsonLd = [
     about: floristOrganization(),
     description: pageDescription,
   },
-  faqJsonLd(faqs),
+  faqJsonLd(aboutFaqs),
 ];
 
 export const dynamic = "force-dynamic";
@@ -130,7 +109,7 @@ export default async function AboutPage() {
         </FadeIn>
       </div>
 
-      <FaqSection faqs={faqs} />
+      <FaqSection faqs={aboutFaqs} />
     </div>
   );
 }
