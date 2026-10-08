@@ -129,12 +129,10 @@ export default async function WreathDetailPage({ params }: Props) {
                 <dd>{sizeLabel}</dd>
               </div>
             ) : null}
-            {!wreath.available ? (
-              <div className="flex justify-between gap-4">
-                <dt className="text-muted-foreground">Dostupnost</dt>
-                <dd>Momentálně nedostupné</dd>
-              </div>
-            ) : null}
+            <div className="flex justify-between gap-4">
+              <dt className="text-muted-foreground">Dostupnost</dt>
+              <dd>{wreath.available ? "4 dny" : "Momentálně nedostupné"}</dd>
+            </div>
           </dl>
           <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
             {wreath.description}
