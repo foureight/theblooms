@@ -26,7 +26,6 @@ export default function CartPage() {
     setQuantity,
     removeItem,
     total,
-    clear,
     hydrated,
     catalog,
   } = useCart();
@@ -117,7 +116,6 @@ export default function CartPage() {
         setError(data.error || "Checkout se nepodařilo spustit.");
         return;
       }
-      clear();
       window.location.href = data.url;
     } catch {
       setError("Síťová chyba při spouštění platby.");

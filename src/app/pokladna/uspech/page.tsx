@@ -3,11 +3,13 @@
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { CtaLink } from "@/components/cta-link";
+import { useCart } from "@/lib/cart";
 
 function SuccessInner() {
   const params = useSearchParams();
   const orderId = params.get("orderId") || "";
   const sessionId = params.get("session_id") || "";
+  const { clear } = useCart();
   const [status, setStatus] = useState<"loading" | "ok" | "error">("loading");
 
   useEffect(() => {
@@ -28,7 +30,12 @@ function SuccessInner() {
           }),
         });
         if (cancelled) return;
-        setStatus(res.ok ? "ok" : "error");
+        if (res.ok) {
+          clear();
+          setStatus("ok");
+        } else {
+          setStatus("error");
+        }
       } catch {
         if (!cancelled) setStatus("error");
       }
@@ -36,7 +43,7 @@ function SuccessInner() {
     return () => {
       cancelled = true;
     };
-  }, [orderId, sessionId]);
+  }, [orderId, sessionId, clear]);
 
   return (
     <div className="mx-auto max-w-xl px-4 py-20 text-center">
