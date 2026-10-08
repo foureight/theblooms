@@ -272,8 +272,25 @@ export default async function KytkyPage() {
           </section>
         </FadeIn>
 
+        <FaqSection faqs={faqs} />
+
         <FadeIn delay={120}>
-          <section className="mt-20 border-t border-border pt-12" aria-labelledby="kytky-jak">
+          <section className="mt-16 border-t border-bloom/30 pt-12 sm:mt-20">
+            <h2 className="font-display text-4xl text-moss-deep text-balance sm:text-5xl md:text-6xl">
+              Napište, pro jakou příležitost květiny hledáte
+            </h2>
+            <p className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground">
+              Domů, do firmy, na event nebo jako speciální objednávku. Ozvu se a
+              domluvíme zbytek.
+            </p>
+          </section>
+        </FadeIn>
+
+        <FadeIn delay={160}>
+          <section
+            className="mt-14 sm:mt-20"
+            aria-labelledby="kytky-jak"
+          >
             <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
               Postup
             </p>
@@ -324,23 +341,6 @@ export default async function KytkyPage() {
             <div className="mt-10 sm:mt-12">
               <CtaLink href="/kontakt?typ=kytky">Poslat poptávku</CtaLink>
             </div>
-          </section>
-        </FadeIn>
-
-        <FaqSection faqs={faqs} />
-
-        <FadeIn delay={160}>
-          <section className="mt-20 border-t border-bloom/30 pt-12">
-            <h2 className="font-display text-4xl text-moss-deep text-balance sm:text-5xl md:text-6xl">
-              Napište, pro jakou příležitost květiny hledáte
-            </h2>
-            <p className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground">
-              Domů, do firmy, na event nebo jako speciální objednávku. Ozvu se a
-              domluvíme zbytek.
-            </p>
-            <CtaLink href="/kontakt?typ=kytky" className="mt-8">
-              Poslat poptávku
-            </CtaLink>
           </section>
         </FadeIn>
       </div>
