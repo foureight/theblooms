@@ -51,7 +51,7 @@ export function WreathCardCaption({
         <div className="min-w-0">
           <h3
             className={cn(
-              "font-display text-2xl leading-[1.15] text-moss-deep sm:text-3xl",
+              "font-display text-2xl leading-[1.53] text-moss-deep sm:text-3xl",
               titleClassName,
             )}
           >

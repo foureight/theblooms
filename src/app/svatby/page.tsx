@@ -117,7 +117,7 @@ export default async function SvatbyPage() {
           </CtaLink>
         </FadeIn>
 
-        <section className="mt-16" aria-labelledby="svatby-realizace">
+        <section className="mt-24" aria-labelledby="svatby-realizace">
           <FadeIn>
             <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
               Galerie
@@ -129,7 +129,7 @@ export default async function SvatbyPage() {
               Realizace
             </h2>
           </FadeIn>
-          <div className="mt-10 grid gap-8 sm:grid-cols-2">
+          <div className="mt-12 grid gap-10 sm:grid-cols-2">
             {weddings.map((w, i) => (
               <FadeIn key={w.slug} delay={(i % 2) * 80}>
                 <Link href={`/svatby/${w.slug}`} className="group block">
@@ -157,7 +157,7 @@ export default async function SvatbyPage() {
           </div>
         </section>
 
-        <section id="dekorace" className="mt-24 scroll-mt-24">
+        <section id="dekorace" className="mt-32 scroll-mt-24">
           <FadeIn>
             <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
               Inventář
@@ -170,13 +170,13 @@ export default async function SvatbyPage() {
               kategorii, vyberte varianty a pošlete poptávku.
             </p>
           </FadeIn>
-          <div className="mt-10">
+          <div className="mt-12">
             <DecorationCarousel items={decorations} />
           </div>
         </section>
 
         <FadeIn>
-          <section className="mt-20">
+          <section className="mt-28">
             <h2 className="font-display text-4xl text-moss-deep text-balance sm:text-5xl md:text-6xl">
               Domluvíme vaši svatbu
             </h2>

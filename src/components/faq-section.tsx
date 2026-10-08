@@ -18,7 +18,7 @@ export function FaqSection({
 }: Props) {
   return (
     <section
-      className="relative left-1/2 mt-14 mb-0 w-screen -translate-x-1/2 bg-white py-10 shadow-[0_100vh_0_0_#fff] sm:mt-20 sm:py-14"
+      className="relative left-1/2 mt-20 mb-0 w-screen -translate-x-1/2 bg-white py-14 shadow-[0_100vh_0_0_#fff] sm:mt-28 sm:py-20"
       aria-labelledby={id}
     >
       <FadeIn>

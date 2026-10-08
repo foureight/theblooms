@@ -49,12 +49,12 @@ const jsonLd = [
 
 const formats = [
   {
-    title: "Květinový workshop",
-    text: "Společně skládáme kytice nebo aranžmá. Ukážu postup, výběr květin i jak s nimi pracovat, aby výsledek vydržel.",
-  },
-  {
     title: "Věncový workshop",
     text: "Sezónní věnce na dveře, stůl nebo jako dárek. Každý si odnese vlastní kousek — podle sezóny a materiálu, který přivezu.",
+  },
+  {
+    title: "Květinový workshop",
+    text: "Společně skládáme kytice nebo aranžmá. Ukážu postup, výběr květin i jak s nimi pracovat, aby výsledek vydržel.",
   },
   {
     title: "Firemní a týmové",
@@ -138,14 +138,14 @@ export default async function WorkshopyPage() {
         </FadeIn>
 
         <FadeIn delay={80}>
-          <section className="mt-20">
+          <section className="mt-28">
             <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
               Formáty
             </p>
             <h2 className="mt-2 font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
               Co spolu tvoříme
             </h2>
-            <div className="mt-10 grid gap-10 md:grid-cols-3">
+            <div className="mt-12 grid gap-12 md:grid-cols-3">
               {formatCards.map((item) => (
                 <div key={item.title} className="border-t border-bloom/40 pt-5">
                   <h3 className="font-display text-xl text-moss-deep sm:text-2xl">
@@ -161,7 +161,7 @@ export default async function WorkshopyPage() {
         </FadeIn>
 
         <FadeIn delay={100}>
-          <section className="mt-20 grid gap-10 lg:grid-cols-2 lg:items-start">
+          <section className="mt-28 grid gap-14 lg:grid-cols-2 lg:items-start">
             <div className="relative aspect-[4/5] overflow-hidden">
               <CmsImage
                 src={side}
@@ -197,7 +197,7 @@ export default async function WorkshopyPage() {
         </FadeIn>
 
         <FadeIn delay={120}>
-          <section className="mt-16 sm:mt-20">
+          <section className="mt-24 sm:mt-28">
             <h2 className="font-display text-4xl text-moss-deep text-balance sm:text-5xl md:text-6xl">
               Napište, pro koho workshop plánujete
             </h2>
@@ -209,7 +209,7 @@ export default async function WorkshopyPage() {
         </FadeIn>
 
         <FadeIn delay={140}>
-          <section className="mt-14 border-t border-bloom/30 pt-12 sm:mt-20">
+          <section className="mt-20 border-t border-bloom/30 pt-16 sm:mt-28">
             <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
               Kde
             </p>
@@ -220,7 +220,7 @@ export default async function WorkshopyPage() {
               Workshop nemusí být u mě. Stačí stůl, světlo a prostor, kde se
               pohodlně vejdete.
             </p>
-            <ul className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <ul className="mt-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
               {places.map((place) => (
                 <li key={place.title} className="border-t border-bloom/40 pt-4">
                   <h3 className="font-display text-xl text-moss-deep sm:text-2xl">

@@ -35,7 +35,7 @@ export function HomeWreathsSection({
 
   return (
     <section className="border-y border-border/60 bg-card/50">
-      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
         <FadeIn>
           <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
             E-shop
@@ -61,7 +61,7 @@ export function HomeWreathsSection({
             .
           </p>
         ) : (
-          <div className="mt-12 grid gap-6 sm:mt-14 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
+          <div className="mt-16 grid gap-8 sm:mt-20 sm:grid-cols-2 sm:gap-10 lg:grid-cols-3">
             {filtered.map((w, i) => (
               <FadeIn key={w.slug} delay={i * 60}>
                 <Link href={`/vence/${w.slug}`} className="group block">

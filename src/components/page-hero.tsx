@@ -27,7 +27,7 @@ export function PageHero({ title, image, imageAlt, eyebrow }: Props) {
           </p>
         ) : null}
         <h1
-          className={`font-display leading-[1.05] text-white text-4xl sm:text-6xl md:text-7xl ${eyebrow ? "mt-2" : ""}`}
+          className={`font-display leading-[1.4] text-white text-4xl sm:text-6xl md:text-7xl ${eyebrow ? "mt-2" : ""}`}
         >
           {title}
         </h1>

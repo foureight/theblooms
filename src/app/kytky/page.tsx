@@ -157,10 +157,10 @@ export default async function KytkyPage() {
 
         <FadeIn delay={60}>
           <section
-            className="mt-16 sm:mt-20"
+            className="mt-24 sm:mt-28"
             aria-label="Ukázky uvážených květin"
           >
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6">
               {builtInCards.map((item) => (
                 <figure key={item.title} className="group">
                   <div className="relative aspect-[4/5] overflow-hidden bg-stone">
@@ -182,7 +182,7 @@ export default async function KytkyPage() {
         </FadeIn>
 
         <FadeIn delay={80}>
-          <section className="mt-16 sm:mt-20" aria-labelledby="kytky-sluzby">
+          <section className="mt-24 sm:mt-28" aria-labelledby="kytky-sluzby">
             <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
               Služby
             </p>
@@ -196,7 +196,7 @@ export default async function KytkyPage() {
               Od květin do domu přes firemní floristiku až po výzdobu eventu —
               vždy na míru a podle konkrétní příležitosti.
             </p>
-            <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
               {serviceCards.map((item) => (
                 <article
                   key={item.title}
@@ -215,7 +215,7 @@ export default async function KytkyPage() {
         </FadeIn>
 
         <FadeIn delay={100}>
-          <section className="mt-20 grid gap-10 lg:grid-cols-2 lg:items-start">
+          <section className="mt-28 grid gap-14 lg:grid-cols-2 lg:items-start">
             <div className="relative aspect-[4/5] overflow-hidden">
               <CmsImage
                 src={eventImg}
@@ -248,7 +248,7 @@ export default async function KytkyPage() {
         </FadeIn>
 
         <FadeIn delay={120}>
-          <section className="mt-16 sm:mt-20">
+          <section className="mt-24 sm:mt-28">
             <h2 className="font-display text-4xl text-moss-deep text-balance sm:text-5xl md:text-6xl">
               Napište, pro jakou příležitost květiny hledáte
             </h2>
@@ -261,7 +261,7 @@ export default async function KytkyPage() {
 
         <FadeIn delay={160}>
           <section
-            className="mt-14 sm:mt-20"
+            className="mt-20 sm:mt-28"
             aria-labelledby="kytky-jak"
           >
             <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
@@ -273,7 +273,7 @@ export default async function KytkyPage() {
             >
               Jak to probíhá
             </h2>
-            <ol className="mt-10 grid gap-8 sm:grid-cols-3">
+            <ol className="mt-12 grid gap-10 sm:grid-cols-3">
               <li className="border-t border-bloom/40 pt-5">
                 <p className="text-[10px] tracking-[0.18em] uppercase text-muted-foreground sm:text-xs">
                   01

@@ -139,7 +139,7 @@ export default async function HomePage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/20" />
         <div className="relative mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-end px-4 pb-16 pt-28 sm:px-6 lg:px-8 lg:pb-24">
-          <h1 className="reveal max-w-3xl font-sans text-4xl font-normal tracking-wide text-white sm:text-5xl md:text-6xl md:leading-[1.05]">
+          <h1 className="reveal max-w-3xl font-sans text-4xl font-normal tracking-wide text-white sm:text-5xl md:text-6xl md:leading-[1.4]">
             {textFrom(cms, "home.heroTitle")}
           </h1>
           <p className="reveal reveal-delay-1 mt-3 max-w-lg text-base leading-relaxed text-white/70">
@@ -163,12 +163,12 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
         <FadeIn>
           <h2 className="text-left font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
             {textFrom(cms, "home.twoWaysTitle")}
           </h2>
-          <div className="mt-8 grid gap-10 md:grid-cols-2">
+          <div className="mt-10 grid gap-12 md:grid-cols-2">
             <div className="border-t border-bloom/40 pt-6">
               <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
                 {textFrom(cms, "home.twoWaysWeddingsTitle")}
@@ -196,7 +196,7 @@ export default async function HomePage() {
       </section>
 
       <section className="bg-moss-deep text-primary-foreground">
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
           <FadeIn>
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
@@ -215,7 +215,7 @@ export default async function HomePage() {
               </CtaLink>
             </div>
           </FadeIn>
-          <div className="mt-10 grid gap-6 sm:mt-12 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid gap-8 sm:mt-16 sm:grid-cols-2 lg:grid-cols-3">
             {featuredWeddings.map((w, i) => (
               <FadeIn key={w.slug} delay={i * 100}>
                 <Link href={`/svatby/${w.slug}`} className="group block">
@@ -250,9 +250,9 @@ export default async function HomePage() {
         items={allWreaths}
       />
 
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
         <FadeIn>
-          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start lg:gap-10">
+          <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-start lg:gap-14">
             <div>
               <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
                 Workshopy
@@ -281,9 +281,9 @@ export default async function HomePage() {
       </section>
 
       <section className="bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
           <FadeIn>
-            <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-10">
+            <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-14">
               <div className="relative aspect-[4/5] overflow-hidden">
                 <CmsImage
                   src={flowersImg}
@@ -316,9 +316,9 @@ export default async function HomePage() {
       </section>
 
       <section>
-        <div className="mx-auto grid max-w-7xl items-start gap-8 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:py-28">
+        <div className="mx-auto grid max-w-7xl items-start gap-12 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-2 lg:gap-24 lg:px-8 lg:py-40">
           <FadeIn>
-            <h2 className="font-display text-4xl leading-[1.05] text-moss-deep text-balance sm:text-5xl md:text-6xl">
+            <h2 className="font-display text-4xl leading-[1.4] text-moss-deep text-balance sm:text-5xl md:text-6xl">
               {textFrom(cms, "home.ctaTitle")}
             </h2>
             <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground sm:mt-5">

@@ -146,7 +146,8 @@
     font-family: "acumin-pro-wide", var(--font-name-fallback), ui-sans-serif,
       system-ui, sans-serif;
     letter-spacing: 0.01em;
-    line-height: 1.15;
+    /* ~⅓ more leading than 1.15 so multi-line headlines breathe */
+    line-height: 1.53;
   }
   .font-brand {
     font-family: "acumin-pro-wide", var(--font-name-fallback), ui-sans-serif,
