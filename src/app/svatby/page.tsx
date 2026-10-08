@@ -198,7 +198,7 @@ export default async function SvatbyPage() {
         </section>
 
         <FadeIn>
-          <section className="mt-20 border-t border-bloom/30 pt-12">
+          <section className="mt-20">
             <h2 className="font-display text-4xl text-moss-deep text-balance sm:text-5xl md:text-6xl">
               Domluvíme vaši svatbu
             </h2>

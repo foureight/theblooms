@@ -272,7 +272,7 @@ export default async function KytkyPage() {
         <FaqSection faqs={faqs} />
 
         <FadeIn delay={120}>
-          <section className="mt-16 border-t border-bloom/30 pt-12 sm:mt-20">
+          <section className="mt-16 sm:mt-20">
             <h2 className="font-display text-4xl text-moss-deep text-balance sm:text-5xl md:text-6xl">
               Napište, pro jakou příležitost květiny hledáte
             </h2>

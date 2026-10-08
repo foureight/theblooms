@@ -124,7 +124,7 @@ export default async function WeddingDetailPage({ params }: Props) {
         </div>
 
         {others.length > 0 && (
-          <section className="mt-20 border-t border-border pt-12">
+          <section className="mt-20">
             <h2 className="font-display text-4xl text-moss-deep sm:text-5xl">
               Další svatby
             </h2>
