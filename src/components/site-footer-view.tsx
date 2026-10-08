@@ -15,7 +15,7 @@ export function SiteFooterView({ contact }: { contact: SiteContact }) {
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-8">
         <div>
           <BloomLogo tone="white" className="h-[2.4rem] w-auto" />
-          <p className="mt-4 font-display text-lg text-white">
+          <p className="mt-4 font-display text-lg text-bloom-yellow">
             {contact.owner}
           </p>
           <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/85">
