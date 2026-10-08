@@ -161,9 +161,15 @@ export default async function KytkyPage() {
         <FadeIn delay={60}>
           <section
             className="mt-24 sm:mt-28"
-            aria-label="Ukázky uvážených květin"
+            aria-labelledby="kytky-ukazky"
           >
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6">
+            <h2
+              id="kytky-ukazky"
+              className="font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl"
+            >
+              Ukázky z dílny
+            </h2>
+            <div className="mt-10 grid grid-cols-2 gap-4 sm:mt-12 sm:grid-cols-3 sm:gap-6">
               {builtInCards.map((item) => (
                 <figure key={item.title} className="group">
                   <div className="relative aspect-[4/5] overflow-hidden bg-stone">

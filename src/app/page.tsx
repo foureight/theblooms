@@ -232,9 +232,9 @@ export default async function HomePage() {
                   </div>
                   <div className="mt-4 flex items-baseline justify-between gap-3">
                     <h3 className="font-display text-2xl sm:text-3xl">{w.title}</h3>
-                    <h4 className="text-[10px] font-normal tracking-[0.14em] uppercase text-primary-foreground/55 sm:text-xs">
+                    <p className="text-[10px] font-normal tracking-[0.14em] uppercase text-primary-foreground/55 sm:text-xs">
                       {w.season}
-                    </h4>
+                    </p>
                   </div>
                   <p className="mt-1 text-sm text-primary-foreground/65 sm:text-base">
                     {w.place}
@@ -332,8 +332,11 @@ export default async function HomePage() {
           </FadeIn>
           <FadeIn delay={80}>
             <h2 className="font-display text-4xl leading-[1.4] text-moss-deep text-balance sm:text-5xl md:text-6xl">
-              {textFrom(cms, "home.ctaTitle")}
+              Domluvte si svatbu, kytky nebo věnec
             </h2>
+            <p className="mt-5 font-display text-2xl leading-[1.4] text-moss-deep/85 text-balance sm:text-3xl">
+              {textFrom(cms, "home.ctaTitle")}
+            </p>
             <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground sm:mt-5">
               {textFrom(cms, "home.ctaText")}
             </p>

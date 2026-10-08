@@ -43,13 +43,20 @@ export function floristOrganization() {
     },
     address: {
       "@type": "PostalAddress",
-      addressLocality: site.location,
+      addressLocality: "Praha",
+      addressRegion: "Nusle",
       addressCountry: "CZ",
     },
-    areaServed: {
-      "@type": "Country",
-      name: "Česko",
-    },
+    areaServed: [
+      {
+        "@type": "City",
+        name: "Praha",
+      },
+      {
+        "@type": "Country",
+        name: "Česko",
+      },
+    ],
     sameAs: [site.instagram],
     description: site.tagline,
     contactPoint: {
@@ -138,10 +145,10 @@ export function serviceJsonLd({
     description,
     url: absoluteUrl(path),
     provider: floristOrganization(),
-    areaServed: {
-      "@type": "Country",
-      name: "Česko",
-    },
+    areaServed: [
+      { "@type": "City", name: "Praha" },
+      { "@type": "Country", name: "Česko" },
+    ],
     ...(minPrice
       ? {
           offers: {

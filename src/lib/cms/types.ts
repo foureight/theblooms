@@ -209,7 +209,7 @@ export const PAGE_TEXTS = [
   },
   {
     id: "home.ctaTitle",
-    label: "Úvod — závěrečný citát",
+    label: "Úvod — citát vedle závěrečné fotky",
     multiline: false,
     defaultValue: "„Jo, přesně tohle chci.“",
   },
@@ -297,7 +297,7 @@ export const PAGE_TEXTS = [
     id: "kontakt.location",
     label: "Kontakt — lokalita",
     multiline: false,
-    defaultValue: "Česká republika",
+    defaultValue: "Praha – Nusle",
   },
   {
     id: "kontakt.instagram",

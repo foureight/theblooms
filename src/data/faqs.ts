@@ -66,7 +66,7 @@ export const weddingFaqs: FaqItem[] = [
   {
     question: "Kde THE BLOOMS svatby realizuje?",
     answer:
-      "Floristické studio THE BLOOMS působí v České republice. Konkrétní lokalitu a logistiku domlouváme individuálně podle místa svatby.",
+      "Studio sídlí v Praze – Nuslích. Svatby realizuji po celé České republice — konkrétní lokalitu a logistiku domlouváme individuálně podle místa obřadu.",
   },
 ];
 

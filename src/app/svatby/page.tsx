@@ -146,9 +146,9 @@ export default async function SvatbyPage() {
                     <h3 className="font-display text-2xl text-moss-deep sm:text-3xl md:text-4xl">
                       {w.title}
                     </h3>
-                    <h4 className="text-[10px] font-normal tracking-[0.14em] uppercase text-muted-foreground sm:text-xs">
+                    <p className="text-[10px] font-normal tracking-[0.14em] uppercase text-muted-foreground sm:text-xs">
                       {w.season}
-                    </h4>
+                    </p>
                   </div>
                   <p className="mt-1 text-sm text-muted-foreground">{w.place}</p>
                 </Link>

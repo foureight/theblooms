@@ -69,9 +69,9 @@ export function DecorationCarousel({ items }: Props) {
               <h3 className="text-sm font-normal tracking-wide text-white sm:text-base">
                 {d.title}
               </h3>
-              <h4 className="mt-1 text-[10px] font-normal tracking-[0.14em] uppercase text-white/75 sm:text-[11px]">
+              <p className="mt-1 text-[10px] font-normal tracking-[0.14em] uppercase text-white/75 sm:text-[11px]">
                 {d.variants.length} variant · vybrat
-              </h4>
+              </p>
             </div>
           </Link>
         ))}

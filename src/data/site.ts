@@ -6,7 +6,7 @@ export const site = {
   phone: "+420 775 125 224",
   instagram: "https://instagram.com/thebloomscz",
   instagramHandle: "thebloomscz",
-  location: "Česká republika",
+  location: "Praha – Nusle",
 };
 
 export const nav = [
