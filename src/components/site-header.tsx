@@ -42,7 +42,7 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "shrink-0 whitespace-nowrap px-2.5 py-2 text-[11px] font-bold tracking-[0.14em] uppercase underline-offset-4 transition-colors hovering:text-bloom-light hover:text-bloom-light hover:underline",
+                  "shrink-0 whitespace-nowrap px-2.5 py-2 text-[11px] font-bold tracking-[0.14em] uppercase underline-offset-4 transition-colors hover:text-bloom-light hover:underline",
                   active
                     ? "text-bloom underline"
                     : "text-muted-foreground",
@@ -70,7 +70,7 @@ export function SiteHeader() {
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden"
+            className="xl:hidden"
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Zavřít menu" : "Otevřít menu"}
           >
@@ -80,7 +80,7 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <div className="border-t border-border/60 bg-background lg:hidden">
+        <div className="border-t border-border/60 bg-background xl:hidden">
           <nav className="mx-auto flex max-w-7xl flex-col px-4 py-4">
             {nav.map((item) => (
               <Link
