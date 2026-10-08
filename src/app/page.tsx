@@ -266,20 +266,9 @@ export default async function HomePage() {
       />
 
       <section className="overflow-x-clip">
-        {/* Same typography as closing CTA, mirrored: photo left | text right */}
+        {/* Workshopy: text left | photo right */}
         <div className="mx-auto grid max-w-7xl grid-cols-1 items-start gap-10 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-2 lg:gap-14 lg:px-8 lg:py-40">
-          <FadeIn className="min-w-0 w-full">
-            <div className="relative aspect-[4/5] w-full overflow-hidden sm:aspect-[5/4] lg:aspect-[4/5]">
-              <CmsImage
-                src={workshopsImg}
-                alt="Floristický workshop"
-                fill
-                className="object-cover"
-                sizes="(max-width:1024px) 100vw, 50vw"
-              />
-            </div>
-          </FadeIn>
-          <FadeIn delay={80} className="min-w-0 text-left">
+          <FadeIn className="min-w-0 text-left">
             <h2 className="font-display text-4xl text-moss-deep text-balance sm:text-5xl md:text-6xl">
               Workshopy
             </h2>
@@ -293,14 +282,34 @@ export default async function HomePage() {
               <CtaLink href="/workshopy">Workshopy</CtaLink>
             </div>
           </FadeIn>
+          <FadeIn delay={80} className="min-w-0 w-full">
+            <div className="relative aspect-[4/5] w-full overflow-hidden sm:aspect-[5/4] lg:aspect-[4/5]">
+              <CmsImage
+                src={workshopsImg}
+                alt="Floristický workshop"
+                fill
+                className="object-cover"
+                sizes="(max-width:1024px) 100vw, 50vw"
+              />
+            </div>
+          </FadeIn>
         </div>
       </section>
 
       <section className="bg-white">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
           <FadeIn>
-            {/* Alternate: text left | photo right */}
+            {/* Alternate: photo left | text right */}
             <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-14">
+              <div className="relative aspect-[4/5] overflow-hidden">
+                <CmsImage
+                  src={flowersImg}
+                  alt="Květinové aranžmá"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width:1024px) 100vw, 50vw"
+                />
+              </div>
               <div>
                 <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
                   Kytky & eventy
@@ -318,35 +327,15 @@ export default async function HomePage() {
                   </CtaLink>
                 </div>
               </div>
-              <div className="relative aspect-[4/5] overflow-hidden">
-                <CmsImage
-                  src={flowersImg}
-                  alt="Květinové aranžmá"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width:1024px) 100vw, 50vw"
-                />
-              </div>
             </div>
           </FadeIn>
         </div>
       </section>
 
       <section className="overflow-x-clip">
-        {/* Alternate: photo left | text right (same stack as Workshopy) */}
+        {/* Alternate: text left | photo right */}
         <div className="mx-auto grid max-w-7xl grid-cols-1 items-start gap-10 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-2 lg:gap-14 lg:px-8 lg:py-40">
-          <FadeIn className="min-w-0 w-full">
-            <div className="relative aspect-[4/5] w-full overflow-hidden sm:aspect-[5/4] lg:aspect-[4/5]">
-              <CmsImage
-                src={ctaImg}
-                alt="Svatební květinová realizace"
-                fill
-                className="object-cover"
-                sizes="(max-width:1024px) 100vw, 50vw"
-              />
-            </div>
-          </FadeIn>
-          <FadeIn delay={80} className="min-w-0 text-left">
+          <FadeIn className="min-w-0 text-left">
             <h2 className="font-display text-4xl text-moss-deep text-balance sm:text-5xl md:text-6xl">
               Domluvte si svatbu, kytky nebo věnec
             </h2>
@@ -361,6 +350,17 @@ export default async function HomePage() {
                 Realizace
               </CtaLink>
               <CtaLink href="/kontakt">Napsat</CtaLink>
+            </div>
+          </FadeIn>
+          <FadeIn delay={80} className="min-w-0 w-full">
+            <div className="relative aspect-[4/5] w-full overflow-hidden sm:aspect-[5/4] lg:aspect-[4/5]">
+              <CmsImage
+                src={ctaImg}
+                alt="Svatební květinová realizace"
+                fill
+                className="object-cover"
+                sizes="(max-width:1024px) 100vw, 50vw"
+              />
             </div>
           </FadeIn>
         </div>
