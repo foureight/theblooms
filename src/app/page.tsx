@@ -149,8 +149,18 @@ export default async function HomePage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/20" />
         <div className="relative mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-end px-4 pb-[114px] pt-28 sm:px-6 lg:px-8 lg:pb-[146px]">
-          <h1 className="reveal max-w-3xl font-sans text-4xl font-normal tracking-wide text-white sm:text-5xl md:text-6xl">
-            {textFrom(cms, "home.heroTitle")}
+          <h1 className="reveal max-w-3xl whitespace-pre-line font-sans text-4xl font-normal tracking-wide text-white sm:text-5xl md:text-6xl">
+            {(() => {
+              const raw = textFrom(cms, "home.heroTitle");
+              const flat = raw.replace(/\s+/g, " ").trim();
+              if (
+                flat ===
+                "Floristické studio pro svatby, květinové realizace nebo věnce"
+              ) {
+                return "Floristické studio\npro svatby,\nkvětinové realizace\nnebo věnce";
+              }
+              return raw;
+            })()}
           </h1>
           <p className="reveal reveal-delay-1 mt-3 max-w-lg text-base leading-relaxed text-white/70">
             {textFrom(cms, "home.heroLead")}
