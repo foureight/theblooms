@@ -165,13 +165,13 @@ export default async function HomePage() {
 
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
         <FadeIn>
-          {/* Title + both services share one left edge; columns sit side by side */}
-          <div className="max-w-3xl text-left">
+          {/* Left-aligned cluster — title + both columns share one left edge */}
+          <div className="w-full max-w-[42rem] text-left">
             <h2 className="font-display text-4xl text-moss-deep sm:text-5xl md:text-6xl">
               {textFrom(cms, "home.twoWaysTitle")}
             </h2>
-            <div className="mt-10 grid gap-10 sm:grid-cols-2 sm:gap-12">
-              <div className="border-t border-bloom/40 pt-6">
+            <div className="mt-8 grid grid-cols-1 gap-8 sm:mt-10 sm:grid-cols-2 sm:gap-8">
+              <div className="border-t border-bloom/40 pt-6 text-left">
                 <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
                   {textFrom(cms, "home.twoWaysWeddingsTitle")}
                 </h3>
@@ -182,7 +182,7 @@ export default async function HomePage() {
                   Poslat poptávku
                 </CtaLink>
               </div>
-              <div className="border-t border-bloom/40 pt-6">
+              <div className="border-t border-bloom/40 pt-6 text-left">
                 <h3 className="font-display text-3xl text-moss-deep sm:text-4xl">
                   {textFrom(cms, "home.twoWaysWreathsTitle")}
                 </h3>
@@ -319,35 +319,33 @@ export default async function HomePage() {
       </section>
 
       <section>
-        {/* Mirror of Kytky & eventy (photo|text): here text|photo, same gap */}
-        <div className="mx-auto grid max-w-7xl items-start gap-12 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-2 lg:gap-14 lg:px-8 lg:py-40">
-          <FadeIn className="w-full lg:flex lg:justify-end">
-            <div className="w-full max-w-md lg:max-w-none lg:w-[min(100%,28rem)]">
-              <h2 className="font-display text-4xl leading-[1.4] text-moss-deep text-balance sm:text-5xl md:text-6xl">
-                Domluvte si svatbu, kytky nebo věnec
-              </h2>
-              <p className="mt-5 font-display text-2xl leading-[1.4] text-moss-deep/85 text-balance sm:text-3xl">
-                {textFrom(cms, "home.ctaTitle")}
-              </p>
-              <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:mt-5">
-                {textFrom(cms, "home.ctaText")}
-              </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <CtaLink href="/svatby" variant="outline">
-                  Realizace
-                </CtaLink>
-                <CtaLink href="/kontakt">Napsat</CtaLink>
-              </div>
+        {/* Text left, photo right — columns pulled together (≈80px gap) */}
+        <div className="mx-auto flex max-w-7xl flex-col items-start gap-10 px-4 py-20 sm:px-6 sm:py-28 lg:flex-row lg:items-start lg:justify-center lg:gap-20 lg:px-8 lg:py-40">
+          <FadeIn className="w-full max-w-md shrink-0 text-left lg:w-[28rem]">
+            <h2 className="font-display text-4xl leading-[1.15] text-moss-deep text-balance sm:text-5xl md:text-6xl md:leading-[80px]">
+              Domluvte si svatbu, kytky nebo věnec
+            </h2>
+            <p className="mt-5 font-display text-2xl leading-[1.35] text-moss-deep/85 text-balance sm:text-3xl">
+              {textFrom(cms, "home.ctaTitle")}
+            </p>
+            <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:mt-5">
+              {textFrom(cms, "home.ctaText")}
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <CtaLink href="/svatby" variant="outline">
+                Realizace
+              </CtaLink>
+              <CtaLink href="/kontakt">Napsat</CtaLink>
             </div>
           </FadeIn>
-          <FadeIn delay={80} className="w-full">
-            <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[5/4] lg:aspect-[4/5]">
+          <FadeIn delay={80} className="w-full max-w-lg shrink-0 lg:max-w-none lg:w-[min(100%,28rem)]">
+            <div className="relative aspect-[4/5] overflow-hidden">
               <CmsImage
                 src={ctaImg}
                 alt="Svatební květinová realizace"
                 fill
                 className="object-cover"
-                sizes="(max-width:1024px) 100vw, 50vw"
+                sizes="(max-width:1024px) 100vw, 28rem"
               />
             </div>
           </FadeIn>
