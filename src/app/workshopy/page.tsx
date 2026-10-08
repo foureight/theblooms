@@ -219,7 +219,19 @@ export default async function WorkshopyPage() {
         </FadeIn>
 
         <FadeIn delay={120}>
-          <section className="mt-20 border-t border-border pt-12">
+          <section className="mt-16 border-t border-bloom/30 pt-12 sm:mt-20">
+            <h2 className="font-display text-4xl text-moss-deep text-balance sm:text-5xl md:text-6xl">
+              Napište, pro koho workshop plánujete
+            </h2>
+            <p className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground">
+              Počet lidí, termín, místo a jestli chcete kytice, věnce, nebo něco
+              mezi tím. Domluvíme zbytek společně.
+            </p>
+          </section>
+        </FadeIn>
+
+        <FadeIn delay={140}>
+          <section className="mt-14 sm:mt-20">
             <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
               Kde
             </p>
@@ -242,28 +254,13 @@ export default async function WorkshopyPage() {
                 </li>
               ))}
             </ul>
-            <CtaLink href="/kontakt?typ=workshop" className="mt-10">
+            <CtaLink href="/kontakt?typ=workshop" className="mt-10 sm:mt-12">
               Domluvit workshop
             </CtaLink>
           </section>
         </FadeIn>
 
         <FaqSection faqs={faqs} />
-
-        <FadeIn delay={140}>
-          <section className="mt-20 border-t border-bloom/30 pt-12 pb-4">
-            <h2 className="font-display text-4xl text-moss-deep text-balance sm:text-5xl md:text-6xl">
-              Napište, pro koho workshop plánujete
-            </h2>
-            <p className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground">
-              Počet lidí, termín, místo a jestli chcete kytice, věnce, nebo něco
-              mezi tím. Domluvíme zbytek společně.
-            </p>
-            <CtaLink href="/kontakt?typ=workshop" className="mt-8">
-              Domluvit workshop
-            </CtaLink>
-          </section>
-        </FadeIn>
       </div>
     </div>
   );
