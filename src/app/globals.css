@@ -220,24 +220,25 @@
       transform: translateY(0);
     }
   }
-  /* Hero: big enough crop that drift never reveals empty grey edges */
+  /* Hero: seamless ping-pong — tiny range, long ease, soft turnaround */
   @keyframes hero-drift {
-    from {
-      transform: scale(1.32) translate3d(2%, 0, 0);
+    0%,
+    100% {
+      transform: scale(1.3) translate3d(2.5%, 0, 0);
     }
-    to {
-      transform: scale(1.38) translate3d(5%, 0, 0);
+    50% {
+      transform: scale(1.36) translate3d(4.5%, 0, 0);
     }
   }
   .hero-media {
     transform-origin: 32% center;
     will-change: transform;
-    animation: hero-drift 22s ease-in-out infinite alternate;
+    animation: hero-drift 36s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
   }
   @media (prefers-reduced-motion: reduce) {
     .hero-media {
       animation: none;
-      transform: scale(1.28) translate3d(3%, 0, 0);
+      transform: scale(1.3) translate3d(3%, 0, 0);
     }
   }
   /* Logo flower: ~5s pause, then one slow turn in green, repeat */
