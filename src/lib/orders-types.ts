@@ -17,13 +17,18 @@ export type OrderCustomer = {
 
 export type OrderShipping = {
   method: "zasilkovna";
+  /** Missing on older orders = pickup point. */
+  delivery?: "point" | "box" | "home";
   fee: number;
-  packetaId: string;
-  packetaName: string;
-  packetaCity: string;
-  packetaStreet: string;
-  packetaZip: string;
+  packetaId?: string;
+  packetaName?: string;
+  packetaCity?: string;
+  packetaStreet?: string;
+  packetaZip?: string;
   packetaUrl?: string;
+  addressStreet?: string;
+  addressCity?: string;
+  addressZip?: string;
 };
 
 export type OrderPayment = {

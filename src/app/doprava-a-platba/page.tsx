@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { LegalPage, LegalSection } from "@/components/legal-page";
 import { site } from "@/data/site";
-import { SHIPPING_FEE_CZK } from "@/lib/checkout";
+import { DELIVERY_OPTIONS } from "@/lib/checkout";
 import { formatPrice } from "@/data/wreaths";
 
 export const metadata: Metadata = {
@@ -17,14 +17,20 @@ export default function ShippingPage() {
       path="/doprava-a-platba"
       image="https://images.unsplash.com/photo-1508610048659-a06b669e3321?w=1800&q=80"
       imageAlt="Sezónní věnec THE BLOOMS"
-      description="Doprava přes Zásilkovnu na výdejní místo a platba kartou u online nákupu věnců."
+      description="Doprava přes Zásilkovnu na výdejní místo, do Z-BOXu nebo na adresu a platba kartou u online nákupu věnců."
     >
       <LegalSection title="1. Doprava — Zásilkovna">
         <p>
-          Věnce z e-shopu posílám přes <strong>Zásilkovnu</strong> na vámi
-          vybrané výdejní místo v České republice. Místo zvolíte v košíku před
-          platbou. Cena dopravy je {formatPrice(SHIPPING_FEE_CZK)}.
+          Věnce z e-shopu posílám přes <strong>Zásilkovnu</strong> po celé
+          České republice. Způsob doručení zvolíte v košíku před platbou:
         </p>
+        <ul className="list-disc space-y-1 pl-5">
+          {Object.values(DELIVERY_OPTIONS).map((option) => (
+            <li key={option.label}>
+              {option.label} — {formatPrice(option.fee)}
+            </li>
+          ))}
+        </ul>
       </LegalSection>
       <LegalSection title="2. Termíny">
         <p>

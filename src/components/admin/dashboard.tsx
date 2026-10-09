@@ -667,10 +667,13 @@ export function AdminDashboard({
                     ) : null}
                     {order.shipping ? (
                       <p className="mt-2 text-sm text-muted-foreground">
-                        Zásilkovna: {order.shipping.packetaName}
-                        {order.shipping.packetaStreet
-                          ? ` — ${order.shipping.packetaStreet}, ${order.shipping.packetaZip} ${order.shipping.packetaCity}`
-                          : ""}
+                        {order.shipping.delivery === "home"
+                          ? `Zásilkovna na adresu: ${order.shipping.addressStreet}, ${order.shipping.addressZip} ${order.shipping.addressCity}`
+                          : `${order.shipping.delivery === "box" ? "Z-BOX" : "Zásilkovna"}: ${order.shipping.packetaName}${
+                              order.shipping.packetaStreet
+                                ? ` — ${order.shipping.packetaStreet}, ${order.shipping.packetaZip} ${order.shipping.packetaCity}`
+                                : ""
+                            }`}
                       </p>
                     ) : null}
                     {order.payment ? (

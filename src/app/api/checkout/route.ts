@@ -1,11 +1,20 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import {
-  SHIPPING_FEE_CZK,
+  DELIVERY_OPTIONS,
+  deliveryFee,
+  formatAddress,
+  isDeliveryType,
   isStripeConfigured,
+  type DeliveryAddress,
   type PacketaPoint,
 } from "@/lib/checkout";
-import { createOrder, updateOrderPayment, type OrderItem } from "@/lib/orders";
+import {
+  createOrder,
+  updateOrderPayment,
+  type OrderItem,
+  type OrderShipping,
+} from "@/lib/orders";
 import { siteUrl } from "@/lib/seo";
 
 export const runtime = "nodejs";
@@ -58,6 +67,16 @@ function parsePacketa(raw: unknown): PacketaPoint | null {
   };
 }
 
+function parseAddress(raw: unknown): DeliveryAddress | null {
+  if (!raw || typeof raw !== "object") return null;
+  const r = raw as Record<string, unknown>;
+  const street = asString(r.street);
+  const city = asString(r.city);
+  const zip = asString(r.zip);
+  if (!street || !city || !zip) return null;
+  return { street, city, zip };
+}
+
 function originFromRequest(req: Request) {
   const env = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
   if (env && !/theblooms\.cz$/i.test(new URL(env).hostname)) return env;
@@ -84,7 +103,9 @@ export async function POST(req: Request) {
     const phone = asString(body.phone);
     const note = asString(body.note);
     const items = parseItems(body.items);
-    const packeta = parsePacketa(body.packeta);
+    const delivery = isDeliveryType(body.delivery) ? body.delivery : "point";
+    const packeta = delivery === "home" ? null : parsePacketa(body.packeta);
+    const address = delivery === "home" ? parseAddress(body.address) : null;
 
     if (!name || !email || !items) {
       return NextResponse.json(
@@ -95,33 +116,65 @@ export async function POST(req: Request) {
     if (!email.includes("@")) {
       return NextResponse.json({ error: "Neplatný e-mail." }, { status: 400 });
     }
-    if (!packeta) {
+    if (delivery === "home" && !address) {
       return NextResponse.json(
-        { error: "Vyberte výdejní místo Zásilkovny." },
+        { error: "Vyplňte adresu pro doručení." },
+        { status: 400 },
+      );
+    }
+    if (delivery === "home" && !phone) {
+      return NextResponse.json(
+        { error: "Pro doručení na adresu vyplňte telefon pro kurýra." },
+        { status: 400 },
+      );
+    }
+    if (delivery !== "home" && !packeta) {
+      return NextResponse.json(
+        {
+          error:
+            delivery === "box"
+              ? "Vyberte Z-BOX Zásilkovny."
+              : "Vyberte výdejní místo Zásilkovny.",
+        },
         { status: 400 },
       );
     }
 
     const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
-    const shippingFee = SHIPPING_FEE_CZK;
+    const shippingFee = deliveryFee(delivery);
     const total = subtotal + shippingFee;
     const useStripe = isStripeConfigured();
+
+    const shipping: OrderShipping = address
+      ? {
+          method: "zasilkovna",
+          delivery,
+          fee: shippingFee,
+          addressStreet: address.street,
+          addressCity: address.city,
+          addressZip: address.zip,
+        }
+      : {
+          method: "zasilkovna",
+          delivery,
+          fee: shippingFee,
+          packetaId: packeta!.id,
+          packetaName: packeta!.name,
+          packetaCity: packeta!.city,
+          packetaStreet: packeta!.street,
+          packetaZip: packeta!.zip,
+          packetaUrl: packeta!.url,
+        };
+    const shippingLine = address
+      ? `${DELIVERY_OPTIONS.home.label} — ${formatAddress(address)}`
+      : `${DELIVERY_OPTIONS[delivery].label} — ${packeta!.name}`;
 
     const order = await createOrder({
       customer: { name, email, phone, note: note || undefined },
       items,
       subtotal,
       total,
-      shipping: {
-        method: "zasilkovna",
-        fee: shippingFee,
-        packetaId: packeta.id,
-        packetaName: packeta.name,
-        packetaCity: packeta.city,
-        packetaStreet: packeta.street,
-        packetaZip: packeta.zip,
-        packetaUrl: packeta.url,
-      },
+      shipping,
       payment: {
         method: "card",
         provider: useStripe ? "stripe" : "mock",
@@ -157,7 +210,7 @@ export async function POST(req: Request) {
               currency: "czk",
               unit_amount: shippingFee * 100,
               product_data: {
-                name: `Doprava Zásilkovna — ${packeta.name}`,
+                name: shippingLine,
               },
             },
           },
