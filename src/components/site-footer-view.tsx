@@ -12,8 +12,8 @@ export function SiteFooterView({ contact }: { contact: SiteContact }) {
   if (pathname.startsWith("/admin")) return null;
 
   return (
-    <footer className="relative isolate z-20 mt-0 overflow-visible bg-moss-deep text-white">
-      <div className="mx-auto flex max-w-7xl flex-col gap-12 px-4 py-14 sm:px-6 lg:px-8 xl:flex-row xl:items-start xl:justify-between xl:gap-16">
+    <footer className="bg-moss-deep text-white">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-4 py-14 sm:px-6 lg:px-8 xl:flex-row xl:items-start xl:justify-between xl:gap-16">
         {/* Brand — left edge */}
         <div className="min-w-0 max-w-sm shrink-0">
           <Link
@@ -33,8 +33,8 @@ export function SiteFooterView({ contact }: { contact: SiteContact }) {
           </p>
         </div>
 
-        {/* Menu / Informace / Kontakt — nudged right on desktop */}
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-3 sm:gap-10 xl:w-full xl:max-w-3xl xl:gap-12">
+        {/* Menu / Informace / Kontakt */}
+        <div className="grid w-full grid-cols-1 gap-10 sm:grid-cols-3 sm:gap-10 xl:max-w-3xl xl:gap-12">
           <div>
             <p className="text-xs tracking-[0.2em] uppercase text-[#ef7d61]">
               Menu

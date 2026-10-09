@@ -90,7 +90,7 @@ export default function RootLayout({
       <body className={`${encodeExpanded.variable} antialiased`}>
         <CartProvider>
           <SiteHeader />
-          <main className="flex min-h-[70vh] flex-col overflow-visible">
+          <main className="min-h-[70vh]">
             {children}
           </main>
           <SiteFooter />
