@@ -115,6 +115,15 @@ export default function CartPage() {
     city: "",
     zip: "",
   });
+  const [wantsInvoice, setWantsInvoice] = useState(false);
+  const [billing, setBilling] = useState({
+    company: "",
+    ico: "",
+    dic: "",
+    street: "",
+    city: "",
+    zip: "",
+  });
   const [open, setOpen] = useState<Record<SectionId, boolean>>({
     contact: true,
     delivery: false,
@@ -148,11 +157,20 @@ export default function CartPage() {
   const point = delivery === "home" ? null : points[delivery];
   const needsPhone = delivery === "home";
 
+  const billingError = !wantsInvoice
+    ? ""
+    : !billing.company.trim()
+      ? "Vyplňte název firmy."
+      : !/^\d{8}$/.test(billing.ico.replace(/\s/g, ""))
+        ? "IČO musí mít 8 číslic."
+        : !billing.street.trim() || !billing.city.trim() || !billing.zip.trim()
+          ? "Vyplňte fakturační adresu."
+          : "";
   const contactError = !name.trim()
     ? "Vyplňte jméno."
     : !/^\S+@\S+\.\S+$/.test(email.trim())
       ? "Vyplňte platný e-mail."
-      : "";
+      : billingError;
   const deliveryError =
     delivery === "home"
       ? !address.street.trim() || !address.city.trim() || !address.zip.trim()
@@ -166,7 +184,15 @@ export default function CartPage() {
           : "Vyberte výdejní místo."
         : "";
 
-  const contactSummary = [name.trim(), email.trim()].filter(Boolean).join(" · ");
+  const contactSummary = [
+    name.trim(),
+    email.trim(),
+    wantsInvoice && billing.company.trim()
+      ? `faktura: ${billing.company.trim()}`
+      : "",
+  ]
+    .filter(Boolean)
+    .join(" · ");
   const deliverySummary =
     delivery === "home"
       ? `Na adresu${formatAddress(address) ? ` — ${formatAddress(address)}` : ""}`
@@ -239,6 +265,7 @@ export default function CartPage() {
           delivery,
           packeta: point,
           address: delivery === "home" ? address : undefined,
+          billing: wantsInvoice ? billing : undefined,
         }),
       });
       const data = (await res.json()) as { error?: string; url?: string };
@@ -386,6 +413,100 @@ export default function CartPage() {
               />
             </div>
           </div>
+
+          <label className="mt-5 flex cursor-pointer items-center gap-3 text-sm text-moss-deep">
+            <input
+              type="checkbox"
+              checked={wantsInvoice}
+              onChange={(e) => {
+                setWantsInvoice(e.target.checked);
+                setError("");
+              }}
+              className="size-4 accent-moss-deep"
+            />
+            Chci fakturu na firmu
+          </label>
+
+          {wantsInvoice ? (
+            <div className="mt-4 grid gap-4 border-l-2 border-bloom/30 pl-4 sm:grid-cols-3">
+              <div className="space-y-2 sm:col-span-3">
+                <Label htmlFor="bill-company">Název firmy</Label>
+                <Input
+                  id="bill-company"
+                  value={billing.company}
+                  onChange={(e) =>
+                    setBilling((b) => ({ ...b, company: e.target.value }))
+                  }
+                  autoComplete="organization"
+                  className="h-11 rounded-none"
+                />
+              </div>
+              <div className="space-y-2 sm:col-span-2">
+                <Label htmlFor="bill-ico">IČO</Label>
+                <Input
+                  id="bill-ico"
+                  value={billing.ico}
+                  onChange={(e) =>
+                    setBilling((b) => ({ ...b, ico: e.target.value }))
+                  }
+                  inputMode="numeric"
+                  maxLength={10}
+                  className="h-11 rounded-none"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="bill-dic">
+                  DIČ <span className="text-muted-foreground">(volitelně)</span>
+                </Label>
+                <Input
+                  id="bill-dic"
+                  value={billing.dic}
+                  onChange={(e) =>
+                    setBilling((b) => ({ ...b, dic: e.target.value }))
+                  }
+                  placeholder="CZ…"
+                  className="h-11 rounded-none"
+                />
+              </div>
+              <div className="space-y-2 sm:col-span-3">
+                <Label htmlFor="bill-street">Ulice a číslo popisné</Label>
+                <Input
+                  id="bill-street"
+                  value={billing.street}
+                  onChange={(e) =>
+                    setBilling((b) => ({ ...b, street: e.target.value }))
+                  }
+                  autoComplete="billing street-address"
+                  className="h-11 rounded-none"
+                />
+              </div>
+              <div className="space-y-2 sm:col-span-2">
+                <Label htmlFor="bill-city">Město</Label>
+                <Input
+                  id="bill-city"
+                  value={billing.city}
+                  onChange={(e) =>
+                    setBilling((b) => ({ ...b, city: e.target.value }))
+                  }
+                  autoComplete="billing address-level2"
+                  className="h-11 rounded-none"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="bill-zip">PSČ</Label>
+                <Input
+                  id="bill-zip"
+                  value={billing.zip}
+                  onChange={(e) =>
+                    setBilling((b) => ({ ...b, zip: e.target.value }))
+                  }
+                  inputMode="numeric"
+                  autoComplete="billing postal-code"
+                  className="h-11 rounded-none"
+                />
+              </div>
+            </div>
+          ) : null}
           <Button
             type="button"
             variant="outline"

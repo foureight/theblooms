@@ -12,6 +12,7 @@ import type {
 
 export type {
   Order,
+  OrderBilling,
   OrderCustomer,
   OrderItem,
   OrderPayment,

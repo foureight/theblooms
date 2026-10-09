@@ -8,11 +8,22 @@ export type OrderItem = {
   image?: string;
 };
 
+export type OrderBilling = {
+  company: string;
+  ico: string;
+  dic?: string;
+  street: string;
+  city: string;
+  zip: string;
+};
+
 export type OrderCustomer = {
   name: string;
   email: string;
   phone: string;
   note?: string;
+  /** Present only when the customer asked for a company invoice. */
+  billing?: OrderBilling;
 };
 
 export type OrderShipping = {

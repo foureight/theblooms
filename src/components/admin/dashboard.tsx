@@ -665,6 +665,18 @@ export function AdminDashboard({
                         {order.customer.note}
                       </p>
                     ) : null}
+                    {order.customer.billing ? (
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        Faktura: {order.customer.billing.company} · IČO{" "}
+                        {order.customer.billing.ico}
+                        {order.customer.billing.dic
+                          ? ` · DIČ ${order.customer.billing.dic}`
+                          : ""}{" "}
+                        — {order.customer.billing.street},{" "}
+                        {order.customer.billing.zip}{" "}
+                        {order.customer.billing.city}
+                      </p>
+                    ) : null}
                     {order.shipping ? (
                       <p className="mt-2 text-sm text-muted-foreground">
                         {order.shipping.delivery === "home"

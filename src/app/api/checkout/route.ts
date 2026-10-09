@@ -12,6 +12,7 @@ import {
 import {
   createOrder,
   updateOrderPayment,
+  type OrderBilling,
   type OrderItem,
   type OrderShipping,
 } from "@/lib/orders";
@@ -77,6 +78,21 @@ function parseAddress(raw: unknown): DeliveryAddress | null {
   return { street, city, zip };
 }
 
+function parseBilling(raw: unknown): OrderBilling | null | "invalid" {
+  if (!raw || typeof raw !== "object") return null;
+  const r = raw as Record<string, unknown>;
+  const company = asString(r.company);
+  const ico = asString(r.ico).replace(/\s/g, "");
+  const dic = asString(r.dic).replace(/\s/g, "").toUpperCase();
+  const street = asString(r.street);
+  const city = asString(r.city);
+  const zip = asString(r.zip);
+  if (!company || !/^\d{8}$/.test(ico) || !street || !city || !zip) {
+    return "invalid";
+  }
+  return { company, ico, dic: dic || undefined, street, city, zip };
+}
+
 function originFromRequest(req: Request) {
   const env = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
   if (env && !/theblooms\.cz$/i.test(new URL(env).hostname)) return env;
@@ -106,6 +122,13 @@ export async function POST(req: Request) {
     const delivery = isDeliveryType(body.delivery) ? body.delivery : "point";
     const packeta = delivery === "home" ? null : parsePacketa(body.packeta);
     const address = delivery === "home" ? parseAddress(body.address) : null;
+    const billing = parseBilling(body.billing);
+    if (billing === "invalid") {
+      return NextResponse.json(
+        { error: "Doplňte fakturační údaje (firma, IČO o 8 číslicích, adresa)." },
+        { status: 400 },
+      );
+    }
 
     if (!name || !email || !items) {
       return NextResponse.json(
@@ -170,7 +193,13 @@ export async function POST(req: Request) {
       : `${DELIVERY_OPTIONS[delivery].label} — ${packeta!.name}`;
 
     const order = await createOrder({
-      customer: { name, email, phone, note: note || undefined },
+      customer: {
+        name,
+        email,
+        phone,
+        note: note || undefined,
+        billing: billing ?? undefined,
+      },
       items,
       subtotal,
       total,
