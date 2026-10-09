@@ -8,10 +8,7 @@ type Props = {
   faqs: FaqItem[];
 };
 
-/**
- * Full-bleed white FAQ (breaks out of max-w-7xl parents).
- * Questions start collapsed; answers open on click.
- */
+/** Full-width white FAQ — no viewport breakout (avoids footer overlap bugs). */
 export function FaqSection({
   id = "faq",
   title = "FAQ",
@@ -19,7 +16,7 @@ export function FaqSection({
 }: Props) {
   return (
     <section
-      className="relative z-0 mt-20 ml-[calc(50%-50vw)] w-screen bg-white py-14 sm:mt-28 sm:py-20"
+      className="relative mt-20 bg-white py-14 sm:mt-28 sm:py-20"
       aria-labelledby={id}
     >
       <FadeIn>

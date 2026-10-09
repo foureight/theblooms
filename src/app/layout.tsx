@@ -90,10 +90,8 @@ export default function RootLayout({
       <body className={`${encodeExpanded.variable} antialiased`}>
         <CartProvider>
           <SiteHeader />
-          <main className="flex min-h-[70vh] flex-col">
+          <main className="flex min-h-[70vh] flex-col overflow-visible">
             {children}
-            {/* White fill after FAQ so site background never shows above the footer */}
-            <div className="min-h-0 flex-1 bg-white" aria-hidden />
           </main>
           <SiteFooter />
         </CartProvider>

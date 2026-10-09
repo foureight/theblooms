@@ -12,7 +12,7 @@ export function SiteFooterView({ contact }: { contact: SiteContact }) {
   if (pathname.startsWith("/admin")) return null;
 
   return (
-    <footer className="relative z-10 mt-0 bg-moss-deep text-white">
+    <footer className="relative isolate z-20 mt-0 overflow-visible bg-moss-deep text-white">
       <div className="mx-auto flex max-w-7xl flex-col gap-12 px-4 py-14 sm:px-6 lg:px-8 xl:flex-row xl:items-start xl:justify-between xl:gap-16">
         {/* Brand — left edge */}
         <div className="min-w-0 max-w-sm shrink-0">
