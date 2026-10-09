@@ -111,9 +111,29 @@ export function SiteFooterView({ contact }: { contact: SiteContact }) {
       </div>
 
       <div className="bg-white text-foreground">
-        <div className="mx-auto max-w-7xl px-4 py-4 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6 lg:px-8">
           <p className="text-sm">
             © {new Date().getFullYear()} THE BLOOMS – {contact.owner}
+          </p>
+          <p className="text-xs text-muted-foreground sm:text-right">
+            Design, programming a SEO / GEO{" "}
+            <a
+              href="https://forejt.net"
+              target="_blank"
+              rel="noreferrer"
+              className="whitespace-nowrap text-bloom-pink underline underline-offset-2 hover:text-bloom-light"
+            >
+              forejt.net
+            </a>
+            {", "}
+            <a
+              href="https://seo-radar.com"
+              target="_blank"
+              rel="noreferrer"
+              className="whitespace-nowrap text-bloom-pink underline underline-offset-2 hover:text-bloom-light"
+            >
+              seo-radar.com
+            </a>
           </p>
         </div>
       </div>
