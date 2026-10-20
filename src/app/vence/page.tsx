@@ -16,24 +16,39 @@ import {
   absoluteUrls,
   breadcrumbJsonLd,
   faqJsonLd,
+  firstShareImage,
   floristOrganization,
+  ogImages,
 } from "@/lib/seo";
 import { Typo } from "@/components/typo";
 
 const pageDescription =
   "Sezónní věnce THE BLOOMS — jarní, letní, podzimní i adventní. Fotografie, cena, rozměr a dostupnost. Kupte věnec online od floristky Aleny Šmejkalové.";
 
-export const metadata: Metadata = {
-  title: "Sezónní věnce — e-shop",
-  description: pageDescription,
-  alternates: { canonical: "/vence" },
-  openGraph: {
-    title: `Sezónní věnce · ${site.name}`,
+const VENCE_OG_FALLBACK = "/wreaths/advent-pudrovy-masle.jpg";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const cms = await getCmsContent();
+  const wreaths = mergeWreaths(cms);
+  const share = firstShareImage(wreaths, VENCE_OG_FALLBACK);
+  const images = ogImages(share, `Sezónní věnce · ${site.name}`);
+  return {
+    title: "Sezónní věnce — e-shop",
     description: pageDescription,
-    type: "website",
-    locale: "cs_CZ",
-  },
-};
+    alternates: { canonical: "/vence" },
+    openGraph: {
+      title: `Sezónní věnce · ${site.name}`,
+      description: pageDescription,
+      type: "website",
+      locale: "cs_CZ",
+      images,
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: [absoluteUrl(share)],
+    },
+  };
+}
 
 export const dynamic = "force-dynamic";
 

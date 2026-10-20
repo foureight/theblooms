@@ -14,32 +14,49 @@ import {
   absoluteUrls,
   breadcrumbJsonLd,
   faqJsonLd,
+  firstShareImage,
   floristOrganization,
+  ogImages,
 } from "@/lib/seo";
 
 const pageDescription =
   "Adventní věnce THE BLOOMS — koupit online od floristky Aleny Šmejkalové. Klasické i moderní adventní věnce s fotografií, cenou a dostupností. Doprava Zásilkovnou po Česku.";
 
-export const metadata: Metadata = {
-  title: "Adventní věnce — koupit online",
-  description: pageDescription,
-  alternates: { canonical: "/vence/advent" },
-  keywords: [
-    "adventní věnce",
-    "adventní věnec",
-    "koupit adventní věnec",
-    "adventní věnec online",
-    "THE BLOOMS",
-    "Alena Šmejkalová",
-  ],
-  openGraph: {
-    title: `Adventní věnce · ${site.name}`,
+const ADVENT_OG_FALLBACK = "/wreaths/advent-pudrovy-masle.jpg";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const cms = await getCmsContent();
+  const advent = mergeWreaths(cms).filter((w) => w.season === "Advent");
+  const share = firstShareImage(advent, ADVENT_OG_FALLBACK);
+  const images = ogImages(share, `Adventní věnce · ${site.name}`);
+  return {
+    title: "Adventní věnce — koupit online",
     description: pageDescription,
-    type: "website",
-    locale: "cs_CZ",
-    url: absoluteUrl("/vence/advent"),
-  },
-};
+    alternates: { canonical: "/vence/advent" },
+    keywords: [
+      "adventní věnce",
+      "adventní věnec",
+      "koupit adventní věnec",
+      "adventní věnec online",
+      "THE BLOOMS",
+      "Alena Šmejkalová",
+    ],
+    openGraph: {
+      title: `Adventní věnce · ${site.name}`,
+      description: pageDescription,
+      type: "website",
+      locale: "cs_CZ",
+      url: absoluteUrl("/vence/advent"),
+      images,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `Adventní věnce · ${site.name}`,
+      description: pageDescription,
+      images: [absoluteUrl(share)],
+    },
+  };
+}
 
 export const dynamic = "force-dynamic";
 
@@ -121,20 +138,18 @@ export default async function AdventWreathsPage() {
               <>
                 Teď skladem{" "}
                 <span className="font-medium text-foreground">
-                  {inStock} {inStock === 1 ? "věnec" : inStock < 5 ? "věnce" : "věnců"}
+                  {inStock}{" "}
+                  {inStock === 1 ? "věnec" : inStock < 5 ? "věnce" : "věnců"}
                 </span>
                 {fromPrice != null ? (
-                  <>
-                    {" "}
-                    · od {fromPrice.toLocaleString("cs-CZ")}&nbsp;Kč
-                  </>
+                  <> · od {fromPrice.toLocaleString("cs-CZ")}&nbsp;Kč</>
                 ) : null}
                 .
               </>
             ) : (
               <>
-                Adventní nabídka se připravuje — sledujte dostupnost u jednotlivých
-                věnců, nebo napište poptávku.
+                Adventní nabídka se připravuje — sledujte dostupnost u
+                jednotlivých věnců, nebo napište poptávku.
               </>
             )}
           </p>
@@ -148,11 +163,7 @@ export default async function AdventWreathsPage() {
 
         <div id="nabidka" className="mt-10 scroll-mt-24 sm:mt-12">
           <h2 className="sr-only">Nabídka adventních věnců</h2>
-          <WreathCatalog
-            items={advent}
-            initialSeason="Advent"
-            hideFilters
-          />
+          <WreathCatalog items={advent} initialSeason="Advent" hideFilters />
         </div>
 
         <p className="mt-12 text-sm text-muted-foreground">

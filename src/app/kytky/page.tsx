@@ -15,8 +15,10 @@ import { fixCzechOrphans } from "@/lib/typography";
 import { Typo } from "@/components/typo";
 import { flowerFaqs } from "@/data/faqs";
 import {
+  absoluteUrl,
   breadcrumbJsonLd,
   faqJsonLd,
+  ogImages,
   serviceJsonLd,
 } from "@/lib/seo";
 
@@ -24,19 +26,30 @@ const pageTitle = "Kytky na míru — květiny do domu, firmy i na event";
 const pageDescription =
   "Floristické studio THE BLOOMS: větší a individuální květinové zakázky od 2 000 Kč. Květiny do domu, do firmy, aranžmá a výzdoba eventů — vždy na objednávku přes poptávku.";
 
-export const metadata: Metadata = {
-  title: "Kytky na míru",
-  description: pageDescription,
-  alternates: {
-    canonical: "/kytky",
-  },
-  openGraph: {
-    title: `${pageTitle} · ${site.name}`,
+const KYTKY_HERO_FALLBACK =
+  "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=1800&q=80";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const cms = await getCmsContent();
+  const hero = slotFrom(cms, "kytky.hero", KYTKY_HERO_FALLBACK);
+  const images = ogImages(hero, `${pageTitle} · ${site.name}`);
+  return {
+    title: "Kytky na míru",
     description: pageDescription,
-    type: "website",
-    locale: "cs_CZ",
-  },
-};
+    alternates: { canonical: "/kytky" },
+    openGraph: {
+      title: `${pageTitle} · ${site.name}`,
+      description: pageDescription,
+      type: "website",
+      locale: "cs_CZ",
+      images,
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: [absoluteUrl(hero)],
+    },
+  };
+}
 
 const services = [
   {
@@ -102,11 +115,7 @@ export const dynamic = "force-dynamic";
 
 export default async function KytkyPage() {
   const cms = await getCmsContent();
-  const hero = slotFrom(
-    cms,
-    "kytky.hero",
-    "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=1800&q=80",
-  );
+  const hero = slotFrom(cms, "kytky.hero", KYTKY_HERO_FALLBACK);
   const eventImg = slotFrom(
     cms,
     "kytky.eventy",

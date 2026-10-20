@@ -20,6 +20,26 @@ export function absoluteUrls(paths: string | string[]) {
 
 export const defaultOgImage = absoluteUrl("/og.jpg");
 
+/** Open Graph / Twitter image from a page hero or product photo (not the vizitka). */
+export function ogImages(image: string, alt: string) {
+  return [{ url: absoluteUrl(image), alt }];
+}
+
+/** Prefer in-stock catalog photo; skip SVG placeholders. */
+export function firstShareImage(
+  items: { image: string; available?: boolean }[],
+  fallback: string,
+) {
+  const usable = (src: string) =>
+    Boolean(src) &&
+    !src.includes("placeholder.svg") &&
+    !src.endsWith(".svg");
+  const inStock = items.find((i) => i.available && usable(i.image));
+  if (inStock) return inStock.image;
+  const any = items.find((i) => usable(i.image));
+  return any?.image || fallback;
+}
+
 export function floristOrganization() {
   return {
     "@type": ["Florist", "LocalBusiness"],

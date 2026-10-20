@@ -16,10 +16,11 @@ import {
 } from "@/lib/cms/content";
 import { homeFaqs } from "@/data/faqs";
 import {
+  absoluteUrl,
   breadcrumbJsonLd,
-  defaultOgImage,
   faqJsonLd,
   floristOrganization,
+  ogImages,
   personJsonLd,
   siteUrl,
 } from "@/lib/seo";
@@ -27,34 +28,35 @@ import {
 const pageDescription =
   "THE BLOOMS — floristické studio Aleny Šmejkalové pro svatby, větší květinové realizace a sezónní věnce. Osobní práce v dílně, věnce koupíte online.";
 
-export const metadata: Metadata = {
-  title: {
-    absolute: `${site.name} — floristické studio pro svatby a věnce`,
-  },
-  description: pageDescription,
-  alternates: { canonical: "/" },
-  openGraph: {
-    title: `${site.name} — floristické studio`,
+const HOME_HERO_FALLBACK =
+  "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=2000&q=85";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const cms = await getCmsContent();
+  const hero = slotFrom(cms, "home.hero", HOME_HERO_FALLBACK);
+  const images = ogImages(hero, `${site.name} — floristické studio`);
+  return {
+    title: {
+      absolute: `${site.name} — floristické studio pro svatby a věnce`,
+    },
     description: pageDescription,
-    type: "website",
-    locale: "cs_CZ",
-    url: siteUrl,
-    images: [
-      {
-        url: defaultOgImage,
-        width: 1200,
-        height: 630,
-        alt: `${site.name} — floristické studio`,
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${site.name} — floristické studio`,
-    description: pageDescription,
-    images: [defaultOgImage],
-  },
-};
+    alternates: { canonical: "/" },
+    openGraph: {
+      title: `${site.name} — floristické studio`,
+      description: pageDescription,
+      type: "website",
+      locale: "cs_CZ",
+      url: siteUrl,
+      images,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${site.name} — floristické studio`,
+      description: pageDescription,
+      images: [absoluteUrl(hero)],
+    },
+  };
+}
 
 const jsonLd = [
   {
@@ -91,7 +93,7 @@ const jsonLd = [
 function absoluteOg() {
   return {
     "@type": "ImageObject" as const,
-    url: defaultOgImage,
+    url: absoluteUrl(HOME_HERO_FALLBACK),
     width: 1200,
     height: 630,
   };
@@ -104,11 +106,7 @@ export default async function HomePage() {
   const featuredWeddings = mergeWeddings(cms).slice(0, 3);
   const allWreaths = mergeWreaths(cms);
 
-  const hero = slotFrom(
-    cms,
-    "home.hero",
-    "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=2000&q=85",
-  );
+  const hero = slotFrom(cms, "home.hero", HOME_HERO_FALLBACK);
   const flowersImg = slotFrom(
     cms,
     "home.kytky",

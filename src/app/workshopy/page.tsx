@@ -15,25 +15,40 @@ import { workshopFaqs } from "@/data/faqs";
 import { fixCzechOrphans } from "@/lib/typography";
 import { Typo } from "@/components/typo";
 import {
+  absoluteUrl,
   breadcrumbJsonLd,
   faqJsonLd,
+  ogImages,
   serviceJsonLd,
 } from "@/lib/seo";
 
 const pageDescription =
   "Květinové a věncové workshopy THE BLOOMS — přijedu domů, do firmy nebo na akci. Přivezu květiny, materiál i nástroje. Domluvte workshop s Alenou Šmejkalovou.";
 
-export const metadata: Metadata = {
-  title: "Květinové a věncové workshopy",
-  description: pageDescription,
-  alternates: { canonical: "/workshopy" },
-  openGraph: {
-    title: `Workshopy · ${site.name}`,
+const WORKSHOPY_HERO_FALLBACK =
+  "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=1800&q=80";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const cms = await getCmsContent();
+  const hero = slotFrom(cms, "workshopy.hero", WORKSHOPY_HERO_FALLBACK);
+  const images = ogImages(hero, `Workshopy · ${site.name}`);
+  return {
+    title: "Květinové a věncové workshopy",
     description: pageDescription,
-    type: "website",
-    locale: "cs_CZ",
-  },
-};
+    alternates: { canonical: "/workshopy" },
+    openGraph: {
+      title: `Workshopy · ${site.name}`,
+      description: pageDescription,
+      type: "website",
+      locale: "cs_CZ",
+      images,
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: [absoluteUrl(hero)],
+    },
+  };
+}
 
 const jsonLd = [
   breadcrumbJsonLd([
@@ -94,11 +109,7 @@ export const dynamic = "force-dynamic";
 
 export default async function WorkshopyPage() {
   const cms = await getCmsContent();
-  const hero = slotFrom(
-    cms,
-    "workshopy.hero",
-    "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=1800&q=80",
-  );
+  const hero = slotFrom(cms, "workshopy.hero", WORKSHOPY_HERO_FALLBACK);
   const side = slotFrom(
     cms,
     "workshopy.side",

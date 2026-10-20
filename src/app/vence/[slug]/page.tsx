@@ -21,6 +21,7 @@ import {
   breadcrumbJsonLd,
   faqJsonLd,
   floristOrganization,
+  ogImages,
 } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -44,7 +45,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: wreath.description,
       type: "website",
       locale: "cs_CZ",
-      images: [{ url: wreath.image }],
+      images: ogImages(wreath.image, wreath.name),
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: [absoluteUrl(wreath.image)],
     },
   };
 }

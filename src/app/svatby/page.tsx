@@ -20,6 +20,7 @@ import {
   breadcrumbJsonLd,
   faqJsonLd,
   floristOrganization,
+  ogImages,
   serviceJsonLd,
 } from "@/lib/seo";
 import { Typo } from "@/components/typo";
@@ -27,17 +28,30 @@ import { Typo } from "@/components/typo";
 const pageDescription =
   "Svatební floristika THE BLOOMS: celý květinový a dekorační koncept svatby — kytice, obřad, hostina, instalace a vlastní inventář. Poptávka u Aleny Šmejkalové.";
 
-export const metadata: Metadata = {
-  title: "Svatební floristika a dekorace",
-  description: pageDescription,
-  alternates: { canonical: "/svatby" },
-  openGraph: {
-    title: `Svatební floristika · ${site.name}`,
+const SVATBY_HERO_FALLBACK =
+  "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1800&q=80";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const cms = await getCmsContent();
+  const hero = slotFrom(cms, "svatby.hero", SVATBY_HERO_FALLBACK);
+  const images = ogImages(hero, `Svatební floristika · ${site.name}`);
+  return {
+    title: "Svatební floristika a dekorace",
     description: pageDescription,
-    type: "website",
-    locale: "cs_CZ",
-  },
-};
+    alternates: { canonical: "/svatby" },
+    openGraph: {
+      title: `Svatební floristika · ${site.name}`,
+      description: pageDescription,
+      type: "website",
+      locale: "cs_CZ",
+      images,
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: [absoluteUrl(hero)],
+    },
+  };
+}
 
 export const dynamic = "force-dynamic";
 
@@ -45,11 +59,7 @@ export default async function SvatbyPage() {
   const cms = await getCmsContent();
   const weddings = mergeWeddings(cms);
   const decorations = mergeDecorations(cms);
-  const hero = slotFrom(
-    cms,
-    "svatby.hero",
-    "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1800&q=80",
-  );
+  const hero = slotFrom(cms, "svatby.hero", SVATBY_HERO_FALLBACK);
 
   const jsonLd = [
     breadcrumbJsonLd([

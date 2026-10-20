@@ -13,6 +13,7 @@ import {
   absoluteUrls,
   breadcrumbJsonLd,
   faqJsonLd,
+  ogImages,
 } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -32,8 +33,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${category.title} · ${site.name}`,
       description: category.description,
-      images: [{ url: category.image }],
+      images: ogImages(category.image, category.title),
       locale: "cs_CZ",
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: [absoluteUrl(category.image)],
     },
   };
 }

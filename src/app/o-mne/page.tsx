@@ -16,21 +16,35 @@ import {
   breadcrumbJsonLd,
   faqJsonLd,
   floristOrganization,
+  ogImages,
 } from "@/lib/seo";
 
 const pageDescription = `Za floristickým studiem ${site.name} stojí ${site.owner}. Svatby, větší květinové zakázky, věnce, eventy a workshopy — osobně, v dílně, bez klasického květinářství.`;
 
-export const metadata: Metadata = {
-  title: `O mně — ${site.owner}`,
-  description: pageDescription,
-  alternates: { canonical: "/o-mne" },
-  openGraph: {
-    title: `${site.owner} · ${site.name}`,
+const ABOUT_PORTRAIT_FALLBACK =
+  "https://images.unsplash.com/photo-1591886960571-74d43ddc707f?w=1200&q=80";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const cms = await getCmsContent();
+  const portrait = slotFrom(cms, "o-mne.portrait", ABOUT_PORTRAIT_FALLBACK);
+  const images = ogImages(portrait, `${site.owner} · ${site.name}`);
+  return {
+    title: `O mně — ${site.owner}`,
     description: pageDescription,
-    type: "profile",
-    locale: "cs_CZ",
-  },
-};
+    alternates: { canonical: "/o-mne" },
+    openGraph: {
+      title: `${site.owner} · ${site.name}`,
+      description: pageDescription,
+      type: "profile",
+      locale: "cs_CZ",
+      images,
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: [absoluteUrl(portrait)],
+    },
+  };
+}
 
 const jsonLd = [
   breadcrumbJsonLd([
@@ -69,11 +83,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AboutPage() {
   const cms = await getCmsContent();
-  const portrait = slotFrom(
-    cms,
-    "o-mne.portrait",
-    "https://images.unsplash.com/photo-1591886960571-74d43ddc707f?w=1200&q=80",
-  );
+  const portrait = slotFrom(cms, "o-mne.portrait", ABOUT_PORTRAIT_FALLBACK);
 
   return (
     <>
