@@ -1,8 +1,10 @@
 import { createHmac, timingSafeEqual } from "crypto";
 import { mkdir, readdir, readFile, stat, unlink, writeFile } from "fs/promises";
 import path from "path";
+import { weddings as baseWeddings } from "@/data/weddings";
 import {
   emptyCms,
+  syncCustomWeddingSlugs,
   type CmsContent,
   type MediaItem,
 } from "@/lib/cms/types";
@@ -53,7 +55,7 @@ export async function readCms(): Promise<CmsContent> {
   try {
     const raw = await readFile(contentPath(), "utf8");
     const parsed = JSON.parse(raw) as Partial<CmsContent>;
-    return {
+    const content: CmsContent = {
       ...emptyCms(),
       ...parsed,
       slots: parsed.slots ?? {},
@@ -65,6 +67,14 @@ export async function readCms(): Promise<CmsContent> {
       flowers: parsed.flowers ?? {},
       wreathOrder: parsed.wreathOrder ?? [],
     };
+    // Auto-fix URLs like /svatby/nova-svatba-1791… → /svatby/zamecka-svatba
+    const baseSlugs = new Set(baseWeddings.map((w) => w.slug));
+    const synced = syncCustomWeddingSlugs(content, baseSlugs);
+    if (JSON.stringify(synced.weddings) !== JSON.stringify(content.weddings)) {
+      await writeCms(synced);
+      return synced;
+    }
+    return content;
   } catch {
     return emptyCms();
   }
