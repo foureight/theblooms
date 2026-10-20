@@ -77,6 +77,12 @@ export default function RootLayout({
   return (
     <html lang="cs">
       <head>
+        <link
+          rel="alternate"
+          type="text/plain"
+          title="llms.txt"
+          href={`${siteUrl}/llms.txt`}
+        />
         <link rel="preconnect" href="https://use.typekit.net" crossOrigin="" />
         <link rel="preconnect" href="https://p.typekit.net" crossOrigin="" />
         <link rel="stylesheet" href={`https://use.typekit.net/${typekitId}.css`} />

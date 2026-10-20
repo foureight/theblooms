@@ -8,7 +8,12 @@ import { JsonLd } from "@/components/json-ld";
 import { weddingFaqs } from "@/data/faqs";
 import { decorations, getDecoration } from "@/data/weddings";
 import { site } from "@/data/site";
-import { absoluteUrl, breadcrumbJsonLd, faqJsonLd } from "@/lib/seo";
+import {
+  absoluteUrl,
+  absoluteUrls,
+  breadcrumbJsonLd,
+  faqJsonLd,
+} from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -58,7 +63,7 @@ export default async function DecorationDetailPage({ params }: Props) {
           "@type": "ListItem",
           position: i + 1,
           name: v.name,
-          image: v.image,
+          image: absoluteUrls(v.image),
         })),
       },
     },

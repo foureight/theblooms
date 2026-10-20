@@ -12,6 +12,7 @@ import {
 } from "@/lib/cms/content";
 import {
   absoluteUrl,
+  absoluteUrls,
   breadcrumbJsonLd,
   faqJsonLd,
   floristOrganization,
@@ -61,7 +62,7 @@ export default async function VencePage() {
             "@type": "Product",
             name: w.name,
             description: w.description,
-            image: w.image,
+            image: absoluteUrls(w.image),
             url: absoluteUrl(`/vence/${w.slug}`),
             sku: w.slug,
             brand: { "@type": "Brand", name: site.name },

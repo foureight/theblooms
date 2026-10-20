@@ -17,6 +17,7 @@ import {
 import { getCmsContent, mergeWreath } from "@/lib/cms/content";
 import {
   absoluteUrl,
+  absoluteUrls,
   breadcrumbJsonLd,
   faqJsonLd,
   floristOrganization,
@@ -70,7 +71,7 @@ export default async function WreathDetailPage({ params }: Props) {
       "@type": "Product",
       name: wreath.name,
       description: wreath.description,
-      image: [wreath.image],
+      image: absoluteUrls(wreath.image),
       sku: wreath.slug,
       brand: { "@type": "Brand", name: site.name },
       category: `Sezónní věnec — ${wreath.season}`,

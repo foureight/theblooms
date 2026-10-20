@@ -11,6 +11,7 @@ import { site } from "@/data/site";
 import { getCmsContent, mergeWedding, mergeWeddings } from "@/lib/cms/content";
 import {
   absoluteUrl,
+  absoluteUrls,
   breadcrumbJsonLd,
   faqJsonLd,
   floristOrganization,
@@ -64,7 +65,7 @@ export default async function WeddingDetailPage({ params }: Props) {
       name: wedding.title,
       description: wedding.summary,
       url: absoluteUrl(`/svatby/${wedding.slug}`),
-      image: wedding.images,
+      image: absoluteUrls(wedding.images),
       creator: floristOrganization(),
       about: {
         "@type": "Thing",

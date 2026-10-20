@@ -11,6 +11,13 @@ export function absoluteUrl(path = "/") {
   return `${siteUrl}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
+/** Absolute URL(s) for JSON-LD image / media fields (relative paths break AI + Google). */
+export function absoluteUrls(paths: string | string[]) {
+  return (Array.isArray(paths) ? paths : [paths])
+    .filter(Boolean)
+    .map((path) => absoluteUrl(path));
+}
+
 export const defaultOgImage = absoluteUrl("/og.jpg");
 
 export function floristOrganization() {
