@@ -15,6 +15,7 @@ import {
   wreaths as baseWreaths,
   type WreathSizeId,
 } from "@/data/wreaths";
+import { PageSeoFields } from "@/components/admin/page-seo-fields";
 import {
   defaultText,
   PAGE_SLOTS,
@@ -23,6 +24,7 @@ import {
   uniqueSlugFromTitle,
   type CmsContent,
   type MediaItem,
+  type PageSeoId,
 } from "@/lib/cms/types";
 import {
   formatOrderDate,
@@ -32,14 +34,25 @@ import {
 import { cn } from "@/lib/utils";
 
 type Tab =
-  | "objednavky"
-  | "texty"
-  | "fotky"
+  | "home"
   | "svatby"
   | "vence"
   | "workshopy"
   | "kytky"
+  | "o-mne"
+  | "kontakt"
+  | "objednavky"
   | "media";
+
+const PAGE_TABS: { id: Tab; label: string; seoId?: PageSeoId }[] = [
+  { id: "home", label: "Úvod", seoId: "home" },
+  { id: "svatby", label: "Svatby", seoId: "svatby" },
+  { id: "vence", label: "Věnce", seoId: "vence" },
+  { id: "workshopy", label: "Workshopy", seoId: "workshopy" },
+  { id: "kytky", label: "Kytky", seoId: "kytky" },
+  { id: "o-mne", label: "O mně", seoId: "o-mne" },
+  { id: "kontakt", label: "Kontakt", seoId: "kontakt" },
+];
 
 const WREATH_PLACEHOLDER = "/wreaths/placeholder.svg";
 const WEDDING_PLACEHOLDER =
@@ -64,12 +77,15 @@ export function AdminDashboard({
   initialOrders = [],
 }: Props) {
   const router = useRouter();
-  const [tab, setTab] = useState<Tab>("objednavky");
+  const [tab, setTab] = useState<Tab>("svatby");
   /** Which size row is expanded in admin (closed by default). */
   const [openWreathSize, setOpenWreathSize] = useState<
     Record<string, WreathSizeId | null>
   >({});
-  const [content, setContent] = useState<CmsContent>(initialContent);
+  const [content, setContent] = useState<CmsContent>(() => ({
+    ...initialContent,
+    pageSeo: initialContent.pageSeo ?? {},
+  }));
   const [media, setMedia] = useState<MediaItem[]>(initialMedia);
   const [orders, setOrders] = useState<Order[]>(initialOrders);
   const [status, setStatus] = useState("");
@@ -80,22 +96,18 @@ export function AdminDashboard({
     key: string;
   }>(null);
 
-  const tabs: { id: Tab; label: string }[] = [
+  const newOrderCount = orders.filter((o) => o.status === "new").length;
+  const toolTabs: { id: Tab; label: string }[] = [
     {
       id: "objednavky",
-      label:
-        orders.filter((o) => o.status === "new").length > 0
-          ? `Objednávky (${orders.filter((o) => o.status === "new").length})`
-          : "Objednávky",
+      label: newOrderCount > 0 ? `Objednávky (${newOrderCount})` : "Objednávky",
     },
-    { id: "texty", label: "Texty" },
-    { id: "fotky", label: "Fotky stránek" },
-    { id: "svatby", label: "Svatby" },
-    { id: "vence", label: "Věnce" },
-    { id: "workshopy", label: "Workshopy" },
-    { id: "kytky", label: "Kytky" },
-    { id: "media", label: "Knihovna" },
+    { id: "media", label: "Média" },
   ];
+  const activePageLabel =
+    PAGE_TABS.find((t) => t.id === tab)?.label ??
+    toolTabs.find((t) => t.id === tab)?.label ??
+    "";
 
   async function setOrderStatus(id: string, nextStatus: OrderStatus) {
     setStatus("");
@@ -206,6 +218,23 @@ export function AdminDashboard({
     }));
   }
 
+  function setPageSeo(
+    pageId: PageSeoId,
+    field: "title" | "description",
+    value: string,
+  ) {
+    setContent((c) => ({
+      ...c,
+      pageSeo: {
+        ...c.pageSeo,
+        [pageId]: {
+          ...c.pageSeo?.[pageId],
+          [field]: value,
+        },
+      },
+    }));
+  }
+
   function setSlot(id: string, url: string) {
     setContent((c) => ({
       ...c,
@@ -261,31 +290,108 @@ export function AdminDashboard({
     setPickerFor(null);
   }
 
-  const textGroups = useMemo(() => {
-    const groups: Record<string, typeof PAGE_TEXTS> = {};
-    for (const t of PAGE_TEXTS) {
-      // Wreath page copy lives under the Věnce tab, not in Texty
-      if (t.id.startsWith("vence.")) continue;
-      const prefix = t.id.split(".")[0] ?? "ostatní";
-      const label =
-        prefix === "home"
-          ? "Úvod"
-          : prefix === "svatby"
-            ? "Svatby"
-            : prefix === "kytky"
-              ? "Kytky"
-              : prefix === "workshopy"
-                ? "Workshopy"
-                : prefix === "o-mne"
-                  ? "O mně"
-                  : prefix === "kontakt"
-                    ? "Kontakt"
-                    : prefix;
-      if (!groups[label]) groups[label] = [] as unknown as typeof PAGE_TEXTS;
-      (groups[label] as unknown as (typeof PAGE_TEXTS)[number][]).push(t);
-    }
-    return groups;
-  }, []);
+  function textsForPrefix(prefix: string) {
+    return PAGE_TEXTS.filter((t) => t.id.startsWith(`${prefix}.`));
+  }
+
+  function slotsForPrefix(prefix: string) {
+    return PAGE_SLOTS.filter((s) => s.id.startsWith(`${prefix}.`));
+  }
+
+  function renderPageCopy(prefix: string) {
+    const texts = textsForPrefix(prefix);
+    const slots = slotsForPrefix(prefix);
+    return (
+      <div className="mt-10 space-y-10">
+        {texts.length > 0 ? (
+          <div className="space-y-6">
+            <h2 className="font-display text-2xl text-moss-deep">Texty</h2>
+            {texts.map((field) => {
+              const value = content.texts[field.id] ?? field.defaultValue;
+              return (
+                <label key={field.id} className="block">
+                  <span className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
+                    {field.label}
+                  </span>
+                  {field.multiline ? (
+                    <textarea
+                      value={value}
+                      onChange={(e) => setText(field.id, e.target.value)}
+                      rows={4}
+                      className="mt-2 w-full border border-border bg-background px-3 py-3 text-sm leading-relaxed outline-none focus:border-bloom"
+                    />
+                  ) : (
+                    <input
+                      type="text"
+                      value={value}
+                      onChange={(e) => setText(field.id, e.target.value)}
+                      className="mt-2 w-full border border-border bg-background px-3 py-3 text-sm outline-none focus:border-bloom"
+                    />
+                  )}
+                </label>
+              );
+            })}
+          </div>
+        ) : null}
+        {slots.length > 0 ? (
+          <div>
+            <h2 className="font-display text-2xl text-moss-deep">Fotky</h2>
+            <div className="mt-6 grid gap-6 sm:grid-cols-2">
+              {slots.map((slot) => {
+                const url = content.slots[slot.id] || "";
+                return (
+                  <div
+                    key={slot.id}
+                    className="border border-border/70 bg-card/40 p-4"
+                  >
+                    <p className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
+                      {slot.label}
+                    </p>
+                    <div className="relative mt-3 aspect-[4/3] overflow-hidden bg-stone">
+                      {url ? (
+                        <Image
+                          src={url}
+                          alt={slot.label}
+                          fill
+                          className="object-cover"
+                          sizes="400px"
+                          unoptimized={url.startsWith("/media/")}
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
+                          Výchozí fotka z webu
+                        </div>
+                      )}
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setPickerFor({ kind: "slot", key: slot.id })
+                        }
+                        className="bg-moss-deep px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-white hover:bg-bloom-light"
+                      >
+                        Vybrat
+                      </button>
+                      {url ? (
+                        <button
+                          type="button"
+                          onClick={() => setSlot(slot.id, "")}
+                          className="px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
+                        >
+                          Reset
+                        </button>
+                      ) : null}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ) : null}
+      </div>
+    );
+  }
 
   const baseWeddingSlugs = useMemo(
     () => new Set(baseWeddings.map((w) => w.slug)),
@@ -558,69 +664,110 @@ export function AdminDashboard({
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-40 border-b border-border/60 bg-background/95 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
-          <div>
-            <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground">
-              THE BLOOMS
-            </p>
-            <h1 className="font-display text-2xl text-moss-deep">Admin</h1>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
+    <div className="flex min-h-screen bg-background">
+      <aside className="sticky top-0 flex h-svh w-48 shrink-0 flex-col border-r border-border/60 sm:w-56">
+        <div className="px-4 py-4 sm:px-5">
+          <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground">
+            THE BLOOMS
+          </p>
+          <p className="mt-1 font-display text-lg leading-snug text-moss-deep sm:text-xl">
+            Alenka v říši divů
+          </p>
+        </div>
+
+        <nav className="flex min-h-0 flex-1 flex-col px-3 pb-5 sm:px-4">
+          <p className="mb-2 px-2 text-[10px] tracking-[0.16em] uppercase text-muted-foreground">
+            Stránky
+          </p>
+          <ul className="space-y-0.5">
+            {PAGE_TABS.map((t) => (
+              <li key={t.id}>
+                <button
+                  type="button"
+                  onClick={() => setTab(t.id)}
+                  className={cn(
+                    "block w-full px-2 py-2 text-left text-xs tracking-[0.14em] uppercase transition-colors",
+                    tab === t.id
+                      ? "bg-moss-deep text-white"
+                      : "text-muted-foreground hover:bg-moss-deep hover:text-white",
+                  )}
+                >
+                  {t.label}
+                </button>
+              </li>
+            ))}
+          </ul>
+
+          <p className="mb-2 mt-6 px-2 text-[10px] tracking-[0.16em] uppercase text-muted-foreground">
+            Provoz
+          </p>
+          <ul className="space-y-0.5">
+            {toolTabs.map((t) => (
+              <li key={t.id}>
+                <button
+                  type="button"
+                  onClick={() => setTab(t.id)}
+                  className={cn(
+                    "block w-full px-2 py-2 text-left text-xs tracking-[0.14em] uppercase transition-colors",
+                    tab === t.id
+                      ? "bg-moss-deep text-white"
+                      : "text-muted-foreground hover:bg-moss-deep hover:text-white",
+                  )}
+                >
+                  {t.label}
+                </button>
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-auto space-y-1 border-t border-border/60 pt-4">
             <Link
               href="/"
-              className="px-3 py-2 text-xs tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
+              className="block px-2 py-2 text-xs tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
             >
               Web
             </Link>
             <button
               type="button"
               onClick={logout}
-              className="px-3 py-2 text-xs tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
+              className="block w-full px-2 py-2 text-left text-xs tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
             >
               Odhlásit
             </button>
-            {tab !== "objednavky" ? (
-              <button
-                type="button"
-                onClick={save}
-                disabled={saving}
-                className="bg-moss-deep px-5 py-2.5 text-xs font-medium tracking-[0.16em] uppercase text-white transition-colors hover:bg-bloom-light disabled:opacity-60"
-              >
-                {saving ? "Ukládám…" : "Uložit změny"}
-              </button>
-            ) : null}
           </div>
-        </div>
+        </nav>
+      </aside>
+
+      <div className="min-w-0 flex-1">
+        <header className="sticky top-0 z-40 flex flex-wrap items-center justify-between gap-3 border-b border-border/60 bg-background/95 px-4 py-3 backdrop-blur sm:px-6">
+          <div>
+            <p className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
+              {tab === "objednavky" || tab === "media" ? "Provoz" : "Stránka"}
+            </p>
+            <h1 className="font-display text-2xl text-moss-deep sm:text-3xl">
+              {activePageLabel}
+            </h1>
+          </div>
+          {tab !== "objednavky" ? (
+            <button
+              type="button"
+              onClick={save}
+              disabled={saving}
+              className="bg-moss-deep px-5 py-2.5 text-xs font-medium tracking-[0.16em] uppercase text-white transition-colors hover:bg-bloom-light disabled:opacity-60"
+            >
+              {saving ? "Ukládám…" : "Uložit změny"}
+            </button>
+          ) : null}
+        </header>
         {status ? (
-          <p className="border-t border-border/40 bg-card/60 px-4 py-2 text-center text-sm text-muted-foreground sm:px-6">
+          <p className="border-b border-border/40 bg-card/60 px-4 py-2 text-center text-sm text-muted-foreground sm:px-6">
             {status}
           </p>
         ) : null}
-      </header>
 
-      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
-        <nav className="flex flex-wrap gap-2 border-b border-border pb-4">
-          {tabs.map((t) => (
-            <button
-              key={t.id}
-              type="button"
-              onClick={() => setTab(t.id)}
-              className={cn(
-                "px-4 py-2 text-xs tracking-[0.14em] uppercase transition-colors",
-                tab === t.id
-                  ? "bg-moss-deep text-white hover:bg-bloom-light"
-                  : "bg-muted text-muted-foreground hover:bg-moss-deep hover:text-white",
-              )}
-            >
-              {t.label}
-            </button>
-          ))}
-        </nav>
-
+        <div className="px-4 py-8 sm:px-6">
         {tab === "objednavky" ? (
-          <div className="mt-8 space-y-6">
+          <div className="space-y-6">
             <p className="max-w-2xl text-sm text-muted-foreground">
               Objednávky z e-shopu věnců — kdo co objednal, kontakt a stav.
             </p>
@@ -794,103 +941,58 @@ export function AdminDashboard({
           </div>
         ) : null}
 
-        {tab === "texty" ? (
-          <div className="mt-8 space-y-12">
-            {Object.entries(textGroups).map(([group, fields]) => (
-              <section key={group}>
-                <h2 className="font-display text-3xl text-moss-deep">{group}</h2>
-                <div className="mt-6 space-y-6">
-                  {fields.map((field) => {
-                    const value =
-                      content.texts[field.id] ?? field.defaultValue;
-                    return (
-                      <label key={field.id} className="block">
-                        <span className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
-                          {field.label}
-                        </span>
-                        {field.multiline ? (
-                          <textarea
-                            value={value}
-                            onChange={(e) => setText(field.id, e.target.value)}
-                            rows={4}
-                            className="mt-2 w-full border border-border bg-background px-3 py-3 text-sm leading-relaxed outline-none focus:border-bloom"
-                          />
-                        ) : (
-                          <input
-                            type="text"
-                            value={value}
-                            onChange={(e) => setText(field.id, e.target.value)}
-                            className="mt-2 w-full border border-border bg-background px-3 py-3 text-sm outline-none focus:border-bloom"
-                          />
-                        )}
-                      </label>
-                    );
-                  })}
-                </div>
-              </section>
-            ))}
+        {tab === "home" ? (
+          <div className="space-y-10">
+            <PageSeoFields
+              pageId="home"
+              content={content}
+              onChange={setPageSeo}
+            />
+            {renderPageCopy("home")}
           </div>
         ) : null}
 
-        {tab === "fotky" ? (
-          <div className="mt-8 grid gap-6 sm:grid-cols-2">
-            {PAGE_SLOTS.map((slot) => {
-              const url = content.slots[slot.id] || "";
-              return (
-                <div
-                  key={slot.id}
-                  className="border border-border/70 bg-card/40 p-4"
-                >
-                  <p className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
-                    {slot.label}
-                  </p>
-                  <div className="relative mt-3 aspect-[4/3] overflow-hidden bg-stone">
-                    {url ? (
-                      <Image
-                        src={url}
-                        alt={slot.label}
-                        fill
-                        className="object-cover"
-                        sizes="400px"
-                        unoptimized={url.startsWith("/media/")}
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
-                        Výchozí fotka z webu
-                      </div>
-                    )}
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setPickerFor({ kind: "slot", key: slot.id })
-                      }
-                      className="bg-moss-deep px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-white hover:bg-bloom-light"
-                    >
-                      Vybrat fotku
-                    </button>
-                    {url ? (
-                      <button
-                        type="button"
-                        onClick={() => setSlot(slot.id, "")}
-                        className="px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
-                      >
-                        Obnovit výchozí
-                      </button>
-                    ) : null}
-                  </div>
-                </div>
-              );
-            })}
+        {tab === "o-mne" ? (
+          <div className="space-y-10">
+            <PageSeoFields
+              pageId="o-mne"
+              content={content}
+              onChange={setPageSeo}
+            />
+            {renderPageCopy("o-mne")}
+          </div>
+        ) : null}
+
+        {tab === "kontakt" ? (
+          <div className="space-y-10">
+            <PageSeoFields
+              pageId="kontakt"
+              content={content}
+              onChange={setPageSeo}
+            />
+            {renderPageCopy("kontakt")}
           </div>
         ) : null}
 
         {tab === "svatby" ? (
-          <div className="mt-8 space-y-10">
-            <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="space-y-10">
+            <PageSeoFields
+              pageId="svatby"
+              content={content}
+              onChange={setPageSeo}
+            />
+            <PageSeoFields
+              pageId="svatby-cenik"
+              content={content}
+              onChange={setPageSeo}
+            />
+            {renderPageCopy("svatby")}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-10">
               <p className="text-sm text-muted-foreground">
-                Upravte existující realizace nebo přidejte novou svatbu.
+                Upravte existující realizace nebo přidejte novou svatbu. Ceník:{" "}
+                <Link href="/svatby/cenik" className="underline underline-offset-2">
+                  /svatby/cenik
+                </Link>
               </p>
               <button
                 type="button"
@@ -1092,7 +1194,17 @@ export function AdminDashboard({
         ) : null}
 
         {tab === "vence" ? (
-          <div className="mt-8 space-y-8">
+          <div className="space-y-8">
+            <PageSeoFields
+              pageId="vence"
+              content={content}
+              onChange={setPageSeo}
+            />
+            <PageSeoFields
+              pageId="vence-advent"
+              content={content}
+              onChange={setPageSeo}
+            />
             <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="text-sm text-muted-foreground">
                 Pořadí určuje, jak se věnce zobrazí na webu — nahoře =
@@ -1484,8 +1596,14 @@ export function AdminDashboard({
         ) : null}
 
         {tab === "workshopy" ? (
-          <div className="mt-8 space-y-8">
-            <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="space-y-8">
+            <PageSeoFields
+              pageId="workshopy"
+              content={content}
+              onChange={setPageSeo}
+            />
+            {renderPageCopy("workshopy")}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-8">
               <p className="max-w-xl text-sm text-muted-foreground">
                 Další formáty workshopů se zobrazí v sekci „Co spolu tvoříme“ na
                 stránce Workshopy.
@@ -1566,8 +1684,14 @@ export function AdminDashboard({
         ) : null}
 
         {tab === "kytky" ? (
-          <div className="mt-8 space-y-8">
-            <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="space-y-8">
+            <PageSeoFields
+              pageId="kytky"
+              content={content}
+              onChange={setPageSeo}
+            />
+            {renderPageCopy("kytky")}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-8">
               <p className="max-w-xl text-sm text-muted-foreground">
                 Další služby se zobrazí v sekci „Co můžu připravit“ na stránce
                 Kytky.
@@ -1700,6 +1824,7 @@ export function AdminDashboard({
             ) : null}
           </div>
         ) : null}
+        </div>
       </div>
 
       {pickerFor ? (

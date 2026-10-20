@@ -49,11 +49,19 @@ export type CmsServiceItem = {
   image?: string;
 };
 
+/** Meta title + description for a public page (search / OG) */
+export type CmsPageSeo = {
+  title?: string;
+  description?: string;
+};
+
 export type CmsContent = {
   /** Page photo URLs by slot id */
   slots: Record<string, string>;
   /** Page / section copy by text id */
   texts: Record<string, string>;
+  /** SEO meta by page id (home, svatby, …) */
+  pageSeo: Record<string, CmsPageSeo>;
   weddings: Record<string, CmsWeddingOverride>;
   wreaths: Record<string, CmsWreathOverride>;
   decorations: Record<string, CmsDecorationOverride>;
@@ -75,6 +83,7 @@ export type MediaItem = {
 export const emptyCms = (): CmsContent => ({
   slots: {},
   texts: {},
+  pageSeo: {},
   weddings: {},
   wreaths: {},
   decorations: {},
@@ -82,6 +91,95 @@ export const emptyCms = (): CmsContent => ({
   flowers: {},
   wreathOrder: [],
 });
+
+/**
+ * Editable page SEO — defaults match current hardcoded metadata.
+ * Each public page has its own row (no shared „Texty“ bucket).
+ */
+export const PAGE_SEO = [
+  {
+    id: "home",
+    label: "Úvod",
+    path: "/",
+    defaultTitle: "THE BLOOMS — floristické studio pro svatby a věnce",
+    defaultDescription:
+      "THE BLOOMS — floristické studio Aleny Šmejkalové pro svatby, větší květinové realizace a sezónní věnce. Osobní práce v dílně, věnce koupíte online.",
+  },
+  {
+    id: "svatby",
+    label: "Svatby",
+    path: "/svatby",
+    defaultTitle: "Svatební floristika Praha — kytice a dekorace",
+    defaultDescription:
+      "Svatební floristika THE BLOOMS v Praze — celý květinový a dekorační koncept svatby od Aleny Šmejkalové. Kytice, obřad, hostina, instalace a vlastní inventář. Individuální poptávka.",
+  },
+  {
+    id: "svatby-cenik",
+    label: "Svatby — Ceník",
+    path: "/svatby/cenik",
+    defaultTitle: "Orientační ceník svatební floristiky",
+    defaultDescription:
+      "Orientační ceny svatební floristiky THE BLOOMS — kytice, korsáže, výzdoba obřadu a stolů, instalace a doprava. Minimální výchozí ceny, kalkulace na míru po konzultaci.",
+  },
+  {
+    id: "vence",
+    label: "Věnce",
+    path: "/vence",
+    defaultTitle: "Sezónní věnce — e-shop",
+    defaultDescription:
+      "Sezónní věnce THE BLOOMS — jarní, letní, podzimní i adventní. Fotografie, cena, rozměr a dostupnost. Kupte věnec online od floristky Aleny Šmejkalové.",
+  },
+  {
+    id: "vence-advent",
+    label: "Věnce — Advent",
+    path: "/vence/advent",
+    defaultTitle: "Adventní věnce — koupit online",
+    defaultDescription:
+      "Adventní věnce THE BLOOMS — koupit online od floristky Aleny Šmejkalové. Klasické i moderní adventní věnce s fotografií, cenou a dostupností. Doprava Zásilkovnou po Česku.",
+  },
+  {
+    id: "workshopy",
+    label: "Workshopy",
+    path: "/workshopy",
+    defaultTitle: "Květinové a věncové workshopy",
+    defaultDescription:
+      "Květinové a věncové workshopy THE BLOOMS — přijedu domů, do firmy nebo na akci. Přivezu květiny, materiál i nástroje. Domluvte workshop s Alenou Šmejkalovou.",
+  },
+  {
+    id: "kytky",
+    label: "Kytky",
+    path: "/kytky",
+    defaultTitle: "Kytky na míru",
+    defaultDescription:
+      "Floristické studio THE BLOOMS: větší a individuální květinové zakázky od 2 000 Kč. Květiny do domu, do firmy, aranžmá a výzdoba eventů — vždy na objednávku přes poptávku.",
+  },
+  {
+    id: "o-mne",
+    label: "O mně",
+    path: "/o-mne",
+    defaultTitle: "O mně — Alena Šmejkalová",
+    defaultDescription:
+      "Za floristickým studiem THE BLOOMS stojí Alena Šmejkalová. Svatby, větší květinové zakázky, věnce, eventy a workshopy — osobně, v dílně, bez klasického květinářství.",
+  },
+  {
+    id: "kontakt",
+    label: "Kontakt",
+    path: "/kontakt",
+    defaultTitle: "Kontakt a poptávka",
+    defaultDescription:
+      "Kontaktujte floristické studio THE BLOOMS — Alena Šmejkalová. Poptávka svatby, kytek, eventu nebo workshopu. E-mail theblooms@chtel.biz, telefon +420 775 125 224.",
+  },
+] as const;
+
+export type PageSeoId = (typeof PAGE_SEO)[number]["id"];
+
+export function defaultPageSeo(id: string): { title: string; description: string } {
+  const row = PAGE_SEO.find((p) => p.id === id);
+  return {
+    title: row?.defaultTitle ?? "",
+    description: row?.defaultDescription ?? "",
+  };
+}
 
 /** URL-safe slug from Czech title */
 export function slugifyTitle(input: string, fallback = "polozka"): string {
@@ -148,6 +246,7 @@ export const PAGE_SLOTS = [
   { id: "home.workshopy", label: "Úvod — workshopy" },
   { id: "home.cta", label: "Úvod — závěrečná fotka" },
   { id: "svatby.hero", label: "Svatby — hero" },
+  { id: "svatby.cenik", label: "Svatby — ceník (hero)" },
   { id: "kytky.hero", label: "Kytky — hero" },
   { id: "kytky.eventy", label: "Kytky — eventy" },
   { id: "kytky.gallery1", label: "Kytky — Větší kytice a aranžmá" },

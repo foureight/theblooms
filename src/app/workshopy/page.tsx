@@ -8,6 +8,7 @@ import { site } from "@/data/site";
 import {
   getCmsContent,
   mergeWorkshopCards,
+  seoFrom,
   slotFrom,
   textFrom,
 } from "@/lib/cms/content";
@@ -22,23 +23,21 @@ import {
   serviceJsonLd,
 } from "@/lib/seo";
 
-const pageDescription =
-  "Květinové a věncové workshopy THE BLOOMS — přijedu domů, do firmy nebo na akci. Přivezu květiny, materiál i nástroje. Domluvte workshop s Alenou Šmejkalovou.";
-
 const WORKSHOPY_HERO_FALLBACK =
   "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=1800&q=80";
 
 export async function generateMetadata(): Promise<Metadata> {
   const cms = await getCmsContent();
+  const seo = seoFrom(cms, "workshopy");
   const hero = slotFrom(cms, "workshopy.hero", WORKSHOPY_HERO_FALLBACK);
   const images = ogImages(hero, `Workshopy · ${site.name}`);
   return {
-    title: "Květinové a věncové workshopy",
-    description: pageDescription,
+    title: seo.title,
+    description: seo.description,
     alternates: { canonical: "/workshopy" },
     openGraph: {
       title: `Workshopy · ${site.name}`,
-      description: pageDescription,
+      description: seo.description,
       type: "website",
       locale: "cs_CZ",
       images,
@@ -49,20 +48,6 @@ export async function generateMetadata(): Promise<Metadata> {
     },
   };
 }
-
-const jsonLd = [
-  breadcrumbJsonLd([
-    { name: "Úvod", path: "/" },
-    { name: "Workshopy", path: "/workshopy" },
-  ]),
-  serviceJsonLd({
-    name: "Květinové a věncové workshopy",
-    description: pageDescription,
-    path: "/workshopy",
-    serviceType: "Floristický workshop",
-  }),
-  faqJsonLd(workshopFaqs),
-];
 
 const formats = [
   {
@@ -109,12 +94,26 @@ export const dynamic = "force-dynamic";
 
 export default async function WorkshopyPage() {
   const cms = await getCmsContent();
+  const seo = seoFrom(cms, "workshopy");
   const hero = slotFrom(cms, "workshopy.hero", WORKSHOPY_HERO_FALLBACK);
   const side = slotFrom(
     cms,
     "workshopy.side",
     "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=1400&q=80",
   );
+  const jsonLd = [
+    breadcrumbJsonLd([
+      { name: "Úvod", path: "/" },
+      { name: "Workshopy", path: "/workshopy" },
+    ]),
+    serviceJsonLd({
+      name: "Květinové a věncové workshopy",
+      description: seo.description,
+      path: "/workshopy",
+      serviceType: "Floristický workshop",
+    }),
+    faqJsonLd(workshopFaqs),
+  ];
   const formatCards = [
     ...formats.map((f) => ({
       title: fixCzechOrphans(f.title),

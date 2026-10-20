@@ -8,6 +8,7 @@ import { site, type InquiryType } from "@/data/site";
 import {
   getCmsContent,
   mergeSiteContact,
+  seoFrom,
   textFrom,
 } from "@/lib/cms/content";
 import {
@@ -17,36 +18,21 @@ import {
   floristOrganization,
 } from "@/lib/seo";
 
-const pageDescription = `Kontaktujte floristické studio ${site.name} — ${site.owner}. Poptávka svatby, kytek, eventu nebo workshopu. E-mail ${site.email}, telefon ${site.phone}.`;
-
-export const metadata: Metadata = {
-  title: "Kontakt a poptávka",
-  description: pageDescription,
-  alternates: { canonical: "/kontakt" },
-  openGraph: {
-    title: `Kontakt · ${site.name}`,
-    description: pageDescription,
-    type: "website",
-    locale: "cs_CZ",
-  },
-};
-
-const jsonLd = [
-  breadcrumbJsonLd([
-    { name: "Úvod", path: "/" },
-    { name: "Kontakt", path: "/kontakt" },
-  ]),
-  {
-    "@context": "https://schema.org",
-    "@type": "ContactPage",
-    name: `Kontakt ${site.name}`,
-    url: absoluteUrl("/kontakt"),
-    description: pageDescription,
-    about: floristOrganization(),
-    mainEntity: floristOrganization(),
-  },
-  faqJsonLd(contactFaqs),
-];
+export async function generateMetadata(): Promise<Metadata> {
+  const cms = await getCmsContent();
+  const seo = seoFrom(cms, "kontakt");
+  return {
+    title: seo.title,
+    description: seo.description,
+    alternates: { canonical: "/kontakt" },
+    openGraph: {
+      title: `Kontakt · ${site.name}`,
+      description: seo.description,
+      type: "website",
+      locale: "cs_CZ",
+    },
+  };
+}
 
 type Props = {
   searchParams: Promise<{ typ?: string; dekorace?: string }>;
@@ -71,7 +57,24 @@ export default async function KontaktPage({ searchParams }: Props) {
     ? `Mám zájem o dekorace z inventáře — ${dekorace}.`
     : "";
   const cms = await getCmsContent();
+  const seo = seoFrom(cms, "kontakt");
   const contact = mergeSiteContact(cms);
+  const jsonLd = [
+    breadcrumbJsonLd([
+      { name: "Úvod", path: "/" },
+      { name: "Kontakt", path: "/kontakt" },
+    ]),
+    {
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      name: `Kontakt ${site.name}`,
+      url: absoluteUrl("/kontakt"),
+      description: seo.description,
+      about: floristOrganization(),
+      mainEntity: floristOrganization(),
+    },
+    faqJsonLd(contactFaqs),
+  ];
 
   return (
     <>

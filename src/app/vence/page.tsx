@@ -9,6 +9,7 @@ import { site } from "@/data/site";
 import {
   getCmsContent,
   mergeWreaths,
+  seoFrom,
   textFrom,
 } from "@/lib/cms/content";
 import {
@@ -22,23 +23,21 @@ import {
 } from "@/lib/seo";
 import { Typo } from "@/components/typo";
 
-const pageDescription =
-  "Sezónní věnce THE BLOOMS — jarní, letní, podzimní i adventní. Fotografie, cena, rozměr a dostupnost. Kupte věnec online od floristky Aleny Šmejkalové.";
-
 const VENCE_OG_FALLBACK = "/wreaths/advent-pudrovy-masle.jpg";
 
 export async function generateMetadata(): Promise<Metadata> {
   const cms = await getCmsContent();
+  const seo = seoFrom(cms, "vence");
   const wreaths = mergeWreaths(cms);
   const share = firstShareImage(wreaths, VENCE_OG_FALLBACK);
   const images = ogImages(share, `Sezónní věnce · ${site.name}`);
   return {
-    title: "Sezónní věnce — e-shop",
-    description: pageDescription,
+    title: seo.title,
+    description: seo.description,
     alternates: { canonical: "/vence" },
     openGraph: {
       title: `Sezónní věnce · ${site.name}`,
-      description: pageDescription,
+      description: seo.description,
       type: "website",
       locale: "cs_CZ",
       images,
@@ -54,6 +53,7 @@ export const dynamic = "force-dynamic";
 
 export default async function VencePage() {
   const cms = await getCmsContent();
+  const seo = seoFrom(cms, "vence");
   const wreaths = mergeWreaths(cms);
 
   const jsonLd = [
@@ -65,7 +65,7 @@ export default async function VencePage() {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
       name: "Sezónní věnce THE BLOOMS",
-      description: pageDescription,
+      description: seo.description,
       url: absoluteUrl("/vence"),
       about: floristOrganization(),
       mainEntity: {

@@ -8,6 +8,7 @@ import { site } from "@/data/site";
 import {
   getCmsContent,
   mergeFlowerCards,
+  seoFrom,
   slotFrom,
   textFrom,
 } from "@/lib/cms/content";
@@ -22,24 +23,23 @@ import {
   serviceJsonLd,
 } from "@/lib/seo";
 
-const pageTitle = "Kytky na míru — květiny do domu, firmy i na event";
-const pageDescription =
-  "Floristické studio THE BLOOMS: větší a individuální květinové zakázky od 2 000 Kč. Květiny do domu, do firmy, aranžmá a výzdoba eventů — vždy na objednávku přes poptávku.";
+const KYTKY_OG_TITLE = "Kytky na míru — květiny do domu, firmy i na event";
 
 const KYTKY_HERO_FALLBACK =
   "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=1800&q=80";
 
 export async function generateMetadata(): Promise<Metadata> {
   const cms = await getCmsContent();
+  const seo = seoFrom(cms, "kytky");
   const hero = slotFrom(cms, "kytky.hero", KYTKY_HERO_FALLBACK);
-  const images = ogImages(hero, `${pageTitle} · ${site.name}`);
+  const images = ogImages(hero, `${KYTKY_OG_TITLE} · ${site.name}`);
   return {
-    title: "Kytky na míru",
-    description: pageDescription,
+    title: seo.title,
+    description: seo.description,
     alternates: { canonical: "/kytky" },
     openGraph: {
-      title: `${pageTitle} · ${site.name}`,
-      description: pageDescription,
+      title: `${KYTKY_OG_TITLE} · ${site.name}`,
+      description: seo.description,
       type: "website",
       locale: "cs_CZ",
       images,
@@ -96,31 +96,31 @@ const services = [
   },
 ];
 
-const jsonLd = [
-  breadcrumbJsonLd([
-    { name: "Úvod", path: "/" },
-    { name: "Kytky", path: "/kytky" },
-  ]),
-  serviceJsonLd({
-    name: "Kytky na míru",
-    description: pageDescription,
-    path: "/kytky",
-    serviceType: "Floristická zakázka",
-    minPrice: "2000",
-  }),
-  faqJsonLd(flowerFaqs),
-];
-
 export const dynamic = "force-dynamic";
 
 export default async function KytkyPage() {
   const cms = await getCmsContent();
+  const seo = seoFrom(cms, "kytky");
   const hero = slotFrom(cms, "kytky.hero", KYTKY_HERO_FALLBACK);
   const eventImg = slotFrom(
     cms,
     "kytky.eventy",
     "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=1200&q=80",
   );
+  const jsonLd = [
+    breadcrumbJsonLd([
+      { name: "Úvod", path: "/" },
+      { name: "Kytky", path: "/kytky" },
+    ]),
+    serviceJsonLd({
+      name: "Kytky na míru",
+      description: seo.description,
+      path: "/kytky",
+      serviceType: "Floristická zakázka",
+      minPrice: "2000",
+    }),
+    faqJsonLd(flowerFaqs),
+  ];
   const builtInCards = services.map((s) => ({
     title: fixCzechOrphans(s.title),
     text: fixCzechOrphans(s.text),

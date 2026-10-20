@@ -8,6 +8,7 @@ import { aboutFaqs } from "@/data/faqs";
 import { site } from "@/data/site";
 import {
   getCmsContent,
+  seoFrom,
   slotFrom,
   textFrom,
 } from "@/lib/cms/content";
@@ -19,22 +20,21 @@ import {
   ogImages,
 } from "@/lib/seo";
 
-const pageDescription = `Za floristickým studiem ${site.name} stojí ${site.owner}. Svatby, větší květinové zakázky, věnce, eventy a workshopy — osobně, v dílně, bez klasického květinářství.`;
-
 const ABOUT_PORTRAIT_FALLBACK =
   "https://images.unsplash.com/photo-1591886960571-74d43ddc707f?w=1200&q=80";
 
 export async function generateMetadata(): Promise<Metadata> {
   const cms = await getCmsContent();
+  const seo = seoFrom(cms, "o-mne");
   const portrait = slotFrom(cms, "o-mne.portrait", ABOUT_PORTRAIT_FALLBACK);
   const images = ogImages(portrait, `${site.owner} · ${site.name}`);
   return {
-    title: `O mně — ${site.owner}`,
-    description: pageDescription,
+    title: seo.title,
+    description: seo.description,
     alternates: { canonical: "/o-mne" },
     openGraph: {
       title: `${site.owner} · ${site.name}`,
-      description: pageDescription,
+      description: seo.description,
       type: "profile",
       locale: "cs_CZ",
       images,
@@ -46,44 +46,44 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-const jsonLd = [
-  breadcrumbJsonLd([
-    { name: "Úvod", path: "/" },
-    { name: "O mně", path: "/o-mne" },
-  ]),
-  {
-    "@context": "https://schema.org",
-    "@type": "ProfilePage",
-    name: `${site.owner} — ${site.name}`,
-    url: absoluteUrl("/o-mne"),
-    mainEntity: {
-      "@type": "Person",
-      name: site.owner,
-      jobTitle: "Floristka",
-      worksFor: floristOrganization(),
-      url: absoluteUrl("/o-mne"),
-      email: site.email,
-      telephone: site.phone,
-      sameAs: [site.instagram],
-      description: pageDescription,
-    },
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "AboutPage",
-    name: `O studiu ${site.name}`,
-    url: absoluteUrl("/o-mne"),
-    about: floristOrganization(),
-    description: pageDescription,
-  },
-  faqJsonLd(aboutFaqs),
-];
-
 export const dynamic = "force-dynamic";
 
 export default async function AboutPage() {
   const cms = await getCmsContent();
+  const seo = seoFrom(cms, "o-mne");
   const portrait = slotFrom(cms, "o-mne.portrait", ABOUT_PORTRAIT_FALLBACK);
+  const jsonLd = [
+    breadcrumbJsonLd([
+      { name: "Úvod", path: "/" },
+      { name: "O mně", path: "/o-mne" },
+    ]),
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfilePage",
+      name: `${site.owner} — ${site.name}`,
+      url: absoluteUrl("/o-mne"),
+      mainEntity: {
+        "@type": "Person",
+        name: site.owner,
+        jobTitle: "Floristka",
+        worksFor: floristOrganization(),
+        url: absoluteUrl("/o-mne"),
+        email: site.email,
+        telephone: site.phone,
+        sameAs: [site.instagram],
+        description: seo.description,
+      },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "AboutPage",
+      name: `O studiu ${site.name}`,
+      url: absoluteUrl("/o-mne"),
+      about: floristOrganization(),
+      description: seo.description,
+    },
+    faqJsonLd(aboutFaqs),
+  ];
 
   return (
     <>

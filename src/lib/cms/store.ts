@@ -60,6 +60,7 @@ export async function readCms(): Promise<CmsContent> {
       ...parsed,
       slots: parsed.slots ?? {},
       texts: parsed.texts ?? {},
+      pageSeo: parsed.pageSeo ?? {},
       weddings: parsed.weddings ?? {},
       wreaths: parsed.wreaths ?? {},
       decorations: parsed.decorations ?? {},

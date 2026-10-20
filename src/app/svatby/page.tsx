@@ -12,6 +12,7 @@ import {
   getCmsContent,
   mergeDecorations,
   mergeWeddings,
+  seoFrom,
   slotFrom,
   textFrom,
 } from "@/lib/cms/content";
@@ -26,19 +27,17 @@ import {
 } from "@/lib/seo";
 import { Typo } from "@/components/typo";
 
-const pageDescription =
-  "Svatební floristika THE BLOOMS v Praze — celý květinový a dekorační koncept svatby od Aleny Šmejkalové. Kytice, obřad, hostina, instalace a vlastní inventář. Individuální poptávka.";
-
 const SVATBY_HERO_FALLBACK =
   "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1800&q=80";
 
 export async function generateMetadata(): Promise<Metadata> {
   const cms = await getCmsContent();
+  const seo = seoFrom(cms, "svatby");
   const hero = slotFrom(cms, "svatby.hero", SVATBY_HERO_FALLBACK);
   const images = ogImages(hero, `Svatební floristika · ${site.name}`);
   return {
-    title: "Svatební floristika Praha — kytice a dekorace",
-    description: pageDescription,
+    title: seo.title,
+    description: seo.description,
     alternates: { canonical: "/svatby" },
     keywords: [
       "svatební floristika",
@@ -51,7 +50,7 @@ export async function generateMetadata(): Promise<Metadata> {
     ],
     openGraph: {
       title: `Svatební floristika · ${site.name}`,
-      description: pageDescription,
+      description: seo.description,
       type: "website",
       locale: "cs_CZ",
       url: absoluteUrl("/svatby"),
@@ -60,7 +59,7 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title: `Svatební floristika · ${site.name}`,
-      description: pageDescription,
+      description: seo.description,
       images: [absoluteUrl(hero)],
     },
   };
@@ -70,6 +69,7 @@ export const dynamic = "force-dynamic";
 
 export default async function SvatbyPage() {
   const cms = await getCmsContent();
+  const seo = seoFrom(cms, "svatby");
   const weddings = mergeWeddings(cms);
   const decorations = mergeDecorations(cms);
   const hero = slotFrom(cms, "svatby.hero", SVATBY_HERO_FALLBACK);
@@ -81,7 +81,7 @@ export default async function SvatbyPage() {
     ]),
     serviceJsonLd({
       name: "Svatební floristika a dekorace",
-      description: pageDescription,
+      description: seo.description,
       path: "/svatby",
       serviceType: "Svatební floristika",
     }),
@@ -89,7 +89,7 @@ export default async function SvatbyPage() {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
       name: "Svatební floristika THE BLOOMS",
-      description: pageDescription,
+      description: seo.description,
       url: absoluteUrl("/svatby"),
       inLanguage: "cs-CZ",
       about: floristOrganization(),
@@ -150,6 +150,9 @@ export default async function SvatbyPage() {
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <CtaLink href="/kontakt?typ=svatba">Poptat svatbu</CtaLink>
+            <CtaLink href="/svatby/cenik" variant="ghost">
+              Orientační ceník
+            </CtaLink>
             <CtaLink href="#realizace" variant="ghost">
               Prohlédnout realizace
             </CtaLink>

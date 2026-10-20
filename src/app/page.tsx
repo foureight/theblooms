@@ -11,6 +11,7 @@ import {
   getCmsContent,
   mergeWeddings,
   mergeWreaths,
+  seoFrom,
   slotFrom,
   textFrom,
 } from "@/lib/cms/content";
@@ -25,25 +26,23 @@ import {
   siteUrl,
 } from "@/lib/seo";
 
-const pageDescription =
-  "THE BLOOMS — floristické studio Aleny Šmejkalové pro svatby, větší květinové realizace a sezónní věnce. Osobní práce v dílně, věnce koupíte online.";
-
 const HOME_HERO_FALLBACK =
   "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=2000&q=85";
 
 export async function generateMetadata(): Promise<Metadata> {
   const cms = await getCmsContent();
+  const seo = seoFrom(cms, "home");
   const hero = slotFrom(cms, "home.hero", HOME_HERO_FALLBACK);
   const images = ogImages(hero, `${site.name} — floristické studio`);
   return {
     title: {
-      absolute: `${site.name} — floristické studio pro svatby a věnce`,
+      absolute: seo.title,
     },
-    description: pageDescription,
+    description: seo.description,
     alternates: { canonical: "/" },
     openGraph: {
       title: `${site.name} — floristické studio`,
-      description: pageDescription,
+      description: seo.description,
       type: "website",
       locale: "cs_CZ",
       url: siteUrl,
@@ -52,50 +51,9 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title: `${site.name} — floristické studio`,
-      description: pageDescription,
+      description: seo.description,
       images: [absoluteUrl(hero)],
     },
-  };
-}
-
-const jsonLd = [
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "@id": `${siteUrl}/#website`,
-    name: site.name,
-    url: siteUrl,
-    description: pageDescription,
-    inLanguage: "cs-CZ",
-    publisher: { "@id": `${siteUrl}/#organization` },
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "@id": `${siteUrl}/#webpage`,
-    name: `${site.name} — floristické studio pro svatby a věnce`,
-    url: siteUrl,
-    description: pageDescription,
-    inLanguage: "cs-CZ",
-    isPartOf: { "@id": `${siteUrl}/#website` },
-    about: { "@id": `${siteUrl}/#organization` },
-    primaryImageOfPage: absoluteOg(),
-  },
-  {
-    "@context": "https://schema.org",
-    ...floristOrganization(),
-  },
-  personJsonLd(),
-  breadcrumbJsonLd([{ name: "Úvod", path: "/" }]),
-  faqJsonLd(homeFaqs),
-];
-
-function absoluteOg() {
-  return {
-    "@type": "ImageObject" as const,
-    url: absoluteUrl(HOME_HERO_FALLBACK),
-    width: 1200,
-    height: 630,
   };
 }
 
@@ -103,10 +61,47 @@ export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const cms = await getCmsContent();
+  const seo = seoFrom(cms, "home");
   const featuredWeddings = mergeWeddings(cms).slice(0, 3);
   const allWreaths = mergeWreaths(cms);
 
   const hero = slotFrom(cms, "home.hero", HOME_HERO_FALLBACK);
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": `${siteUrl}/#website`,
+      name: site.name,
+      url: siteUrl,
+      description: seo.description,
+      inLanguage: "cs-CZ",
+      publisher: { "@id": `${siteUrl}/#organization` },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": `${siteUrl}/#webpage`,
+      name: seo.title,
+      url: siteUrl,
+      description: seo.description,
+      inLanguage: "cs-CZ",
+      isPartOf: { "@id": `${siteUrl}/#website` },
+      about: { "@id": `${siteUrl}/#organization` },
+      primaryImageOfPage: {
+        "@type": "ImageObject" as const,
+        url: absoluteUrl(hero),
+        width: 1200,
+        height: 630,
+      },
+    },
+    {
+      "@context": "https://schema.org",
+      ...floristOrganization(),
+    },
+    personJsonLd(),
+    breadcrumbJsonLd([{ name: "Úvod", path: "/" }]),
+    faqJsonLd(homeFaqs),
+  ];
   const flowersImg = slotFrom(
     cms,
     "home.kytky",

@@ -14,9 +14,11 @@ import {
 } from "@/data/wreaths";
 import type { CmsWreathOverride } from "@/lib/cms/types";
 import {
+  defaultPageSeo,
   defaultText,
   PAGE_TEXTS,
   type CmsContent,
+  type PageSeoId,
 } from "@/lib/cms/types";
 import { readCms, resolveSlot, resolveText } from "@/lib/cms/store";
 import { fixCzechOrphans } from "@/lib/typography";
@@ -113,6 +115,16 @@ export function textFrom(
 
 export function slotFrom(cms: CmsContent, id: string, fallback: string) {
   return resolveSlot(cms, id, fallback);
+}
+
+/** Resolved meta title + description for a public page. */
+export function seoFrom(cms: CmsContent, id: PageSeoId) {
+  const defaults = defaultPageSeo(id);
+  const override = cms.pageSeo?.[id];
+  return {
+    title: override?.title?.trim() || defaults.title,
+    description: override?.description?.trim() || defaults.description,
+  };
 }
 
 /** Contact block for footer / kontakt — admin texts win over code defaults. */

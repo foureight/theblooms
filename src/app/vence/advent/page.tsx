@@ -8,7 +8,7 @@ import { Typo } from "@/components/typo";
 import { WreathCatalog } from "@/components/wreath-catalog";
 import { adventWreathFaqs } from "@/data/faqs";
 import { site } from "@/data/site";
-import { getCmsContent, mergeWreaths } from "@/lib/cms/content";
+import { getCmsContent, mergeWreaths, seoFrom } from "@/lib/cms/content";
 import {
   absoluteUrl,
   absoluteUrls,
@@ -19,19 +19,17 @@ import {
   ogImages,
 } from "@/lib/seo";
 
-const pageDescription =
-  "Adventní věnce THE BLOOMS — koupit online od floristky Aleny Šmejkalové. Klasické i moderní adventní věnce s fotografií, cenou a dostupností. Doprava Zásilkovnou po Česku.";
-
 const ADVENT_OG_FALLBACK = "/wreaths/advent-pudrovy-masle.jpg";
 
 export async function generateMetadata(): Promise<Metadata> {
   const cms = await getCmsContent();
+  const seo = seoFrom(cms, "vence-advent");
   const advent = mergeWreaths(cms).filter((w) => w.season === "Advent");
   const share = firstShareImage(advent, ADVENT_OG_FALLBACK);
   const images = ogImages(share, `Adventní věnce · ${site.name}`);
   return {
-    title: "Adventní věnce — koupit online",
-    description: pageDescription,
+    title: seo.title,
+    description: seo.description,
     alternates: { canonical: "/vence/advent" },
     keywords: [
       "adventní věnce",
@@ -43,7 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
     ],
     openGraph: {
       title: `Adventní věnce · ${site.name}`,
-      description: pageDescription,
+      description: seo.description,
       type: "website",
       locale: "cs_CZ",
       url: absoluteUrl("/vence/advent"),
@@ -52,7 +50,7 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title: `Adventní věnce · ${site.name}`,
-      description: pageDescription,
+      description: seo.description,
       images: [absoluteUrl(share)],
     },
   };
@@ -62,6 +60,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AdventWreathsPage() {
   const cms = await getCmsContent();
+  const seo = seoFrom(cms, "vence-advent");
   const advent = mergeWreaths(cms)
     .filter((w) => w.season === "Advent")
     .sort((a, b) => Number(b.available) - Number(a.available));
@@ -80,7 +79,7 @@ export default async function AdventWreathsPage() {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
       name: "Adventní věnce THE BLOOMS",
-      description: pageDescription,
+      description: seo.description,
       url: absoluteUrl("/vence/advent"),
       inLanguage: "cs-CZ",
       about: floristOrganization(),
