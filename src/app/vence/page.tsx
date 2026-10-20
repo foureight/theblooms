@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { FadeIn } from "@/components/fade-in";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
@@ -100,6 +101,18 @@ export default async function VencePage() {
           <Typo>
             {`Věnce jsou hotové floristické výrobky studia ${site.name}. Ostatní služby (svatby, kytky, eventy, workshopy) řešíme přes poptávku.`}
           </Typo>
+        </p>
+        <p className="mt-5 text-sm text-moss-deep">
+          <Link
+            href="/vence/advent"
+            className="underline underline-offset-4 decoration-bloom/50 hover:decoration-bloom"
+          >
+            Adventní věnce →
+          </Link>
+          <span className="text-muted-foreground">
+            {" "}
+            sezónní výběr koupíte online
+          </span>
         </p>
       </FadeIn>
       <div className="mt-10 sm:mt-12">

@@ -11,17 +11,32 @@ import {
   type WreathSeasonFilter,
 } from "@/components/wreath-season-filters";
 
-export function WreathCatalog({ items }: { items: Wreath[] }) {
-  const [season, setSeason] = useState<WreathSeasonFilter>("Vše");
+type Props = {
+  items: Wreath[];
+  /** Pre-select / lock a season (e.g. Advent landing). */
+  initialSeason?: WreathSeasonFilter;
+  /** Hide season chips when the page is already season-specific. */
+  hideFilters?: boolean;
+};
+
+export function WreathCatalog({
+  items,
+  initialSeason = "Vše",
+  hideFilters = false,
+}: Props) {
+  const [season, setSeason] = useState<WreathSeasonFilter>(initialSeason);
 
   const filtered = useMemo(() => {
-    if (season === "Vše") return items;
-    return items.filter((w) => w.season === season);
+    const list =
+      season === "Vše" ? items : items.filter((w) => w.season === season);
+    return [...list].sort((a, b) => Number(b.available) - Number(a.available));
   }, [season, items]);
 
   return (
     <div>
-      <WreathSeasonFilters value={season} onChange={setSeason} />
+      {!hideFilters ? (
+        <WreathSeasonFilters value={season} onChange={setSeason} />
+      ) : null}
 
       {filtered.length === 0 ? (
         <p className="mt-12 text-sm text-muted-foreground">

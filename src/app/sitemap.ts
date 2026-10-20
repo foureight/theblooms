@@ -20,6 +20,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      url: `${siteUrl}/vence/advent`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.95,
+    },
+    {
       url: `${siteUrl}/kytky`,
       lastModified: now,
       changeFrequency: "monthly",

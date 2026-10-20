@@ -25,7 +25,7 @@ export function HomeWreathsSection({
   items,
   limit = 6,
 }: Props) {
-  const [season, setSeason] = useState<WreathSeasonFilter>("Vše");
+  const [season, setSeason] = useState<WreathSeasonFilter>("Advent");
 
   const filtered = useMemo(() => {
     const list =
@@ -47,7 +47,12 @@ export function HomeWreathsSection({
             {text}
           </p>
           <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <CtaLink href="/vence">Celý e-shop</CtaLink>
+            <div className="flex flex-wrap gap-3">
+              <CtaLink href="/vence/advent">Adventní věnce</CtaLink>
+              <CtaLink href="/vence" variant="ghost">
+                Celý e-shop
+              </CtaLink>
+            </div>
             <WreathSeasonFilters value={season} onChange={setSeason} />
           </div>
         </FadeIn>

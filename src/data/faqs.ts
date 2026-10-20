@@ -38,12 +38,41 @@ export const wreathFaqs: FaqItem[] = [
   {
     question: "Jsou adventní věnce dostupné celý rok?",
     answer:
-      "Ne. Adventní věnce jsou sezónní nabídka a bývají dostupné od listopadu. Mimo sezónu je u nich uvedená nedostupnost.",
+      "Ne. Adventní věnce jsou sezónní nabídka a bývají dostupné od listopadu. Kompletní výběr najdete na stránce Adventní věnce.",
   },
   {
     question: "Děláte i věnce na míru?",
     answer:
       "Hotové věnce jsou v e-shopu. Individuální přání nebo větší množství řešíme přes poptávku v kontaktu.",
+  },
+];
+
+/** Dedicated Advent landing — keyword + buying intent FAQs */
+export const adventWreathFaqs: FaqItem[] = [
+  {
+    question: "Kde koupím adventní věnec od THE BLOOMS?",
+    answer:
+      "Adventní věnce koupíte přímo v e-shopu THE BLOOMS. Vyberete model, velikost a dokončíte objednávku online — bez kamenné prodejny.",
+  },
+  {
+    question: "Od kdy jsou adventní věnce skladem?",
+    answer:
+      "Adventní nabídka bývá dostupná od listopadu do Vánoc. U každého věnce vidíte aktuální dostupnost, cenu a rozměr.",
+  },
+  {
+    question: "Dovážíte adventní věnce po Česku?",
+    answer:
+      "Ano. Objednávku odešleme přes Zásilkovnu (výdejní místo, Z-BOX nebo na adresu). Detaily dopravy a platby kartou jsou v košíku.",
+  },
+  {
+    question: "Jaké typy adventních věnců nabízíte?",
+    answer:
+      "Klasické i moderní adventní věnce — pudrové, červené, natur, se svícemi i bez. Každý kus vzniká v dílně Aleny Šmejkalové.",
+  },
+  {
+    question: "Děláte adventní věnce na míru?",
+    answer:
+      "Hotové adventní věnce jsou v katalogu. Individuální přání nebo větší množství (firmy, eventy) řešíme přes poptávku v kontaktu.",
   },
 ];
 
