@@ -17,6 +17,7 @@ import {
 } from "@/lib/cms/content";
 import {
   absoluteUrl,
+  absoluteUrls,
   breadcrumbJsonLd,
   faqJsonLd,
   floristOrganization,
@@ -26,7 +27,7 @@ import {
 import { Typo } from "@/components/typo";
 
 const pageDescription =
-  "Svatební floristika THE BLOOMS: celý květinový a dekorační koncept svatby — kytice, obřad, hostina, instalace a vlastní inventář. Poptávka u Aleny Šmejkalové.";
+  "Svatební floristika THE BLOOMS v Praze — celý květinový a dekorační koncept svatby od Aleny Šmejkalové. Kytice, obřad, hostina, instalace a vlastní inventář. Individuální poptávka.";
 
 const SVATBY_HERO_FALLBACK =
   "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1800&q=80";
@@ -36,18 +37,30 @@ export async function generateMetadata(): Promise<Metadata> {
   const hero = slotFrom(cms, "svatby.hero", SVATBY_HERO_FALLBACK);
   const images = ogImages(hero, `Svatební floristika · ${site.name}`);
   return {
-    title: "Svatební floristika a dekorace",
+    title: "Svatební floristika Praha — kytice a dekorace",
     description: pageDescription,
     alternates: { canonical: "/svatby" },
+    keywords: [
+      "svatební floristika",
+      "svatební floristika Praha",
+      "svatební kytice",
+      "svatební výzdoba",
+      "svatební dekorace",
+      "THE BLOOMS",
+      "Alena Šmejkalová",
+    ],
     openGraph: {
       title: `Svatební floristika · ${site.name}`,
       description: pageDescription,
       type: "website",
       locale: "cs_CZ",
+      url: absoluteUrl("/svatby"),
       images,
     },
     twitter: {
       card: "summary_large_image",
+      title: `Svatební floristika · ${site.name}`,
+      description: pageDescription,
       images: [absoluteUrl(hero)],
     },
   };
@@ -64,7 +77,7 @@ export default async function SvatbyPage() {
   const jsonLd = [
     breadcrumbJsonLd([
       { name: "Úvod", path: "/" },
-      { name: "Svatby", path: "/svatby" },
+      { name: "Svatební floristika", path: "/svatby" },
     ]),
     serviceJsonLd({
       name: "Svatební floristika a dekorace",
@@ -75,17 +88,26 @@ export default async function SvatbyPage() {
     {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
-      name: "Svatební realizace THE BLOOMS",
+      name: "Svatební floristika THE BLOOMS",
+      description: pageDescription,
       url: absoluteUrl("/svatby"),
-      isPartOf: { "@id": `${absoluteUrl("/")}/#website` },
+      inLanguage: "cs-CZ",
       about: floristOrganization(),
+      isPartOf: { "@id": `${absoluteUrl("/")}/#website` },
+      primaryImageOfPage: {
+        "@type": "ImageObject",
+        url: absoluteUrl(hero),
+      },
       mainEntity: {
         "@type": "ItemList",
+        name: "Svatební realizace",
+        numberOfItems: weddings.length,
         itemListElement: weddings.map((w, i) => ({
           "@type": "ListItem",
           position: i + 1,
           url: absoluteUrl(`/svatby/${w.slug}`),
           name: w.title,
+          image: absoluteUrls(w.cover),
         })),
       },
     },
@@ -99,36 +121,91 @@ export default async function SvatbyPage() {
       <div className="relative h-[45svh] min-h-[280px] overflow-hidden">
         <CmsImage
           src={hero}
-          alt="Svatební floristika a dekorace THE BLOOMS"
+          alt="Svatební floristika THE BLOOMS — kytice a dekorace"
           fill
           priority
           className="object-cover"
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-moss-deep/40" />
-        <div className="absolute inset-x-0 bottom-0 mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-          <h1 className="font-display text-6xl text-white sm:text-7xl">
-            Svatby
+        <div className="absolute inset-x-0 bottom-0 mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
+          <p className="text-[10px] tracking-[0.22em] uppercase text-white/70 sm:text-xs">
+            Poptávka · Praha
+          </p>
+          <h1 className="mt-2 font-display text-4xl text-white sm:text-6xl md:text-7xl">
+            Svatební floristika
           </h1>
         </div>
       </div>
 
       <div className="mx-auto max-w-7xl px-4 pt-14 pb-0 sm:px-6 lg:px-8">
         <FadeIn>
-          <p className="max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-lg">
+          <p className="max-w-2xl text-lg leading-relaxed text-muted-foreground">
             {textFrom(cms, "svatby.intro")}
           </p>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
             <Typo>
-              {`Za studiem ${site.name} stojí floristka ${site.owner}. Každá svatba je individuální poptávka — bez balíčků z katalogu a bez kamenné prodejny.`}
+              {`Za studiem ${site.name} stojí floristka ${site.owner} (Praha – Nusle). Každá svatba je individuální poptávka — bez balíčků z katalogu a bez kamenné prodejny. Realizace po celé ČR.`}
             </Typo>
           </p>
-          <CtaLink href="/kontakt?typ=svatba" className="mt-8">
-            Poptat svatbu
-          </CtaLink>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <CtaLink href="/kontakt?typ=svatba">Poptat svatbu</CtaLink>
+            <CtaLink href="#realizace" variant="ghost">
+              Prohlédnout realizace
+            </CtaLink>
+          </div>
         </FadeIn>
 
-        <section className="mt-24" aria-labelledby="svatby-realizace">
+        <section className="mt-16 sm:mt-20" aria-labelledby="svatby-postup">
+          <FadeIn>
+            <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
+              Jak to probíhá
+            </p>
+            <h2
+              id="svatby-postup"
+              className="mt-2 font-display text-3xl text-moss-deep sm:text-4xl md:text-5xl"
+            >
+              Od poptávky po realizaci
+            </h2>
+          </FadeIn>
+          <ol className="mt-10 grid gap-8 sm:grid-cols-3">
+            {[
+              {
+                n: "01",
+                title: "Poptávka",
+                text: "Napište datum, místo a představu o stylu. Ozvu se s dalšími otázkami.",
+              },
+              {
+                n: "02",
+                title: "Návrh a rozsah",
+                text: "Domluvíme floristiku, dekorace z inventáře a orientační rozpočet na míru.",
+              },
+              {
+                n: "03",
+                title: "Realizace",
+                text: "V den svatby zajistím instalaci na místě — od kytice po obřad a hostinu.",
+              },
+            ].map((step) => (
+              <li key={step.n} className="border-t border-bloom/35 pt-5">
+                <p className="text-[10px] tracking-[0.18em] uppercase text-muted-foreground">
+                  {step.n}
+                </p>
+                <h3 className="mt-2 font-display text-2xl text-moss-deep sm:text-3xl">
+                  {step.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {step.text}
+                </p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section
+          id="realizace"
+          className="mt-24 scroll-mt-24"
+          aria-labelledby="svatby-realizace"
+        >
           <FadeIn>
             <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
               Galerie
@@ -139,6 +216,10 @@ export default async function SvatbyPage() {
             >
               Realizace
             </h2>
+            <p className="mt-3 max-w-xl text-sm text-muted-foreground">
+              Ukázky svatební floristiky — styl, sezóna a místo. Podobný koncept
+              domluvíme přes poptávku.
+            </p>
           </FadeIn>
           <div className="mt-12 grid gap-10 sm:grid-cols-2">
             {weddings.map((w, i) => (
@@ -178,7 +259,8 @@ export default async function SvatbyPage() {
             </h2>
             <p className="mt-3 max-w-xl text-sm text-muted-foreground">
               <Typo>
-                Vlastní inventář, který můžu nabídnout v rámci svatby. Rozklikněte kategorii, vyberte varianty a pošlete poptávku.
+                Vlastní inventář, který můžu nabídnout v rámci svatby.
+                Rozklikněte kategorii, vyberte varianty a pošlete poptávku.
               </Typo>
             </p>
           </FadeIn>
@@ -194,7 +276,8 @@ export default async function SvatbyPage() {
             </h2>
             <p className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground">
               <Typo>
-                Napište datum, místo a představu. Ozvu se a společně nastavíme rozsah floristky i dekorací.
+                Napište datum, místo a představu. Ozvu se a společně nastavíme
+                rozsah floristiky i dekorací.
               </Typo>
             </p>
             <CtaLink href="/kontakt?typ=svatba" className="mt-8">
@@ -202,7 +285,6 @@ export default async function SvatbyPage() {
             </CtaLink>
           </section>
         </FadeIn>
-
       </div>
 
       <FaqSection faqs={weddingFaqs} />

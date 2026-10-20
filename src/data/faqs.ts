@@ -78,6 +78,11 @@ export const adventWreathFaqs: FaqItem[] = [
 
 export const weddingFaqs: FaqItem[] = [
   {
+    question: "Co je svatební floristika THE BLOOMS?",
+    answer:
+      "Individuální floristický a dekorační koncept svatby od Aleny Šmejkalové — od svatební kytice po obřad, stoly, brány a inventář dekorací. Bez balíčků z katalogu a bez kamenné prodejny.",
+  },
+  {
     question: "Co všechno řešíte u svatby?",
     answer:
       "Celý floristický a dekorační koncept: svatební kytici, obřadní instalace, stoly, brány, vázy, svícny, textil a další dekorace z vlastního inventáře — nebo realizaci podle vaší představy.",
@@ -85,17 +90,22 @@ export const weddingFaqs: FaqItem[] = [
   {
     question: "Jak probíhá poptávka svatby?",
     answer:
-      "Přes kontaktní formulář napište datum, místo a základní představu. Ozvu se s dalšími otázkami a návrhem rozsahu. Objednání neprobíhá přes e-shop.",
+      "Přes kontaktní formulář napište datum, místo a základní představu. Ozvu se s dalšími otázkami a návrhem rozsahu. Cena vzniká individuálně podle rozsahu — objednání neprobíhá přes e-shop.",
   },
   {
     question: "Máte vlastní inventář dekorací?",
     answer:
-      "Ano. V rámci svatby můžu nabídnout vázy, svícny, svíčky, nádoby, brány, textil a další kusy z vlastního inventáře.",
+      "Ano. V rámci svatby můžu nabídnout vázy, svícny, svíčky, nádoby, brány, textil a další kusy z vlastního inventáře. Přehled kategorií je přímo na stránce Svatby.",
   },
   {
     question: "Kde THE BLOOMS svatby realizuje?",
     answer:
       "Studio sídlí v Praze – Nuslích. Svatby realizuji po celé České republice — konkrétní lokalitu a logistiku domlouváme individuálně podle místa obřadu.",
+  },
+  {
+    question: "Kdy je ideální ozvat se se svatbou?",
+    answer:
+      "Čím dřív, tím lépe — oblíbené termíny (jaro a léto) se plní rychle. I kratší lhůta jde řešit, záleží na rozsahu a dostupnosti květin v sezóně.",
   },
 ];
 
