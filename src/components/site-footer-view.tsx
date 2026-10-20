@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BloomLogo } from "@/components/bloom-logo";
-import { legalNav, nav } from "@/data/site";
+import { footerExtraNav, legalNav, nav } from "@/data/site";
 import type { SiteContact } from "@/lib/cms/content";
 import { fixCzechOrphans } from "@/lib/typography";
 
@@ -41,6 +41,16 @@ export function SiteFooterView({ contact }: { contact: SiteContact }) {
             </p>
             <ul className="mt-4 space-y-2">
               {nav.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="text-sm text-white/90 transition-colors hover:text-bloom-light"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+              {footerExtraNav.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}

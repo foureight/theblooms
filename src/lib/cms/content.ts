@@ -188,20 +188,49 @@ const WEDDING_PLACEHOLDER =
 
 export function resolveWeddingOrder(cms: CmsContent): string[] {
   const base = baseWeddings.map((w) => w.slug);
+  const baseAliasToCanonical = new Map(
+    baseWeddings.flatMap((w) =>
+      (w.aliases ?? []).map((a) => [a, w.slug] as const),
+    ),
+  );
+  const baseAliasSlugs = new Set(baseAliasToCanonical.keys());
   const custom = Object.entries(cms.weddings ?? {})
-    .filter(([slug, o]) => !base.includes(slug) && Boolean(o.title?.trim()))
+    .filter(
+      ([slug, o]) =>
+        !base.includes(slug) &&
+        !baseAliasSlugs.has(slug) &&
+        Boolean(o.title?.trim()),
+    )
     .map(([slug]) => slug);
   const all = [...base, ...custom];
-  const saved = (cms.weddingOrder ?? []).filter((s) => all.includes(s));
-  if (saved.length === 0) return all;
-  const missing = all.filter((s) => !saved.includes(s));
-  return [...saved, ...missing];
+  const saved = (cms.weddingOrder ?? [])
+    .map((s) => baseAliasToCanonical.get(s) ?? s)
+    .filter((s) => all.includes(s));
+  const uniqueSaved = [...new Set(saved)];
+  if (uniqueSaved.length === 0) return all;
+  const missing = all.filter((s) => !uniqueSaved.includes(s));
+  return [...uniqueSaved, ...missing];
+}
+
+/** CMS override keyed by current slug or a legacy alias. */
+function weddingOverride(
+  cms: CmsContent,
+  w: Wedding,
+): (typeof cms.weddings)[string] | undefined {
+  if (cms.weddings[w.slug]) return cms.weddings[w.slug];
+  for (const alias of w.aliases ?? []) {
+    if (cms.weddings[alias]) return cms.weddings[alias];
+  }
+  return undefined;
 }
 
 export function mergeWeddings(cms: CmsContent): Wedding[] {
   const baseSlugs = new Set(baseWeddings.map((w) => w.slug));
+  const baseAliasSlugs = new Set(
+    baseWeddings.flatMap((w) => w.aliases ?? []),
+  );
   const merged = baseWeddings.map((w) => {
-    const o = cms.weddings[w.slug];
+    const o = weddingOverride(cms, w);
     if (!o) return w;
     return {
       ...w,
@@ -218,7 +247,7 @@ export function mergeWeddings(cms: CmsContent): Wedding[] {
   });
 
   for (const [slug, o] of Object.entries(cms.weddings ?? {})) {
-    if (baseSlugs.has(slug)) continue;
+    if (baseSlugs.has(slug) || baseAliasSlugs.has(slug)) continue;
     const title = o.title?.trim();
     if (!title) continue;
     merged.push({
@@ -232,11 +261,20 @@ export function mergeWeddings(cms: CmsContent): Wedding[] {
         o.images && o.images.length > 0
           ? o.images.filter(Boolean)
           : [cmsString(o.cover, WEDDING_PLACEHOLDER)],
+      aliases: o.aliases,
     });
   }
 
   const order = resolveWeddingOrder(cms);
   const rank = new Map(order.map((slug, i) => [slug, i]));
+  // Map legacy order entries (couple-name slugs) onto new canonical slugs
+  for (const w of baseWeddings) {
+    for (const alias of w.aliases ?? []) {
+      if (rank.has(alias) && !rank.has(w.slug)) {
+        rank.set(w.slug, rank.get(alias)!);
+      }
+    }
+  }
   return [...merged].sort(
     (a, b) => (rank.get(a.slug) ?? 999) - (rank.get(b.slug) ?? 999),
   );
@@ -249,6 +287,9 @@ export function mergeWedding(
   const all = mergeWeddings(cms);
   const direct = all.find((w) => w.slug === slug);
   if (direct) return direct;
+
+  const byAlias = all.find((w) => w.aliases?.includes(slug));
+  if (byAlias) return byAlias;
 
   for (const [canonical, o] of Object.entries(cms.weddings ?? {})) {
     if (o.aliases?.includes(slug)) {

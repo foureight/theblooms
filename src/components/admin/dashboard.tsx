@@ -37,6 +37,7 @@ import { cn } from "@/lib/utils";
 type Tab =
   | "home"
   | "svatby"
+  | "cenik"
   | "vence"
   | "workshopy"
   | "kytky"
@@ -48,6 +49,7 @@ type Tab =
 const PAGE_TABS: { id: Tab; label: string; seoId?: PageSeoId }[] = [
   { id: "home", label: "Úvod", seoId: "home" },
   { id: "svatby", label: "Svatby", seoId: "svatby" },
+  { id: "cenik", label: "Ceník", seoId: "svatby-cenik" },
   { id: "vence", label: "Věnce", seoId: "vence" },
   { id: "workshopy", label: "Workshopy", seoId: "workshopy" },
   { id: "kytky", label: "Kytky", seoId: "kytky" },
@@ -80,6 +82,7 @@ export function AdminDashboard({
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("svatby");
   /** Which size row is expanded in admin (closed by default). */
+  const [openWreathSlug, setOpenWreathSlug] = useState<string | null>(null);
   const [openWreathSize, setOpenWreathSize] = useState<
     Record<string, WreathSizeId | null>
   >({});
@@ -297,7 +300,12 @@ export function AdminDashboard({
   }
 
   function slotsForPrefix(prefix: string) {
-    return PAGE_SLOTS.filter((s) => s.id.startsWith(`${prefix}.`));
+    return PAGE_SLOTS.filter(
+      (s) =>
+        s.id.startsWith(`${prefix}.`) &&
+        // Ceník hero má vlastní položku v menu
+        s.id !== "svatby.cenik",
+    );
   }
 
   function renderPageCopy(prefix: string) {
@@ -404,9 +412,26 @@ export function AdminDashboard({
     [],
   );
 
+  const baseWeddingAliasSlugs = useMemo(
+    () => new Set(baseWeddings.flatMap((w) => w.aliases ?? [])),
+    [],
+  );
+  const aliasToCanonicalWedding = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const w of baseWeddings) {
+      for (const a of w.aliases ?? []) map.set(a, w.slug);
+    }
+    return map;
+  }, []);
+
   const allWeddings = useMemo(() => {
     const customs = Object.entries(content.weddings ?? {})
-      .filter(([slug, o]) => !baseWeddingSlugs.has(slug) && Boolean(o.title?.trim()))
+      .filter(
+        ([slug, o]) =>
+          !baseWeddingSlugs.has(slug) &&
+          !baseWeddingAliasSlugs.has(slug) &&
+          Boolean(o.title?.trim()),
+      )
       .map(([slug, o]) => ({
         slug,
         title: o.title!.trim(),
@@ -425,16 +450,34 @@ export function AdminDashboard({
       ...customs,
     ];
     const all = merged.map((w) => w.slug);
-    const saved = (content.weddingOrder ?? []).filter((s) => all.includes(s));
+    const saved = (content.weddingOrder ?? [])
+      .map((s) => aliasToCanonicalWedding.get(s) ?? s)
+      .filter((s) => all.includes(s));
+    const uniqueSaved = [...new Set(saved)];
     const order =
-      saved.length === 0
+      uniqueSaved.length === 0
         ? all
-        : [...saved, ...all.filter((s) => !saved.includes(s))];
+        : [...uniqueSaved, ...all.filter((s) => !uniqueSaved.includes(s))];
     const bySlug = new Map(merged.map((w) => [w.slug, w]));
     return order
       .map((slug) => bySlug.get(slug))
       .filter((w): w is (typeof merged)[number] => Boolean(w));
-  }, [content.weddings, content.weddingOrder, baseWeddingSlugs]);
+  }, [
+    content.weddings,
+    content.weddingOrder,
+    baseWeddingSlugs,
+    baseWeddingAliasSlugs,
+    aliasToCanonicalWedding,
+  ]);
+
+  function weddingCmsKey(slug: string) {
+    if (content.weddings[slug]) return slug;
+    const w = baseWeddings.find((b) => b.slug === slug);
+    for (const a of w?.aliases ?? []) {
+      if (content.weddings[a]) return a;
+    }
+    return slug;
+  }
 
   const orderedWreaths = useMemo(() => {
     const customs = Object.entries(content.wreaths ?? {})
@@ -654,6 +697,7 @@ export function AdminDashboard({
     });
     setStatus("Přidán nový věnec nahoře v seznamu. Upravte název a uložte.");
     setTab("vence");
+    setOpenWreathSlug(slug);
     requestAnimationFrame(() => {
       document
         .getElementById(`wreath-edit-${slug}`)
@@ -1047,6 +1091,81 @@ export function AdminDashboard({
           </div>
         ) : null}
 
+        {tab === "cenik" ? (
+          <div className="space-y-10">
+            <PageSeoFields
+              pageId="svatby-cenik"
+              content={content}
+              onChange={setPageSeo}
+            />
+            {(() => {
+              const slot = PAGE_SLOTS.find((s) => s.id === "svatby.cenik");
+              if (!slot) return null;
+              const url = content.slots[slot.id] || "";
+              return (
+                <div className="max-w-md border border-border/70 bg-card/40 p-4">
+                  <p className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
+                    {slot.label}
+                  </p>
+                  <div className="relative mt-3 aspect-[16/10] overflow-hidden bg-stone">
+                    {url ? (
+                      <Image
+                        src={url}
+                        alt={slot.label}
+                        fill
+                        className="object-cover"
+                        sizes="400px"
+                        unoptimized={url.startsWith("/media/")}
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
+                        Výchozí fotka z webu
+                      </div>
+                    )}
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setPickerFor({ kind: "slot", key: slot.id })
+                      }
+                      className="bg-moss-deep px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-white hover:bg-bloom-light"
+                    >
+                      Vybrat
+                    </button>
+                    {url ? (
+                      <button
+                        type="button"
+                        onClick={() => setSlot(slot.id, "")}
+                        className="px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
+                      >
+                        Reset
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
+              );
+            })()}
+            <WeddingPriceListEditor
+              content={content}
+              onChange={(weddingPriceList) =>
+                setContent((c) => ({ ...c, weddingPriceList }))
+              }
+            />
+            <p className="text-sm text-muted-foreground">
+              Veřejná stránka:{" "}
+              <Link
+                href="/svatby/cenik"
+                className="underline underline-offset-2"
+                target="_blank"
+                rel="noreferrer"
+              >
+                /svatby/cenik
+              </Link>
+            </p>
+          </div>
+        ) : null}
+
         {tab === "svatby" ? (
           <div className="space-y-10">
             <PageSeoFields
@@ -1054,18 +1173,7 @@ export function AdminDashboard({
               content={content}
               onChange={setPageSeo}
             />
-            <PageSeoFields
-              pageId="svatby-cenik"
-              content={content}
-              onChange={setPageSeo}
-            />
             {renderPageCopy("svatby")}
-            <WeddingPriceListEditor
-              content={content}
-              onChange={(weddingPriceList) =>
-                setContent((c) => ({ ...c, weddingPriceList }))
-              }
-            />
             <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-10">
               <p className="text-sm text-muted-foreground">
                 Upravte existující realizace nebo přidejte novou svatbu.
@@ -1079,7 +1187,8 @@ export function AdminDashboard({
               </button>
             </div>
             {allWeddings.map((w, index) => {
-              const o = content.weddings[w.slug] ?? {};
+              const cmsKey = weddingCmsKey(w.slug);
+              const o = content.weddings[cmsKey] ?? {};
               const images = o.images ?? w.images;
               const cover = o.cover || w.cover;
               const atTop = index === 0;
@@ -1099,7 +1208,7 @@ export function AdminDashboard({
                         {o.title || w.title}
                       </h2>
                       <p className="mt-1 text-xs text-muted-foreground">
-                        URL{" "}
+                        URL z názvu svatby{" "}
                         <Link
                           href={`/svatby/${w.slug}`}
                           className="underline underline-offset-2 hover:text-foreground"
@@ -1111,7 +1220,8 @@ export function AdminDashboard({
                         {w.custom ? (
                           <span className="text-muted-foreground/80">
                             {" "}
-                            · po uložení se slug přizpůsobí názvu
+                            · po uložení se slug přizpůsobí názvu (ne jménům
+                            páru)
                           </span>
                         ) : null}
                       </p>
@@ -1148,14 +1258,19 @@ export function AdminDashboard({
                   </div>
                   <div className="mt-6 grid gap-4 sm:grid-cols-2">
                     <Field
-                      label="Název"
+                      label="Název svatby (URL)"
                       value={o.title ?? w.title}
                       onChange={(v) =>
                         setContent((c) => ({
                           ...c,
                           weddings: {
                             ...c.weddings,
-                            [w.slug]: { ...c.weddings[w.slug], title: v },
+                            [w.slug]: {
+                              ...c.weddings[cmsKey],
+                              ...c.weddings[w.slug],
+                              title: v,
+                              ...(w.custom ? { custom: true } : {}),
+                            },
                           },
                         }))
                       }
@@ -1168,7 +1283,11 @@ export function AdminDashboard({
                           ...c,
                           weddings: {
                             ...c.weddings,
-                            [w.slug]: { ...c.weddings[w.slug], place: v },
+                            [w.slug]: {
+                              ...c.weddings[cmsKey],
+                              ...c.weddings[w.slug],
+                              place: v,
+                            },
                           },
                         }))
                       }
@@ -1181,7 +1300,11 @@ export function AdminDashboard({
                           ...c,
                           weddings: {
                             ...c.weddings,
-                            [w.slug]: { ...c.weddings[w.slug], season: v },
+                            [w.slug]: {
+                              ...c.weddings[cmsKey],
+                              ...c.weddings[w.slug],
+                              season: v,
+                            },
                           },
                         }))
                       }
@@ -1200,6 +1323,7 @@ export function AdminDashboard({
                           weddings: {
                             ...c.weddings,
                             [w.slug]: {
+                              ...c.weddings[cmsKey],
                               ...c.weddings[w.slug],
                               summary: e.target.value,
                             },
@@ -1275,6 +1399,7 @@ export function AdminDashboard({
                                 weddings: {
                                   ...c.weddings,
                                   [w.slug]: {
+                                    ...c.weddings[cmsKey],
                                     ...c.weddings[w.slug],
                                     images: images.filter((_, j) => j !== i),
                                   },
@@ -1309,8 +1434,8 @@ export function AdminDashboard({
             />
             <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="text-sm text-muted-foreground">
-                Pořadí určuje, jak se věnce zobrazí na webu — nahoře =
-                prodejnější. Šipkami posouvejte nahoru a dolů, pak uložte.
+                Přehled: fotka, název, sezóna. Kliknutím otevřete editaci.
+                Šipkami měníte pořadí na webu.
               </p>
               <button
                 type="button"
@@ -1341,17 +1466,90 @@ export function AdminDashboard({
               const image = o.image || w.image;
               const atTop = index === 0;
               const atBottom = index === orderedWreaths.length - 1;
+              const isOpen = openWreathSlug === w.slug;
+              const displayName = o.name ?? w.name;
+              const displaySeason = o.season ?? w.season;
               return (
                 <section
                   key={w.slug}
                   id={`wreath-edit-${w.slug}`}
-                  className="grid gap-6 border border-border/70 p-4 sm:grid-cols-[160px_1fr] sm:p-6"
+                  className="border border-border/70"
                 >
+                  <div className="flex flex-wrap items-center gap-3 p-3 sm:gap-4 sm:p-4">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setOpenWreathSlug((prev) =>
+                          prev === w.slug ? null : w.slug,
+                        )
+                      }
+                      className="flex min-w-0 flex-1 items-center gap-3 text-left sm:gap-4"
+                      aria-expanded={isOpen}
+                    >
+                      <div className="relative h-16 w-16 shrink-0 overflow-hidden bg-stone sm:h-20 sm:w-20">
+                        <Image
+                          src={image}
+                          alt={displayName}
+                          fill
+                          className="object-cover"
+                          sizes="80px"
+                          unoptimized={image.startsWith("/media/")}
+                        />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate font-display text-xl text-moss-deep sm:text-2xl">
+                          {displayName}
+                        </p>
+                        <p className="mt-0.5 text-xs tracking-[0.14em] uppercase text-muted-foreground">
+                          {displaySeason}
+                          {(o.available ?? w.available) === false
+                            ? " · nedostupné"
+                            : ""}
+                          {w.custom ? " · nový" : ""}
+                        </p>
+                      </div>
+                      <span className="shrink-0 text-xs tracking-[0.14em] uppercase text-muted-foreground">
+                        {isOpen ? "Zavřít" : "Upravit"}
+                      </span>
+                    </button>
+                    <div className="flex flex-wrap gap-1 sm:gap-2">
+                      <button
+                        type="button"
+                        disabled={atTop}
+                        onClick={() => moveWreath(w.slug, -1)}
+                        className="border border-border px-2 py-2 text-[10px] tracking-[0.12em] uppercase text-moss-deep transition-colors hover:border-sky-600 hover:bg-sky-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40 sm:px-3"
+                        aria-label="Posunout nahoru"
+                      >
+                        ↑
+                      </button>
+                      <button
+                        type="button"
+                        disabled={atBottom}
+                        onClick={() => moveWreath(w.slug, 1)}
+                        className="border border-border px-2 py-2 text-[10px] tracking-[0.12em] uppercase text-moss-deep transition-colors hover:border-sky-600 hover:bg-sky-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40 sm:px-3"
+                        aria-label="Posunout dolů"
+                      >
+                        ↓
+                      </button>
+                      {w.custom ? (
+                        <button
+                          type="button"
+                          onClick={() => removeWreath(w.slug)}
+                          className="px-2 py-2 text-[10px] tracking-[0.12em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white sm:px-3"
+                        >
+                          Smazat
+                        </button>
+                      ) : null}
+                    </div>
+                  </div>
+
+                  {isOpen ? (
+                  <div className="grid gap-6 border-t border-border/70 p-4 sm:grid-cols-[160px_1fr] sm:p-6">
                   <div>
                     <div className="relative aspect-square overflow-hidden bg-stone">
                       <Image
                         src={image}
-                        alt={o.name || w.name}
+                        alt={displayName}
                         fill
                         className="object-cover"
                         sizes="160px"
@@ -1369,44 +1567,12 @@ export function AdminDashboard({
                     </button>
                   </div>
                   <div className="space-y-4">
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <p className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
-                        Pořadí {index + 1} / {orderedWreaths.length}
-                        {w.custom ? " · nový" : ""}
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        <button
-                          type="button"
-                          disabled={atTop}
-                          onClick={() => moveWreath(w.slug, -1)}
-                          className="border border-border px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-moss-deep transition-colors hover:border-sky-600 hover:bg-sky-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
-                          aria-label="Posunout nahoru"
-                        >
-                          ↑ Nahoru
-                        </button>
-                        <button
-                          type="button"
-                          disabled={atBottom}
-                          onClick={() => moveWreath(w.slug, 1)}
-                          className="border border-border px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-moss-deep transition-colors hover:border-sky-600 hover:bg-sky-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
-                          aria-label="Posunout dolů"
-                        >
-                          ↓ Dolů
-                        </button>
-                        {w.custom ? (
-                          <button
-                            type="button"
-                            onClick={() => removeWreath(w.slug)}
-                            className="px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
-                          >
-                            Smazat
-                          </button>
-                        ) : null}
-                      </div>
-                    </div>
+                    <p className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
+                      Pořadí {index + 1} / {orderedWreaths.length}
+                    </p>
                     <Field
                       label="Název"
-                      value={o.name ?? w.name}
+                      value={displayName}
                       onChange={(v) =>
                         setContent((c) => ({
                           ...c,
@@ -1422,7 +1588,7 @@ export function AdminDashboard({
                         Sezóna
                       </span>
                       <select
-                        value={o.season ?? w.season}
+                        value={displaySeason}
                         onChange={(e) =>
                           setContent((c) => ({
                             ...c,
@@ -1691,6 +1857,8 @@ export function AdminDashboard({
                       />
                     </label>
                   </div>
+                  </div>
+                  ) : null}
                 </section>
               );
             })}

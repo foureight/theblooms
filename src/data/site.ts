@@ -18,6 +18,11 @@ export const nav = [
   { href: "/kontakt", label: "Kontakt" },
 ] as const;
 
+/** Extra footer links under Menu (not in top nav) */
+export const footerExtraNav = [
+  { href: "/svatby/cenik", label: "Orientační ceník" },
+] as const;
+
 export const legalNav = [
   { href: "/obchodni-podminky", label: "Obchodní podmínky" },
   { href: "/ochrana-osobnich-udaju", label: "Ochrana osobních údajů" },

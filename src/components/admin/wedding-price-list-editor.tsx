@@ -148,17 +148,13 @@ export function WeddingPriceListEditor({ content, onChange }: Props) {
   }
 
   return (
-    <section className="space-y-8 border-t border-border pt-10">
+    <section className="space-y-8">
       <div>
         <p className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
-          Orientační ceník
+          Položky a ceny
         </p>
-        <h2 className="mt-1 font-display text-3xl text-moss-deep">
-          /svatby/cenik
-        </h2>
         <p className="mt-2 max-w-xl text-sm text-muted-foreground">
-          Upravte položky a ceny. Po uložení se projeví na veřejné stránce
-          ceníku.
+          Upravte řádky ceníku. Po uložení se projeví na /svatby/cenik.
         </p>
       </div>
       <Section keyName="flowers" title="Svatební květiny" />

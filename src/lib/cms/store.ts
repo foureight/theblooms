@@ -4,6 +4,7 @@ import path from "path";
 import { weddings as baseWeddings } from "@/data/weddings";
 import {
   emptyCms,
+  migrateBaseWeddingCmsKeys,
   syncCustomWeddingSlugs,
   type CmsContent,
   type MediaItem,
@@ -71,10 +72,15 @@ export async function readCms(): Promise<CmsContent> {
       weddingOrder: parsed.weddingOrder ?? [],
       flowerOrder: parsed.flowerOrder ?? [],
     };
-    // Auto-fix URLs like /svatby/nova-svatba-1791… → /svatby/zamecka-svatba
+    // Couple-name keys → wedding-name slugs; custom titles → slugify
     const baseSlugs = new Set(baseWeddings.map((w) => w.slug));
-    const synced = syncCustomWeddingSlugs(content, baseSlugs);
-    if (JSON.stringify(synced.weddings) !== JSON.stringify(content.weddings)) {
+    const migrated = migrateBaseWeddingCmsKeys(content, baseWeddings);
+    const synced = syncCustomWeddingSlugs(migrated, baseSlugs);
+    if (
+      JSON.stringify(synced.weddings) !== JSON.stringify(content.weddings) ||
+      JSON.stringify(synced.weddingOrder) !==
+        JSON.stringify(content.weddingOrder)
+    ) {
       await writeCms(synced);
       return synced;
     }

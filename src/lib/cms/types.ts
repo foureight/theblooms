@@ -227,6 +227,33 @@ export function uniqueSlugFromTitle(
 }
 
 /**
+ * Move CMS overrides keyed by legacy couple-name slugs onto canonical
+ * wedding-name slugs (e.g. lea-a-martin → statek-u-lesa).
+ */
+export function migrateBaseWeddingCmsKeys(
+  content: CmsContent,
+  catalog: { slug: string; aliases?: string[] }[],
+): CmsContent {
+  const weddings: Record<string, CmsWeddingOverride> = { ...content.weddings };
+  let weddingOrder = [...(content.weddingOrder ?? [])];
+  let changed = false;
+
+  for (const w of catalog) {
+    for (const alias of w.aliases ?? []) {
+      const legacy = weddings[alias];
+      if (!legacy) continue;
+      const existing = weddings[w.slug];
+      weddings[w.slug] = existing ? { ...legacy, ...existing } : { ...legacy };
+      delete weddings[alias];
+      weddingOrder = weddingOrder.map((s) => (s === alias ? w.slug : s));
+      changed = true;
+    }
+  }
+
+  return changed ? { ...content, weddings, weddingOrder } : content;
+}
+
+/**
  * Rename CMS-only wedding keys to match their titles (e.g. nova-svatba-1791… → zamecka-svatba).
  * Keeps old keys in `aliases` for redirects. Does not touch built-in catalog slugs.
  */
@@ -240,8 +267,12 @@ export function syncCustomWeddingSlugs(
 
   for (const [oldSlug, o] of Object.entries(content.weddings ?? {})) {
     if (baseSlugs.has(oldSlug)) continue;
+    // Skip legacy couple-name keys — migrateBaseWeddingCmsKeys handles those
+    if (!o.custom && !o.title?.trim()) continue;
     const title = o.title?.trim();
     if (!title) continue;
+    // Don't rename entries that are only legacy base aliases awaiting migration
+    if (!o.custom && baseSlugs.has(oldSlug)) continue;
 
     taken.delete(oldSlug);
     const desired = uniqueSlugFromTitle(title, taken, "svatba");

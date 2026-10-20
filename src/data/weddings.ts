@@ -6,14 +6,18 @@ export type Wedding = {
   cover: string;
   summary: string;
   images: string[];
+  /** Previous URL slugs (e.g. couple-name URLs) for redirects */
+  aliases?: string[];
 };
 
+/** Titles/slugs = wedding name (place/concept), not couple names. */
 export const weddings: Wedding[] = [
   {
-    slug: "lea-a-martin",
-    title: "Lea & Martin",
+    slug: "statek-u-lesa",
+    title: "Statek u lesa",
     place: "Statek u lesa",
     season: "Léto",
+    aliases: ["lea-a-martin"],
     cover:
       "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1600&q=80",
     summary:
@@ -28,10 +32,11 @@ export const weddings: Wedding[] = [
     ],
   },
   {
-    slug: "anna-a-tomas",
-    title: "Anna & Tomáš",
+    slug: "zamecka-zahrada",
+    title: "Zámecká zahrada",
     place: "Zámek a zahrada",
     season: "Jaro",
+    aliases: ["anna-a-tomas"],
     cover:
       "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=1600&q=80",
     summary:
@@ -44,10 +49,11 @@ export const weddings: Wedding[] = [
     ],
   },
   {
-    slug: "tereza-a-david",
-    title: "Tereza & David",
+    slug: "venkovska-stodola",
+    title: "Venkovská stodola",
     place: "Venkovská stodola",
     season: "Podzim",
+    aliases: ["tereza-a-david"],
     cover:
       "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1600&q=80",
     summary:
@@ -60,10 +66,11 @@ export const weddings: Wedding[] = [
     ],
   },
   {
-    slug: "klara-a-jan",
-    title: "Klára & Jan",
+    slug: "mestsky-loft",
+    title: "Městský loft",
     place: "Městský loft",
     season: "Zima",
+    aliases: ["klara-a-jan"],
     cover:
       "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=1600&q=80",
     summary:
@@ -78,7 +85,10 @@ export const weddings: Wedding[] = [
 ];
 
 export function getWedding(slug: string) {
-  return weddings.find((w) => w.slug === slug);
+  return (
+    weddings.find((w) => w.slug === slug) ??
+    weddings.find((w) => w.aliases?.includes(slug))
+  );
 }
 
 export type DecorationVariant = {

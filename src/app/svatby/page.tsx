@@ -205,6 +205,33 @@ export default async function SvatbyPage() {
         </section>
 
         <section
+          className="mt-24 scroll-mt-24 border-y border-border/70 py-14 sm:py-16"
+          aria-labelledby="svatby-cenik"
+        >
+          <FadeIn>
+            <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground sm:text-xs">
+              Orientační ceny
+            </p>
+            <h2
+              id="svatby-cenik"
+              className="mt-2 font-display text-3xl text-moss-deep sm:text-4xl md:text-5xl"
+            >
+              Orientační ceník svatební floristiky
+            </h2>
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
+              <Typo>
+                Minimální výchozí ceny kytek, výzdoby, instalace a dopravy.
+                Každá svatba je individuální — po konzultaci připravím kalkulaci
+                na míru.
+              </Typo>
+            </p>
+            <CtaLink href="/svatby/cenik" className="mt-8">
+              Zobrazit ceník
+            </CtaLink>
+          </FadeIn>
+        </section>
+
+        <section
           id="realizace"
           className="mt-24 scroll-mt-24"
           aria-labelledby="svatby-realizace"

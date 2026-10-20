@@ -141,6 +141,13 @@ export default async function WeddingDetailPage({ params }: Props) {
           ))}
         </div>
 
+        <div className="mt-14 flex flex-wrap gap-3">
+          <CtaLink href="/kontakt?typ=svatba">Poptat svatbu</CtaLink>
+          <CtaLink href="/svatby/cenik" variant="ghost">
+            Orientační ceník
+          </CtaLink>
+        </div>
+
         {others.length > 0 && (
           <section className="mt-28">
             <h2 className="font-display text-4xl text-moss-deep sm:text-5xl">
