@@ -118,7 +118,7 @@ export default async function SvatbyPage() {
     <div>
       <JsonLd data={jsonLd} />
 
-      <div className="relative h-[45svh] min-h-[280px] overflow-hidden">
+      <div className="relative h-[45svh] min-h-[280px] w-full overflow-hidden">
         <CmsImage
           src={hero}
           alt="Svatební floristika THE BLOOMS — kytice a dekorace"

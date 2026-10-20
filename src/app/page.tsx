@@ -241,7 +241,7 @@ export default async function HomePage() {
             {featuredWeddings.map((w, i) => (
               <FadeIn key={w.slug} delay={i * 100}>
                 <Link href={`/svatby/${w.slug}`} className="group block">
-                  <div className="relative aspect-[3/4] overflow-hidden">
+                  <div className="relative aspect-[4/5] overflow-hidden">
                     <CmsImage
                       src={w.cover}
                       alt={w.title}

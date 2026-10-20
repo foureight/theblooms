@@ -1,12 +1,17 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { weddings as baseWeddings } from "@/data/weddings";
 import {
   ADMIN_COOKIE,
   readCms,
   verifySessionToken,
   writeCms,
 } from "@/lib/cms/store";
-import { emptyCms, type CmsContent } from "@/lib/cms/types";
+import {
+  emptyCms,
+  syncCustomWeddingSlugs,
+  type CmsContent,
+} from "@/lib/cms/types";
 
 async function requireAdmin() {
   const jar = await cookies();
@@ -31,19 +36,23 @@ export async function PUT(req: Request) {
   if (!body?.content || typeof body.content !== "object") {
     return NextResponse.json({ error: "Neplatná data." }, { status: 400 });
   }
-  const next: CmsContent = {
-    ...emptyCms(),
-    slots: body.content.slots ?? {},
-    texts: body.content.texts ?? {},
-    weddings: body.content.weddings ?? {},
-    wreaths: body.content.wreaths ?? {},
-    decorations: body.content.decorations ?? {},
-    workshops: body.content.workshops ?? {},
-    flowers: body.content.flowers ?? {},
-    wreathOrder: Array.isArray(body.content.wreathOrder)
-      ? body.content.wreathOrder.filter((s) => typeof s === "string")
-      : [],
-  };
+  const baseWeddingSlugs = new Set(baseWeddings.map((w) => w.slug));
+  const next = syncCustomWeddingSlugs(
+    {
+      ...emptyCms(),
+      slots: body.content.slots ?? {},
+      texts: body.content.texts ?? {},
+      weddings: body.content.weddings ?? {},
+      wreaths: body.content.wreaths ?? {},
+      decorations: body.content.decorations ?? {},
+      workshops: body.content.workshops ?? {},
+      flowers: body.content.flowers ?? {},
+      wreathOrder: Array.isArray(body.content.wreathOrder)
+        ? body.content.wreathOrder.filter((s) => typeof s === "string")
+        : [],
+    },
+    baseWeddingSlugs,
+  );
   await writeCms(next);
   return NextResponse.json({ ok: true, content: next });
 }

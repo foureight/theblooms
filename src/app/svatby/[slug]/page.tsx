@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { CtaLink } from "@/components/cta-link";
 import { CmsImage } from "@/components/cms-image";
 import { FaqSection } from "@/components/faq-section";
@@ -17,6 +17,11 @@ import {
   floristOrganization,
   ogImages,
 } from "@/lib/seo";
+
+/** Uniform photo height across wedding grids site-wide */
+const WEDDING_PHOTO_ASPECT = "aspect-[4/5]";
+const WEDDING_HERO =
+  "relative h-[45svh] min-h-[280px] w-full overflow-hidden sm:h-[45svh]";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -56,8 +61,11 @@ export default async function WeddingDetailPage({ params }: Props) {
   const cms = await getCmsContent();
   const wedding = mergeWedding(cms, slug);
   if (!wedding) notFound();
+  if (wedding.slug !== slug) {
+    permanentRedirect(`/svatby/${wedding.slug}`);
+  }
   const others = mergeWeddings(cms)
-    .filter((w) => w.slug !== slug)
+    .filter((w) => w.slug !== wedding.slug)
     .slice(0, 2);
 
   const jsonLd = [
@@ -87,7 +95,7 @@ export default async function WeddingDetailPage({ params }: Props) {
   return (
     <div>
       <JsonLd data={jsonLd} />
-      <div className="relative h-[55svh] min-h-[360px] w-full overflow-hidden">
+      <div className={WEDDING_HERO}>
         <CmsImage
           src={wedding.cover}
           alt={`Svatební floristika ${wedding.title} — ${wedding.place}`}
@@ -96,12 +104,12 @@ export default async function WeddingDetailPage({ params }: Props) {
           className="object-cover"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-moss-deep/70 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-          <p className="text-xs tracking-[0.2em] uppercase text-white/70">
-            {wedding.season} · {wedding.place}
+        <div className="absolute inset-0 bg-moss-deep/40" />
+        <div className="absolute inset-x-0 bottom-0 mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
+          <p className="text-[10px] tracking-[0.22em] uppercase text-white/70 sm:text-xs">
+            {[wedding.season, wedding.place].filter(Boolean).join(" · ")}
           </p>
-          <h1 className="mt-2 font-display text-6xl text-white sm:text-7xl">
+          <h1 className="mt-2 font-display text-4xl text-white sm:text-6xl md:text-7xl">
             {wedding.title}
           </h1>
         </div>
@@ -119,18 +127,16 @@ export default async function WeddingDetailPage({ params }: Props) {
           Chci podobnou realizaci
         </CtaLink>
 
-        <div className="mt-14 columns-1 gap-4 sm:columns-2">
+        <div className="mt-14 grid gap-4 sm:grid-cols-2">
           {wedding.images.map((src, i) => (
-            <div key={src} className="mb-4 break-inside-avoid">
-              <div className="relative aspect-[4/5] overflow-hidden">
-                <CmsImage
-                  src={src}
-                  alt={`${wedding.title} — fotografie ${i + 1}`}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width:768px) 100vw, 50vw"
-                />
-              </div>
+            <div key={`${src}-${i}`} className={`relative ${WEDDING_PHOTO_ASPECT} overflow-hidden`}>
+              <CmsImage
+                src={src}
+                alt={`${wedding.title} — fotografie ${i + 1}`}
+                fill
+                className="object-cover"
+                sizes="(max-width:768px) 100vw, 50vw"
+              />
             </div>
           ))}
         </div>
@@ -143,7 +149,9 @@ export default async function WeddingDetailPage({ params }: Props) {
             <div className="mt-8 grid gap-6 sm:grid-cols-2">
               {others.map((w) => (
                 <Link key={w.slug} href={`/svatby/${w.slug}`} className="group">
-                  <div className="relative aspect-[16/10] overflow-hidden">
+                  <div
+                    className={`relative ${WEDDING_PHOTO_ASPECT} overflow-hidden`}
+                  >
                     <CmsImage
                       src={w.cover}
                       alt={w.title}
@@ -160,7 +168,6 @@ export default async function WeddingDetailPage({ params }: Props) {
             </div>
           </section>
         )}
-
       </div>
 
       <FaqSection faqs={weddingFaqs} />

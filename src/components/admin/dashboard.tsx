@@ -19,7 +19,8 @@ import {
   defaultText,
   PAGE_SLOTS,
   PAGE_TEXTS,
-  slugifyTitle,
+  syncCustomWeddingSlugs,
+  uniqueSlugFromTitle,
   type CmsContent,
   type MediaItem,
 } from "@/lib/cms/types";
@@ -122,16 +123,18 @@ export function AdminDashboard({
     setSaving(true);
     setStatus("");
     try {
+      const toSave = syncCustomWeddingSlugs(content, baseWeddingSlugs);
       const res = await fetch("/api/admin/content", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content }),
+        body: JSON.stringify({ content: toSave }),
       });
       const data = (await res.json()) as { error?: string };
       if (!res.ok) {
         setStatus(data.error || "Uložení selhalo.");
         return;
       }
+      setContent(toSave);
       setStatus("Uloženo.");
       router.refresh();
     } catch {
@@ -397,11 +400,7 @@ export function AdminDashboard({
   );
 
   function uniqueSlug(title: string, taken: Set<string>, fallback: string) {
-    const slug = slugifyTitle(title, fallback);
-    if (!taken.has(slug)) return slug;
-    let n = 2;
-    while (taken.has(`${slug}-${n}`)) n += 1;
-    return `${slug}-${n}`;
+    return uniqueSlugFromTitle(title, taken, fallback);
   }
 
   function moveWreath(slug: string, direction: -1 | 1) {
@@ -420,7 +419,7 @@ export function AdminDashboard({
       ...baseWeddingSlugs,
       ...Object.keys(content.weddings ?? {}),
     ]);
-    const slug = uniqueSlug(`${title}-${Date.now()}`, taken, "svatba");
+    const slug = uniqueSlug(title, taken, "svatba");
     setContent((c) => ({
       ...c,
       weddings: {
@@ -436,7 +435,9 @@ export function AdminDashboard({
         },
       },
     }));
-    setStatus(`Přidána svatba. Upravte název a uložte změny.`);
+    setStatus(
+      "Přidána svatba. Po přejmenování a uložení bude URL podle názvu (např. /svatby/zamecka-svatba).",
+    );
     setTab("svatby");
   }
 
@@ -909,9 +910,28 @@ export function AdminDashboard({
                   className="border border-border/70 p-4 sm:p-6"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
-                    <h2 className="font-display text-3xl text-moss-deep">
-                      {o.title || w.title}
-                    </h2>
+                    <div>
+                      <h2 className="font-display text-3xl text-moss-deep">
+                        {o.title || w.title}
+                      </h2>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        URL{" "}
+                        <Link
+                          href={`/svatby/${w.slug}`}
+                          className="underline underline-offset-2 hover:text-foreground"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          /svatby/{w.slug}
+                        </Link>
+                        {w.custom ? (
+                          <span className="text-muted-foreground/80">
+                            {" "}
+                            · po uložení se slug přizpůsobí názvu
+                          </span>
+                        ) : null}
+                      </p>
+                    </div>
                     {w.custom ? (
                       <button
                         type="button"

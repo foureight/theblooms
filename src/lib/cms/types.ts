@@ -7,6 +7,8 @@ export type CmsWeddingOverride = {
   summary?: string;
   cover?: string;
   images?: string[];
+  /** Previous URL slugs after rename (for redirects) */
+  aliases?: string[];
 };
 
 export type CmsWreathSizeOverride = {
@@ -91,6 +93,51 @@ export function slugifyTitle(input: string, fallback = "polozka"): string {
     .replace(/^-+|-+$/g, "")
     .slice(0, 48);
   return base || fallback;
+}
+
+/** Unique slug; appends -2, -3… on collision. */
+export function uniqueSlugFromTitle(
+  title: string,
+  taken: Set<string>,
+  fallback = "polozka",
+) {
+  const slug = slugifyTitle(title, fallback);
+  if (!taken.has(slug)) return slug;
+  let n = 2;
+  while (taken.has(`${slug}-${n}`)) n += 1;
+  return `${slug}-${n}`;
+}
+
+/**
+ * Rename CMS-only wedding keys to match their titles (e.g. nova-svatba-1791… → zamecka-svatba).
+ * Keeps old keys in `aliases` for redirects. Does not touch built-in catalog slugs.
+ */
+export function syncCustomWeddingSlugs(
+  content: CmsContent,
+  baseSlugs: Set<string>,
+): CmsContent {
+  const weddings: Record<string, CmsWeddingOverride> = { ...content.weddings };
+  const taken = new Set<string>([...baseSlugs, ...Object.keys(weddings)]);
+
+  for (const [oldSlug, o] of Object.entries(content.weddings ?? {})) {
+    if (baseSlugs.has(oldSlug)) continue;
+    const title = o.title?.trim();
+    if (!title) continue;
+
+    taken.delete(oldSlug);
+    const desired = uniqueSlugFromTitle(title, taken, "svatba");
+    taken.add(desired);
+    if (desired === oldSlug) continue;
+
+    const aliases = [
+      ...new Set([...(o.aliases ?? []), oldSlug]),
+    ].filter((a) => a !== desired);
+
+    delete weddings[oldSlug];
+    weddings[desired] = { ...o, custom: true, aliases };
+  }
+
+  return { ...content, weddings };
 }
 
 /** Named page photo slots */

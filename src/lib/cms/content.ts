@@ -187,7 +187,16 @@ export function mergeWedding(
   cms: CmsContent,
   slug: string,
 ): Wedding | undefined {
-  return mergeWeddings(cms).find((w) => w.slug === slug);
+  const all = mergeWeddings(cms);
+  const direct = all.find((w) => w.slug === slug);
+  if (direct) return direct;
+
+  for (const [canonical, o] of Object.entries(cms.weddings ?? {})) {
+    if (o.aliases?.includes(slug)) {
+      return all.find((w) => w.slug === canonical);
+    }
+  }
+  return undefined;
 }
 
 export function mergeWreaths(cms: CmsContent): Wreath[] {
