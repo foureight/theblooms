@@ -16,6 +16,7 @@ import {
   type WreathSizeId,
 } from "@/data/wreaths";
 import { PageSeoFields } from "@/components/admin/page-seo-fields";
+import { WeddingPriceListEditor } from "@/components/admin/wedding-price-list-editor";
 import {
   defaultText,
   PAGE_SLOTS,
@@ -85,6 +86,7 @@ export function AdminDashboard({
   const [content, setContent] = useState<CmsContent>(() => ({
     ...initialContent,
     pageSeo: initialContent.pageSeo ?? {},
+    weddingPriceList: initialContent.weddingPriceList ?? {},
   }));
   const [media, setMedia] = useState<MediaItem[]>(initialMedia);
   const [orders, setOrders] = useState<Order[]>(initialOrders);
@@ -1058,12 +1060,15 @@ export function AdminDashboard({
               onChange={setPageSeo}
             />
             {renderPageCopy("svatby")}
+            <WeddingPriceListEditor
+              content={content}
+              onChange={(weddingPriceList) =>
+                setContent((c) => ({ ...c, weddingPriceList }))
+              }
+            />
             <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-10">
               <p className="text-sm text-muted-foreground">
-                Upravte existující realizace nebo přidejte novou svatbu. Ceník:{" "}
-                <Link href="/svatby/cenik" className="underline underline-offset-2">
-                  /svatby/cenik
-                </Link>
+                Upravte existující realizace nebo přidejte novou svatbu.
               </p>
               <button
                 type="button"

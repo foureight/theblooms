@@ -11,7 +11,33 @@ import {
   emptyCms,
   syncCustomWeddingSlugs,
   type CmsContent,
+  type CmsPriceRow,
+  type CmsWeddingPriceList,
 } from "@/lib/cms/types";
+
+function sanitizePriceRows(rows: unknown): CmsPriceRow[] | undefined {
+  if (!Array.isArray(rows)) return undefined;
+  const cleaned = rows
+    .map((row) => {
+      if (!row || typeof row !== "object") return null;
+      const r = row as { item?: unknown; price?: unknown };
+      const item = typeof r.item === "string" ? r.item.trim() : "";
+      const price = typeof r.price === "string" ? r.price.trim() : "";
+      if (!item && !price) return null;
+      return { item, price };
+    })
+    .filter((r): r is CmsPriceRow => Boolean(r));
+  return cleaned;
+}
+
+function sanitizeWeddingPriceList(raw: unknown): CmsWeddingPriceList {
+  if (!raw || typeof raw !== "object") return {};
+  const o = raw as CmsWeddingPriceList;
+  return {
+    flowers: sanitizePriceRows(o.flowers),
+    decor: sanitizePriceRows(o.decor),
+  };
+}
 
 async function requireAdmin() {
   const jar = await cookies();
@@ -48,6 +74,7 @@ export async function PUT(req: Request) {
       decorations: body.content.decorations ?? {},
       workshops: body.content.workshops ?? {},
       flowers: body.content.flowers ?? {},
+      weddingPriceList: sanitizeWeddingPriceList(body.content.weddingPriceList),
       wreathOrder: Array.isArray(body.content.wreathOrder)
         ? body.content.wreathOrder.filter((s) => typeof s === "string")
         : [],

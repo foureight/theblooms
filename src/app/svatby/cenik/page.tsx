@@ -4,13 +4,14 @@ import { CmsImage } from "@/components/cms-image";
 import { FadeIn } from "@/components/fade-in";
 import { JsonLd } from "@/components/json-ld";
 import { Typo } from "@/components/typo";
-import {
-  weddingDecorPrices,
-  weddingFlowerPrices,
-  type PriceRow,
-} from "@/data/wedding-price-list";
+import { type PriceRow } from "@/data/wedding-price-list";
 import { site } from "@/data/site";
-import { getCmsContent, seoFrom, slotFrom } from "@/lib/cms/content";
+import {
+  getCmsContent,
+  mergeWeddingPriceList,
+  seoFrom,
+  slotFrom,
+} from "@/lib/cms/content";
 import {
   absoluteUrl,
   breadcrumbJsonLd,
@@ -104,6 +105,8 @@ export default async function WeddingPriceListPage() {
   const cms = await getCmsContent();
   const seo = seoFrom(cms, "svatby-cenik");
   const hero = slotFrom(cms, "svatby.cenik", CENIK_HERO_FALLBACK);
+  const { flowers: weddingFlowerPrices, decor: weddingDecorPrices } =
+    mergeWeddingPriceList(cms);
 
   const jsonLd = [
     breadcrumbJsonLd([

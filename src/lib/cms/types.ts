@@ -55,6 +55,17 @@ export type CmsPageSeo = {
   description?: string;
 };
 
+export type CmsPriceRow = {
+  item: string;
+  price: string;
+};
+
+/** Editable wedding orientation price list (/svatby/cenik) */
+export type CmsWeddingPriceList = {
+  flowers?: CmsPriceRow[];
+  decor?: CmsPriceRow[];
+};
+
 export type CmsContent = {
   /** Page photo URLs by slot id */
   slots: Record<string, string>;
@@ -69,6 +80,8 @@ export type CmsContent = {
   workshops: Record<string, CmsServiceItem>;
   /** Extra service cards on /kytky */
   flowers: Record<string, CmsServiceItem>;
+  /** Orientační ceník svatební floristiky */
+  weddingPriceList: CmsWeddingPriceList;
   /** Pořadí věnců podle prodejnosti (slug → pozice) */
   wreathOrder: string[];
   /** Pořadí svatebních realizací */
@@ -93,6 +106,7 @@ export const emptyCms = (): CmsContent => ({
   decorations: {},
   workshops: {},
   flowers: {},
+  weddingPriceList: {},
   wreathOrder: [],
   weddingOrder: [],
   flowerOrder: [],

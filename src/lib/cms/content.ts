@@ -14,10 +14,16 @@ import {
 } from "@/data/wreaths";
 import type { CmsWreathOverride } from "@/lib/cms/types";
 import {
+  weddingDecorPrices,
+  weddingFlowerPrices,
+  type PriceRow,
+} from "@/data/wedding-price-list";
+import {
   defaultPageSeo,
   defaultText,
   PAGE_TEXTS,
   type CmsContent,
+  type CmsPriceRow,
   type PageSeoId,
 } from "@/lib/cms/types";
 import { readCms, resolveSlot, resolveText } from "@/lib/cms/store";
@@ -124,6 +130,31 @@ export function seoFrom(cms: CmsContent, id: PageSeoId) {
   return {
     title: override?.title?.trim() || defaults.title,
     description: override?.description?.trim() || defaults.description,
+  };
+}
+
+function normalizePriceRows(
+  rows: CmsPriceRow[] | undefined,
+  fallback: PriceRow[],
+): PriceRow[] {
+  if (!rows || rows.length === 0) return fallback.map((r) => ({ ...r }));
+  return rows
+    .map((r) => ({
+      item: r.item?.trim() || "",
+      price: r.price?.trim() || "",
+    }))
+    .filter((r) => r.item || r.price);
+}
+
+/** Wedding orientation price list — CMS overrides code defaults. */
+export function mergeWeddingPriceList(cms: CmsContent): {
+  flowers: PriceRow[];
+  decor: PriceRow[];
+} {
+  const list = cms.weddingPriceList ?? {};
+  return {
+    flowers: normalizePriceRows(list.flowers, weddingFlowerPrices),
+    decor: normalizePriceRows(list.decor, weddingDecorPrices),
   };
 }
 
