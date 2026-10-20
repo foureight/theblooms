@@ -155,6 +155,18 @@ const WREATH_PLACEHOLDER = "/wreaths/placeholder.svg";
 const WEDDING_PLACEHOLDER =
   "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1600&q=80";
 
+export function resolveWeddingOrder(cms: CmsContent): string[] {
+  const base = baseWeddings.map((w) => w.slug);
+  const custom = Object.entries(cms.weddings ?? {})
+    .filter(([slug, o]) => !base.includes(slug) && Boolean(o.title?.trim()))
+    .map(([slug]) => slug);
+  const all = [...base, ...custom];
+  const saved = (cms.weddingOrder ?? []).filter((s) => all.includes(s));
+  if (saved.length === 0) return all;
+  const missing = all.filter((s) => !saved.includes(s));
+  return [...saved, ...missing];
+}
+
 export function mergeWeddings(cms: CmsContent): Wedding[] {
   const baseSlugs = new Set(baseWeddings.map((w) => w.slug));
   const merged = baseWeddings.map((w) => {
@@ -192,7 +204,11 @@ export function mergeWeddings(cms: CmsContent): Wedding[] {
     });
   }
 
-  return merged;
+  const order = resolveWeddingOrder(cms);
+  const rank = new Map(order.map((slug, i) => [slug, i]));
+  return [...merged].sort(
+    (a, b) => (rank.get(a.slug) ?? 999) - (rank.get(b.slug) ?? 999),
+  );
 }
 
 export function mergeWedding(
@@ -344,6 +360,7 @@ function mergeServiceCards(
     string,
     { custom?: boolean; title?: string; text?: string; image?: string }
   >,
+  order: string[] = [],
 ): CmsCard[] {
   const cards: CmsCard[] = [];
   for (const [slug, o] of Object.entries(overrides ?? {})) {
@@ -357,7 +374,17 @@ function mergeServiceCards(
       custom: true,
     });
   }
-  return cards;
+  if (order.length === 0) return cards;
+  const all = cards.map((c) => c.slug);
+  const saved = order.filter((s) => all.includes(s));
+  const ranked = [
+    ...saved,
+    ...all.filter((s) => !saved.includes(s)),
+  ];
+  const bySlug = new Map(cards.map((c) => [c.slug, c]));
+  return ranked
+    .map((slug) => bySlug.get(slug))
+    .filter((c): c is CmsCard => Boolean(c));
 }
 
 /** Extra workshop cards from CMS (appended after built-in formats). */
@@ -367,5 +394,5 @@ export function mergeWorkshopCards(cms: CmsContent): CmsCard[] {
 
 /** Extra flower-service cards from CMS (appended after built-in services). */
 export function mergeFlowerCards(cms: CmsContent): CmsCard[] {
-  return mergeServiceCards(cms.flowers ?? {});
+  return mergeServiceCards(cms.flowers ?? {}, cms.flowerOrder ?? []);
 }

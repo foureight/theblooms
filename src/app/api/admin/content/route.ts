@@ -42,6 +42,7 @@ export async function PUT(req: Request) {
       ...emptyCms(),
       slots: body.content.slots ?? {},
       texts: body.content.texts ?? {},
+      pageSeo: body.content.pageSeo ?? {},
       weddings: body.content.weddings ?? {},
       wreaths: body.content.wreaths ?? {},
       decorations: body.content.decorations ?? {},
@@ -49,6 +50,12 @@ export async function PUT(req: Request) {
       flowers: body.content.flowers ?? {},
       wreathOrder: Array.isArray(body.content.wreathOrder)
         ? body.content.wreathOrder.filter((s) => typeof s === "string")
+        : [],
+      weddingOrder: Array.isArray(body.content.weddingOrder)
+        ? body.content.weddingOrder.filter((s) => typeof s === "string")
+        : [],
+      flowerOrder: Array.isArray(body.content.flowerOrder)
+        ? body.content.flowerOrder.filter((s) => typeof s === "string")
         : [],
     },
     baseWeddingSlugs,

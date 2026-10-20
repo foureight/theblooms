@@ -67,6 +67,8 @@ export async function readCms(): Promise<CmsContent> {
       workshops: parsed.workshops ?? {},
       flowers: parsed.flowers ?? {},
       wreathOrder: parsed.wreathOrder ?? [],
+      weddingOrder: parsed.weddingOrder ?? [],
+      flowerOrder: parsed.flowerOrder ?? [],
     };
     // Auto-fix URLs like /svatby/nova-svatba-1791… → /svatby/zamecka-svatba
     const baseSlugs = new Set(baseWeddings.map((w) => w.slug));

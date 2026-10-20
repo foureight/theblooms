@@ -71,6 +71,10 @@ export type CmsContent = {
   flowers: Record<string, CmsServiceItem>;
   /** Pořadí věnců podle prodejnosti (slug → pozice) */
   wreathOrder: string[];
+  /** Pořadí svatebních realizací */
+  weddingOrder: string[];
+  /** Pořadí vlastních položek na stránce Kytky */
+  flowerOrder: string[];
 };
 
 export type MediaItem = {
@@ -90,6 +94,8 @@ export const emptyCms = (): CmsContent => ({
   workshops: {},
   flowers: {},
   wreathOrder: [],
+  weddingOrder: [],
+  flowerOrder: [],
 });
 
 /**
@@ -215,6 +221,7 @@ export function syncCustomWeddingSlugs(
   baseSlugs: Set<string>,
 ): CmsContent {
   const weddings: Record<string, CmsWeddingOverride> = { ...content.weddings };
+  let weddingOrder = [...(content.weddingOrder ?? [])];
   const taken = new Set<string>([...baseSlugs, ...Object.keys(weddings)]);
 
   for (const [oldSlug, o] of Object.entries(content.weddings ?? {})) {
@@ -233,9 +240,10 @@ export function syncCustomWeddingSlugs(
 
     delete weddings[oldSlug];
     weddings[desired] = { ...o, custom: true, aliases };
+    weddingOrder = weddingOrder.map((s) => (s === oldSlug ? desired : s));
   }
 
-  return { ...content, weddings };
+  return { ...content, weddings, weddingOrder };
 }
 
 /** Named page photo slots */

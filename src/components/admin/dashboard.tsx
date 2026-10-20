@@ -418,11 +418,21 @@ export function AdminDashboard({
             : [o.cover?.trim() || WEDDING_PLACEHOLDER],
         custom: true as const,
       }));
-    return [
+    const merged = [
       ...baseWeddings.map((w) => ({ ...w, custom: false as const })),
       ...customs,
     ];
-  }, [content.weddings, baseWeddingSlugs]);
+    const all = merged.map((w) => w.slug);
+    const saved = (content.weddingOrder ?? []).filter((s) => all.includes(s));
+    const order =
+      saved.length === 0
+        ? all
+        : [...saved, ...all.filter((s) => !saved.includes(s))];
+    const bySlug = new Map(merged.map((w) => [w.slug, w]));
+    return order
+      .map((slug) => bySlug.get(slug))
+      .filter((w): w is (typeof merged)[number] => Boolean(w));
+  }, [content.weddings, content.weddingOrder, baseWeddingSlugs]);
 
   const orderedWreaths = useMemo(() => {
     const customs = Object.entries(content.wreaths ?? {})
@@ -493,30 +503,69 @@ export function AdminDashboard({
     [content.workshops],
   );
 
-  const flowerCards = useMemo(
-    () =>
-      Object.entries(content.flowers ?? {})
-        .filter(([, o]) => Boolean(o.title?.trim()))
-        .map(([slug, o]) => ({
-          slug,
-          title: o.title!.trim(),
-          text: o.text?.trim() || "",
-        })),
-    [content.flowers],
-  );
+  const flowerCards = useMemo(() => {
+    const cards = Object.entries(content.flowers ?? {})
+      .filter(([, o]) => Boolean(o.title?.trim()))
+      .map(([slug, o]) => ({
+        slug,
+        title: o.title!.trim(),
+        text: o.text?.trim() || "",
+      }));
+    const all = cards.map((c) => c.slug);
+    const saved = (content.flowerOrder ?? []).filter((s) => all.includes(s));
+    const order =
+      saved.length === 0
+        ? all
+        : [...saved, ...all.filter((s) => !saved.includes(s))];
+    const bySlug = new Map(cards.map((c) => [c.slug, c]));
+    return order
+      .map((slug) => bySlug.get(slug))
+      .filter((c): c is (typeof cards)[number] => Boolean(c));
+  }, [content.flowers, content.flowerOrder]);
 
   function uniqueSlug(title: string, taken: Set<string>, fallback: string) {
     return uniqueSlugFromTitle(title, taken, fallback);
   }
 
-  function moveWreath(slug: string, direction: -1 | 1) {
-    const slugs = orderedWreaths.map((w) => w.slug);
+  function moveInOrder(
+    slugs: string[],
+    slug: string,
+    direction: -1 | 1,
+    key: "wreathOrder" | "weddingOrder" | "flowerOrder",
+  ) {
     const i = slugs.indexOf(slug);
     const j = i + direction;
     if (i < 0 || j < 0 || j >= slugs.length) return;
     const next = [...slugs];
     [next[i], next[j]] = [next[j]!, next[i]!];
-    setContent((c) => ({ ...c, wreathOrder: next }));
+    setContent((c) => ({ ...c, [key]: next }));
+  }
+
+  function moveWreath(slug: string, direction: -1 | 1) {
+    moveInOrder(
+      orderedWreaths.map((w) => w.slug),
+      slug,
+      direction,
+      "wreathOrder",
+    );
+  }
+
+  function moveWedding(slug: string, direction: -1 | 1) {
+    moveInOrder(
+      allWeddings.map((w) => w.slug),
+      slug,
+      direction,
+      "weddingOrder",
+    );
+  }
+
+  function moveFlower(slug: string, direction: -1 | 1) {
+    moveInOrder(
+      flowerCards.map((c) => c.slug),
+      slug,
+      direction,
+      "flowerOrder",
+    );
   }
 
   function addWedding() {
@@ -528,6 +577,13 @@ export function AdminDashboard({
     const slug = uniqueSlug(title, taken, "svatba");
     setContent((c) => ({
       ...c,
+      weddingOrder: [
+        slug,
+        ...(c.weddingOrder?.length
+          ? c.weddingOrder
+          : allWeddings.map((w) => w.slug)
+        ).filter((s) => s !== slug),
+      ],
       weddings: {
         ...c.weddings,
         [slug]: {
@@ -552,7 +608,11 @@ export function AdminDashboard({
     setContent((c) => {
       const next = { ...c.weddings };
       delete next[slug];
-      return { ...c, weddings: next };
+      return {
+        ...c,
+        weddings: next,
+        weddingOrder: (c.weddingOrder ?? []).filter((s) => s !== slug),
+      };
     });
     setStatus("Svatba odebrána. Uložte změny.");
   }
@@ -648,8 +708,15 @@ export function AdminDashboard({
         ...c.flowers,
         [slug]: { custom: true, title, text: "" },
       },
+      flowerOrder: [
+        slug,
+        ...(c.flowerOrder?.length
+          ? c.flowerOrder
+          : flowerCards.map((f) => f.slug)
+        ).filter((s) => s !== slug),
+      ],
     }));
-    setStatus("Přidána položka. Upravte název a uložte změny.");
+    setStatus("Přidána položka nahoře. Upravte název a uložte změny.");
     setTab("kytky");
   }
 
@@ -658,7 +725,11 @@ export function AdminDashboard({
     setContent((c) => {
       const next = { ...c.flowers };
       delete next[slug];
-      return { ...c, flowers: next };
+      return {
+        ...c,
+        flowers: next,
+        flowerOrder: (c.flowerOrder ?? []).filter((s) => s !== slug),
+      };
     });
     setStatus("Položka odebrána. Uložte změny.");
   }
@@ -1002,10 +1073,12 @@ export function AdminDashboard({
                 + Přidat svatbu
               </button>
             </div>
-            {allWeddings.map((w) => {
+            {allWeddings.map((w, index) => {
               const o = content.weddings[w.slug] ?? {};
               const images = o.images ?? w.images;
               const cover = o.cover || w.cover;
+              const atTop = index === 0;
+              const atBottom = index === allWeddings.length - 1;
               return (
                 <section
                   key={w.slug}
@@ -1013,7 +1086,11 @@ export function AdminDashboard({
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                      <h2 className="font-display text-3xl text-moss-deep">
+                      <p className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
+                        Pořadí {index + 1} / {allWeddings.length}
+                        {w.custom ? " · nová" : ""}
+                      </p>
+                      <h2 className="mt-1 font-display text-3xl text-moss-deep">
                         {o.title || w.title}
                       </h2>
                       <p className="mt-1 text-xs text-muted-foreground">
@@ -1034,15 +1111,35 @@ export function AdminDashboard({
                         ) : null}
                       </p>
                     </div>
-                    {w.custom ? (
+                    <div className="flex flex-wrap gap-2">
                       <button
                         type="button"
-                        onClick={() => removeWedding(w.slug)}
-                        className="px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
+                        disabled={atTop}
+                        onClick={() => moveWedding(w.slug, -1)}
+                        className="border border-border px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-moss-deep transition-colors hover:border-sky-600 hover:bg-sky-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                        aria-label="Posunout nahoru"
                       >
-                        Smazat
+                        ↑ Nahoru
                       </button>
-                    ) : null}
+                      <button
+                        type="button"
+                        disabled={atBottom}
+                        onClick={() => moveWedding(w.slug, 1)}
+                        className="border border-border px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-moss-deep transition-colors hover:border-sky-600 hover:bg-sky-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                        aria-label="Posunout dolů"
+                      >
+                        ↓ Dolů
+                      </button>
+                      {w.custom ? (
+                        <button
+                          type="button"
+                          onClick={() => removeWedding(w.slug)}
+                          className="px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
+                        >
+                          Smazat
+                        </button>
+                      ) : null}
+                    </div>
                   </div>
                   <div className="mt-6 grid gap-4 sm:grid-cols-2">
                     <Field
@@ -1709,22 +1806,50 @@ export function AdminDashboard({
                 Zatím žádné vlastní položky. Základní služby zůstávají na webu.
               </p>
             ) : null}
-            {flowerCards.map((item) => (
+            {flowerCards.map((item, index) => {
+              const atTop = index === 0;
+              const atBottom = index === flowerCards.length - 1;
+              return (
               <section
                 key={item.slug}
                 className="space-y-4 border border-border/70 p-4 sm:p-6"
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
-                  <h2 className="font-display text-2xl text-moss-deep">
-                    {item.title || "Nová položka"}
-                  </h2>
-                  <button
-                    type="button"
-                    onClick={() => removeFlower(item.slug)}
-                    className="px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
-                  >
-                    Smazat
-                  </button>
+                  <div>
+                    <p className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
+                      Pořadí {index + 1} / {flowerCards.length}
+                    </p>
+                    <h2 className="mt-1 font-display text-2xl text-moss-deep">
+                      {item.title || "Nová položka"}
+                    </h2>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      disabled={atTop}
+                      onClick={() => moveFlower(item.slug, -1)}
+                      className="border border-border px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-moss-deep transition-colors hover:border-sky-600 hover:bg-sky-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                      aria-label="Posunout nahoru"
+                    >
+                      ↑ Nahoru
+                    </button>
+                    <button
+                      type="button"
+                      disabled={atBottom}
+                      onClick={() => moveFlower(item.slug, 1)}
+                      className="border border-border px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-moss-deep transition-colors hover:border-sky-600 hover:bg-sky-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                      aria-label="Posunout dolů"
+                    >
+                      ↓ Dolů
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => removeFlower(item.slug)}
+                      className="px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
+                    >
+                      Smazat
+                    </button>
+                  </div>
                 </div>
                 <Field
                   label="Název"
@@ -1767,7 +1892,8 @@ export function AdminDashboard({
                   />
                 </label>
               </section>
-            ))}
+            );
+            })}
           </div>
         ) : null}
 

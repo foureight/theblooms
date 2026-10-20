@@ -150,7 +150,7 @@ export default async function WeddingPriceListPage() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 pt-14 pb-0 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 pt-14 pb-24 sm:px-6 sm:pb-28 lg:px-8 lg:pb-32">
         <FadeIn>
           <div className="max-w-2xl space-y-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
             <p>
