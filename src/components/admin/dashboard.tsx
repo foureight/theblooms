@@ -4,7 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { weddings as baseWeddings } from "@/data/weddings";
+import {
+  decorations as baseDecorations,
+  weddings as baseWeddings,
+} from "@/data/weddings";
 import {
   DEFAULT_SIZE_LABELS,
   emptyWreathSizeSlots,
@@ -60,6 +63,8 @@ const PAGE_TABS: { id: Tab; label: string; seoId?: PageSeoId }[] = [
 const WREATH_PLACEHOLDER = "/wreaths/placeholder.svg";
 const WEDDING_PLACEHOLDER =
   "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1600&q=80";
+const DECORATION_PLACEHOLDER =
+  "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=1200&q=80";
 
 const ORDER_STATUS_LABEL: Record<OrderStatus, string> = {
   pending_payment: "Čeká na platbu",
@@ -97,7 +102,13 @@ export function AdminDashboard({
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [pickerFor, setPickerFor] = useState<null | {
-    kind: "slot" | "wedding-cover" | "wedding-gallery" | "wreath";
+    kind:
+      | "slot"
+      | "wedding-cover"
+      | "wedding-gallery"
+      | "wreath"
+      | "decoration-cover"
+      | "decoration-variant";
     key: string;
   }>(null);
 
@@ -291,6 +302,40 @@ export function AdminDashboard({
           },
         },
       }));
+    } else if (pickerFor.kind === "decoration-cover") {
+      setContent((c) => ({
+        ...c,
+        decorations: {
+          ...c.decorations,
+          [pickerFor.key]: {
+            ...c.decorations[pickerFor.key],
+            image: url,
+          },
+        },
+      }));
+    } else if (pickerFor.kind === "decoration-variant") {
+      const [catSlug, variantSlug] = pickerFor.key.split("::");
+      if (catSlug && variantSlug) {
+        setContent((c) => {
+          const cat = c.decorations[catSlug] ?? {};
+          return {
+            ...c,
+            decorations: {
+              ...c.decorations,
+              [catSlug]: {
+                ...cat,
+                variants: {
+                  ...cat.variants,
+                  [variantSlug]: {
+                    ...cat.variants?.[variantSlug],
+                    image: url,
+                  },
+                },
+              },
+            },
+          };
+        });
+      }
     }
     setPickerFor(null);
   }
@@ -411,6 +456,10 @@ export function AdminDashboard({
     () => new Set(baseWreaths.map((w) => w.slug)),
     [],
   );
+  const baseDecorationSlugs = useMemo(
+    () => new Set(baseDecorations.map((d) => d.slug)),
+    [],
+  );
 
   const baseWeddingAliasSlugs = useMemo(
     () => new Set(baseWeddings.flatMap((w) => w.aliases ?? [])),
@@ -478,6 +527,69 @@ export function AdminDashboard({
     }
     return slug;
   }
+
+  const allDecorations = useMemo(() => {
+    const base = baseDecorations.map((d) => {
+      const o = content.decorations[d.slug] ?? {};
+      const baseVariants = d.variants
+        .filter((v) => !o.variants?.[v.slug]?.hidden)
+        .map((v) => {
+          const vo = o.variants?.[v.slug];
+          return {
+            slug: v.slug,
+            name: vo?.name ?? v.name,
+            note: vo?.note ?? v.note,
+            image: vo?.image || v.image,
+            custom: false as const,
+          };
+        });
+      const customVariants = Object.entries(o.variants ?? {})
+        .filter(
+          ([slug, vo]) =>
+            !d.variants.some((v) => v.slug === slug) &&
+            !vo.hidden &&
+            Boolean(vo.name?.trim() || vo.custom),
+        )
+        .map(([slug, vo]) => ({
+          slug,
+          name: vo.name?.trim() || "Nová varianta",
+          note: vo.note?.trim() || "",
+          image: vo.image?.trim() || DECORATION_PLACEHOLDER,
+          custom: true as const,
+        }));
+      return {
+        slug: d.slug,
+        title: o.title ?? d.title,
+        description: o.description ?? d.description,
+        image: o.image || d.image,
+        variants: [...baseVariants, ...customVariants],
+        custom: false as const,
+      };
+    });
+    const customs = Object.entries(content.decorations ?? {})
+      .filter(
+        ([slug, o]) =>
+          !baseDecorationSlugs.has(slug) &&
+          (Boolean(o.custom) || Boolean(o.title?.trim())),
+      )
+      .map(([slug, o]) => ({
+        slug,
+        title: o.title?.trim() || "Nová kategorie",
+        description: o.description?.trim() || "",
+        image: o.image?.trim() || DECORATION_PLACEHOLDER,
+        variants: Object.entries(o.variants ?? {})
+          .filter(([, vo]) => !vo.hidden)
+          .map(([vslug, vo]) => ({
+            slug: vslug,
+            name: vo.name?.trim() || "Nová varianta",
+            note: vo.note?.trim() || "",
+            image: vo.image?.trim() || DECORATION_PLACEHOLDER,
+            custom: true as const,
+          })),
+        custom: true as const,
+      }));
+    return [...base, ...customs];
+  }, [content.decorations, baseDecorationSlugs]);
 
   const orderedWreaths = useMemo(() => {
     const customs = Object.entries(content.wreaths ?? {})
@@ -660,6 +772,104 @@ export function AdminDashboard({
       };
     });
     setStatus("Svatba odebrána. Uložte změny.");
+  }
+
+  function addDecoration() {
+    const title = "Nová kategorie dekorací";
+    const taken = new Set([
+      ...baseDecorationSlugs,
+      ...Object.keys(content.decorations ?? {}),
+    ]);
+    const slug = uniqueSlug(`${title}-${Date.now()}`, taken, "dekorace");
+    setContent((c) => ({
+      ...c,
+      decorations: {
+        ...c.decorations,
+        [slug]: {
+          custom: true,
+          title,
+          description: "",
+          image: DECORATION_PLACEHOLDER,
+          variants: {},
+        },
+      },
+    }));
+    setStatus("Přidána kategorie dekorací. Upravte název a uložte změny.");
+    setTab("svatby");
+    requestAnimationFrame(() => {
+      document
+        .getElementById(`decoration-edit-${slug}`)
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
+  function removeDecoration(slug: string) {
+    if (!confirm("Smazat tuto kategorii dekorací z webu?")) return;
+    setContent((c) => {
+      const next = { ...c.decorations };
+      delete next[slug];
+      return { ...c, decorations: next };
+    });
+    setStatus("Kategorie dekorací odebrána. Uložte změny.");
+  }
+
+  function addDecorationVariant(categorySlug: string) {
+    const taken = new Set(
+      Object.keys(content.decorations[categorySlug]?.variants ?? {}),
+    );
+    const base = baseDecorations.find((d) => d.slug === categorySlug);
+    for (const v of base?.variants ?? []) taken.add(v.slug);
+    const slug = uniqueSlug(`varianta-${Date.now()}`, taken, "varianta");
+    setContent((c) => {
+      const cat = c.decorations[categorySlug] ?? {};
+      return {
+        ...c,
+        decorations: {
+          ...c.decorations,
+          [categorySlug]: {
+            ...cat,
+            variants: {
+              ...cat.variants,
+              [slug]: {
+                custom: true,
+                name: "Nová varianta",
+                note: "",
+                image: DECORATION_PLACEHOLDER,
+              },
+            },
+          },
+        },
+      };
+    });
+    setStatus("Přidána varianta. Upravte název a uložte změny.");
+  }
+
+  function removeDecorationVariant(
+    categorySlug: string,
+    variantSlug: string,
+    isCustom: boolean,
+  ) {
+    if (!confirm("Odebrat tuto variantu z webu?")) return;
+    setContent((c) => {
+      const cat = c.decorations[categorySlug] ?? {};
+      const variants = { ...cat.variants };
+      if (isCustom) {
+        delete variants[variantSlug];
+      } else {
+        variants[variantSlug] = {
+          ...variants[variantSlug],
+          hidden: true,
+        };
+      }
+      return {
+        ...c,
+        decorations: {
+          ...c.decorations,
+          [categorySlug]: { ...cat, variants },
+        },
+      };
+    });
+    setStatus("Varianta odebrána. Uložte změny.");
   }
 
   function addWreath() {
@@ -1176,7 +1386,8 @@ export function AdminDashboard({
             {renderPageCopy("svatby")}
             <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-10">
               <p className="text-sm text-muted-foreground">
-                Upravte existující realizace nebo přidejte novou svatbu.
+                Upravte realizace svateb. Inventář dekorací je níže na stejné
+                záložce.
               </p>
               <button
                 type="button"
@@ -1417,6 +1628,256 @@ export function AdminDashboard({
                 </section>
               );
             })}
+
+            <div className="border-t border-border/60 pt-10">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h2 className="font-display text-3xl text-moss-deep">
+                    Dekorace (inventář)
+                  </h2>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Kategorie a varianty zobrazené u svateb — carousel i detail{" "}
+                    <code className="text-xs">/svatby/dekorace/…</code>.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={addDecoration}
+                  className="bg-moss-deep px-4 py-2.5 text-[10px] tracking-[0.14em] uppercase text-white transition-colors hover:bg-bloom-light sm:text-xs"
+                >
+                  + Přidat kategorii
+                </button>
+              </div>
+
+              <div className="mt-8 space-y-10">
+                {allDecorations.map((d) => {
+                  const o = content.decorations[d.slug] ?? {};
+                  return (
+                    <section
+                      key={d.slug}
+                      id={`decoration-edit-${d.slug}`}
+                      className="border border-border/70 p-4 sm:p-6"
+                    >
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <h3 className="font-display text-2xl text-moss-deep">
+                          {d.title}
+                        </h3>
+                        {d.custom ? (
+                          <button
+                            type="button"
+                            onClick={() => removeDecoration(d.slug)}
+                            className="px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
+                          >
+                            Smazat kategorii
+                          </button>
+                        ) : null}
+                      </div>
+
+                      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                        <Field
+                          label="Název kategorie"
+                          value={o.title ?? d.title}
+                          onChange={(v) =>
+                            setContent((c) => ({
+                              ...c,
+                              decorations: {
+                                ...c.decorations,
+                                [d.slug]: {
+                                  ...c.decorations[d.slug],
+                                  title: v,
+                                },
+                              },
+                            }))
+                          }
+                        />
+                        <div>
+                          <p className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
+                            Cover
+                          </p>
+                          <div className="relative mt-2 aspect-[16/10] max-w-sm overflow-hidden bg-stone">
+                            <Image
+                              src={d.image}
+                              alt=""
+                              fill
+                              className="object-cover"
+                              sizes="320px"
+                              unoptimized={d.image.startsWith("/media/")}
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setPickerFor({
+                                kind: "decoration-cover",
+                                key: d.slug,
+                              })
+                            }
+                            className="mt-3 bg-moss-deep px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-white hover:bg-bloom-light"
+                          >
+                            Změnit cover
+                          </button>
+                        </div>
+                      </div>
+
+                      <label className="mt-4 block">
+                        <span className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
+                          Popis
+                        </span>
+                        <textarea
+                          rows={2}
+                          value={o.description ?? d.description}
+                          onChange={(e) =>
+                            setContent((c) => ({
+                              ...c,
+                              decorations: {
+                                ...c.decorations,
+                                [d.slug]: {
+                                  ...c.decorations[d.slug],
+                                  description: e.target.value,
+                                },
+                              },
+                            }))
+                          }
+                          className="mt-2 w-full border border-border bg-background px-3 py-3 text-sm outline-none focus:border-bloom"
+                        />
+                      </label>
+
+                      <div className="mt-8">
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                          <p className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
+                            Varianty
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => addDecorationVariant(d.slug)}
+                            className="px-2 py-1 text-[10px] tracking-[0.14em] uppercase text-moss-deep transition-colors hover:bg-moss-deep hover:text-white"
+                          >
+                            + přidat variantu
+                          </button>
+                        </div>
+
+                        <div className="mt-4 space-y-4">
+                          {d.variants.map((v) => {
+                            const vo = o.variants?.[v.slug];
+                            return (
+                              <div
+                                key={v.slug}
+                                className="grid gap-4 border border-border/50 p-3 sm:grid-cols-[120px_1fr]"
+                              >
+                                <div>
+                                  <div className="relative aspect-square overflow-hidden bg-stone">
+                                    <Image
+                                      src={v.image}
+                                      alt=""
+                                      fill
+                                      className="object-cover"
+                                      sizes="120px"
+                                      unoptimized={v.image.startsWith(
+                                        "/media/",
+                                      )}
+                                    />
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setPickerFor({
+                                        kind: "decoration-variant",
+                                        key: `${d.slug}::${v.slug}`,
+                                      })
+                                    }
+                                    className="mt-2 w-full px-1 py-1 text-[10px] tracking-[0.12em] uppercase text-moss-deep transition-colors hover:bg-moss-deep hover:text-white"
+                                  >
+                                    Fotka
+                                  </button>
+                                </div>
+                                <div className="space-y-3">
+                                  <div className="flex flex-wrap items-end justify-between gap-2">
+                                    <div className="min-w-0 flex-1">
+                                      <Field
+                                        label="Název varianty"
+                                        value={vo?.name ?? v.name}
+                                        onChange={(val) =>
+                                          setContent((c) => {
+                                            const cat =
+                                              c.decorations[d.slug] ?? {};
+                                            return {
+                                              ...c,
+                                              decorations: {
+                                                ...c.decorations,
+                                                [d.slug]: {
+                                                  ...cat,
+                                                  variants: {
+                                                    ...cat.variants,
+                                                    [v.slug]: {
+                                                      ...cat.variants?.[
+                                                        v.slug
+                                                      ],
+                                                      name: val,
+                                                    },
+                                                  },
+                                                },
+                                              },
+                                            };
+                                          })
+                                        }
+                                      />
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        removeDecorationVariant(
+                                          d.slug,
+                                          v.slug,
+                                          v.custom,
+                                        )
+                                      }
+                                      className="px-2 py-1 text-[10px] tracking-[0.12em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
+                                    >
+                                      Odebrat
+                                    </button>
+                                  </div>
+                                  <Field
+                                    label="Poznámka"
+                                    value={vo?.note ?? v.note}
+                                    onChange={(val) =>
+                                      setContent((c) => {
+                                        const cat =
+                                          c.decorations[d.slug] ?? {};
+                                        return {
+                                          ...c,
+                                          decorations: {
+                                            ...c.decorations,
+                                            [d.slug]: {
+                                              ...cat,
+                                              variants: {
+                                                ...cat.variants,
+                                                [v.slug]: {
+                                                  ...cat.variants?.[v.slug],
+                                                  note: val,
+                                                },
+                                              },
+                                            },
+                                          },
+                                        };
+                                      })
+                                    }
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
+                          {d.variants.length === 0 ? (
+                            <p className="text-sm text-muted-foreground">
+                              Zatím žádné varianty — přidejte první.
+                            </p>
+                          ) : null}
+                        </div>
+                      </div>
+                    </section>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         ) : null}
 

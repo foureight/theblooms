@@ -31,14 +31,23 @@ export type CmsWreathOverride = {
   image?: string;
 };
 
+export type CmsDecorationVariantOverride = {
+  /** CMS-only variant (not in code defaults) */
+  custom?: boolean;
+  /** Hide a built-in variant from the website */
+  hidden?: boolean;
+  name?: string;
+  note?: string;
+  image?: string;
+};
+
 export type CmsDecorationOverride = {
+  /** CMS-only category (not in code defaults) */
+  custom?: boolean;
   title?: string;
   description?: string;
   image?: string;
-  variants?: Record<
-    string,
-    { name?: string; note?: string; image?: string }
-  >;
+  variants?: Record<string, CmsDecorationVariantOverride>;
 };
 
 /** Extra workshop / flower service cards (CMS-only) */

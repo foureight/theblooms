@@ -1,10 +1,18 @@
 import type { MetadataRoute } from "next";
-import { decorations, weddings } from "@/data/weddings";
-import { wreaths } from "@/data/wreaths";
+import {
+  getCmsContent,
+  mergeDecorations,
+  mergeWeddings,
+  mergeWreaths,
+} from "@/lib/cms/content";
 import { siteUrl } from "@/lib/seo";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
+  const cms = await getCmsContent();
+  const weddings = mergeWeddings(cms);
+  const decorations = mergeDecorations(cms);
+  const allWreaths = mergeWreaths(cms);
   const staticPages: MetadataRoute.Sitemap = [
     { url: siteUrl, lastModified: now, changeFrequency: "weekly", priority: 1 },
     {
@@ -95,7 +103,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  const wreathPages = wreaths.map((w) => ({
+  const wreathPages = allWreaths.map((w) => ({
     url: `${siteUrl}/vence/${w.slug}`,
     lastModified: now,
     changeFrequency: "weekly" as const,

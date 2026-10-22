@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
+import { CmsImage } from "@/components/cms-image";
 import { DecorationVariantPicker } from "@/components/decoration-variant-picker";
 import { FadeIn } from "@/components/fade-in";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
 import { weddingFaqs } from "@/data/faqs";
-import { decorations, getDecoration } from "@/data/weddings";
+import { decorations as baseDecorations } from "@/data/weddings";
 import { site } from "@/data/site";
+import { getCmsContent, mergeDecoration } from "@/lib/cms/content";
 import {
   absoluteUrl,
   absoluteUrls,
@@ -18,13 +19,14 @@ import {
 
 type Props = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
-  return decorations.map((d) => ({ slug: d.slug }));
+export async function generateStaticParams() {
+  return baseDecorations.map((d) => ({ slug: d.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const category = getDecoration(slug);
+  const cms = await getCmsContent();
+  const category = mergeDecoration(cms, slug);
   if (!category) return { title: "Dekorace" };
   return {
     title: `${category.title} — inventář dekorací`,
@@ -43,9 +45,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function DecorationDetailPage({ params }: Props) {
   const { slug } = await params;
-  const category = getDecoration(slug);
+  const cms = await getCmsContent();
+  const category = mergeDecoration(cms, slug);
   if (!category) notFound();
 
   const jsonLd = [
@@ -79,7 +84,7 @@ export default async function DecorationDetailPage({ params }: Props) {
     <div>
       <JsonLd data={jsonLd} />
       <div className="relative h-[38svh] min-h-[220px] overflow-hidden sm:h-[45svh] sm:min-h-[280px]">
-        <Image
+        <CmsImage
           src={category.image}
           alt={category.title}
           fill
@@ -111,7 +116,6 @@ export default async function DecorationDetailPage({ params }: Props) {
         <div className="mt-8 sm:mt-10">
           <DecorationVariantPicker category={category} />
         </div>
-
       </div>
 
       <FaqSection faqs={weddingFaqs} />

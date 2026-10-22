@@ -389,17 +389,18 @@ export function mergeWreath(cms: CmsContent, slug: string): Wreath | undefined {
   return mergeWreaths(cms).find((w) => w.slug === slug);
 }
 
+const DECORATION_PLACEHOLDER =
+  "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=1200&q=80";
+
 export function mergeDecorations(cms: CmsContent): DecorationCategory[] {
-  return baseDecorations.map((d) => {
+  const baseSlugs = new Set(baseDecorations.map((d) => d.slug));
+  const merged = baseDecorations.map((d) => {
     const o = cms.decorations[d.slug];
     if (!o) return d;
-    return {
-      ...d,
-      title: cmsString(o.title, d.title),
-      description: cmsString(o.description, d.description),
-      image: cmsString(o.image, d.image),
-      variants: d.variants.map((v) => {
+    const baseVariants = d.variants
+      .map((v) => {
         const vo = o.variants?.[v.slug];
+        if (vo?.hidden) return null;
         if (!vo) return v;
         return {
           ...v,
@@ -407,9 +408,52 @@ export function mergeDecorations(cms: CmsContent): DecorationCategory[] {
           note: cmsString(vo.note, v.note),
           image: cmsString(vo.image, v.image),
         };
-      }),
+      })
+      .filter((v): v is NonNullable<typeof v> => Boolean(v));
+    const customVariants = Object.entries(o.variants ?? {})
+      .filter(
+        ([slug, vo]) =>
+          !d.variants.some((v) => v.slug === slug) &&
+          !vo.hidden &&
+          Boolean(vo.name?.trim()),
+      )
+      .map(([slug, vo]) => ({
+        slug,
+        name: vo.name!.trim(),
+        note: vo.note?.trim() || "",
+        image: cmsString(vo.image, DECORATION_PLACEHOLDER),
+      }));
+    return {
+      ...d,
+      title: cmsString(o.title, d.title),
+      description: cmsString(o.description, d.description),
+      image: cmsString(o.image, d.image),
+      variants: [...baseVariants, ...customVariants],
     };
   });
+
+  for (const [slug, o] of Object.entries(cms.decorations ?? {})) {
+    if (baseSlugs.has(slug)) continue;
+    const title = o.title?.trim();
+    if (!title) continue;
+    const variants = Object.entries(o.variants ?? {})
+      .filter(([, vo]) => !vo.hidden && Boolean(vo.name?.trim()))
+      .map(([vslug, vo]) => ({
+        slug: vslug,
+        name: vo.name!.trim(),
+        note: vo.note?.trim() || "",
+        image: cmsString(vo.image, DECORATION_PLACEHOLDER),
+      }));
+    merged.push({
+      slug,
+      title,
+      description: o.description?.trim() || "",
+      image: cmsString(o.image, DECORATION_PLACEHOLDER),
+      variants,
+    });
+  }
+
+  return merged;
 }
 
 export function mergeDecoration(
