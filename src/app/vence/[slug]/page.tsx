@@ -5,7 +5,6 @@ import { AddToCartButton } from "@/components/add-to-cart-button";
 import { CmsImage } from "@/components/cms-image";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
-import { wreathFaqs } from "@/data/faqs";
 import { site } from "@/data/site";
 import {
   formatPrice,
@@ -15,6 +14,7 @@ import {
   wreaths as baseWreaths,
 } from "@/data/wreaths";
 import { getCmsContent, mergeWreath } from "@/lib/cms/content";
+import { mergeFaqs } from "@/lib/cms/faqs";
 import {
   absoluteUrl,
   absoluteUrls,
@@ -61,6 +61,7 @@ export default async function WreathDetailPage({ params }: Props) {
   const cms = await getCmsContent();
   const wreath = mergeWreath(cms, slug);
   if (!wreath) notFound();
+  const faqs = mergeFaqs(cms, "vence");
   const sizes = getWreathSizes(wreath);
   const sizeLabel = wreathSizeRangeLabel(wreath);
   const minPrice = wreathMinPrice(wreath);
@@ -95,7 +96,7 @@ export default async function WreathDetailPage({ params }: Props) {
         seller: floristOrganization(),
       })),
     },
-    faqJsonLd(wreathFaqs),
+    faqJsonLd(faqs),
   ];
 
   return (
@@ -158,7 +159,7 @@ export default async function WreathDetailPage({ params }: Props) {
       </div>
 
     </div>
-    <FaqSection faqs={wreathFaqs} />
+    <FaqSection faqs={faqs} />
     </>
   );
 }

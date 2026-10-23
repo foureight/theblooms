@@ -6,9 +6,9 @@ import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
 import { Typo } from "@/components/typo";
 import { WreathCatalog } from "@/components/wreath-catalog";
-import { adventWreathFaqs } from "@/data/faqs";
 import { site } from "@/data/site";
 import { getCmsContent, mergeWreaths, seoFrom } from "@/lib/cms/content";
+import { mergeFaqs } from "@/lib/cms/faqs";
 import {
   absoluteUrl,
   absoluteUrls,
@@ -61,6 +61,7 @@ export const dynamic = "force-dynamic";
 export default async function AdventWreathsPage() {
   const cms = await getCmsContent();
   const seo = seoFrom(cms, "vence-advent");
+  const faqs = mergeFaqs(cms, "advent");
   const advent = mergeWreaths(cms)
     .filter((w) => w.season === "Advent")
     .sort((a, b) => Number(b.available) - Number(a.available));
@@ -113,7 +114,7 @@ export default async function AdventWreathsPage() {
         })),
       },
     },
-    faqJsonLd(adventWreathFaqs),
+    faqJsonLd(faqs),
   ];
 
   return (
@@ -176,7 +177,7 @@ export default async function AdventWreathsPage() {
           .
         </p>
       </div>
-      <FaqSection faqs={adventWreathFaqs} />
+      <FaqSection faqs={faqs} />
     </>
   );
 }

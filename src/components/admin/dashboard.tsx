@@ -18,7 +18,9 @@ import {
   wreaths as baseWreaths,
   type WreathSizeId,
 } from "@/data/wreaths";
+import { FaqEditor } from "@/components/admin/faq-editor";
 import { PageSeoFields } from "@/components/admin/page-seo-fields";
+import { FAQ_PAGES } from "@/lib/cms/faqs";
 import { WeddingPriceListEditor } from "@/components/admin/wedding-price-list-editor";
 import {
   defaultText,
@@ -27,6 +29,8 @@ import {
   syncCustomWeddingSlugs,
   uniqueSlugFromTitle,
   type CmsContent,
+  type CmsFaqItem,
+  type FaqPageId,
   type MediaItem,
   type PageSeoId,
 } from "@/lib/cms/types";
@@ -95,6 +99,7 @@ export function AdminDashboard({
     ...initialContent,
     pageSeo: initialContent.pageSeo ?? {},
     weddingPriceList: initialContent.weddingPriceList ?? {},
+    faqs: initialContent.faqs ?? {},
   }));
   const [media, setMedia] = useState<MediaItem[]>(initialMedia);
   const [orders, setOrders] = useState<Order[]>(initialOrders);
@@ -338,6 +343,41 @@ export function AdminDashboard({
       }
     }
     setPickerFor(null);
+  }
+
+  function setFaqs(pageId: FaqPageId, items: CmsFaqItem[]) {
+    setContent((c) => ({
+      ...c,
+      faqs: { ...c.faqs, [pageId]: items },
+    }));
+  }
+
+  function resetFaqs(pageId: FaqPageId) {
+    setContent((c) => {
+      const next = { ...c.faqs };
+      delete next[pageId];
+      return { ...c, faqs: next };
+    });
+    setStatus("FAQ obnoveno na výchozí. Uložte změny.");
+  }
+
+  function renderFaqsForTab(tabId: string) {
+    const groups = FAQ_PAGES.filter((g) => g.tab === tabId);
+    if (groups.length === 0) return null;
+    return (
+      <div className="space-y-10">
+        {groups.map((g) => (
+          <FaqEditor
+            key={g.id}
+            pageId={g.id}
+            label={g.label}
+            content={content}
+            onChange={setFaqs}
+            onReset={resetFaqs}
+          />
+        ))}
+      </div>
+    );
   }
 
   function textsForPrefix(prefix: string) {
@@ -1276,6 +1316,7 @@ export function AdminDashboard({
               onChange={setPageSeo}
             />
             {renderPageCopy("home")}
+            {renderFaqsForTab("home")}
           </div>
         ) : null}
 
@@ -1287,6 +1328,7 @@ export function AdminDashboard({
               onChange={setPageSeo}
             />
             {renderPageCopy("o-mne")}
+            {renderFaqsForTab("o-mne")}
           </div>
         ) : null}
 
@@ -1298,6 +1340,7 @@ export function AdminDashboard({
               onChange={setPageSeo}
             />
             {renderPageCopy("kontakt")}
+            {renderFaqsForTab("kontakt")}
           </div>
         ) : null}
 
@@ -1878,6 +1921,7 @@ export function AdminDashboard({
                 })}
               </div>
             </div>
+            {renderFaqsForTab("svatby")}
           </div>
         ) : null}
 
@@ -2323,6 +2367,7 @@ export function AdminDashboard({
                 </section>
               );
             })}
+            {renderFaqsForTab("vence")}
           </div>
         ) : null}
 
@@ -2411,6 +2456,7 @@ export function AdminDashboard({
                 </label>
               </section>
             ))}
+            {renderFaqsForTab("workshopy")}
           </div>
         ) : null}
 
@@ -2528,6 +2574,7 @@ export function AdminDashboard({
               </section>
             );
             })}
+            {renderFaqsForTab("kytky")}
           </div>
         ) : null}
 

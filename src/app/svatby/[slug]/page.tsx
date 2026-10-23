@@ -5,10 +5,10 @@ import { CtaLink } from "@/components/cta-link";
 import { CmsImage } from "@/components/cms-image";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
-import { weddingFaqs } from "@/data/faqs";
 import { weddings as baseWeddings } from "@/data/weddings";
 import { site } from "@/data/site";
 import { getCmsContent, mergeWedding, mergeWeddings } from "@/lib/cms/content";
+import { mergeFaqs } from "@/lib/cms/faqs";
 import {
   absoluteUrl,
   absoluteUrls,
@@ -67,6 +67,7 @@ export default async function WeddingDetailPage({ params }: Props) {
   const others = mergeWeddings(cms)
     .filter((w) => w.slug !== wedding.slug)
     .slice(0, 2);
+  const faqs = mergeFaqs(cms, "svatby");
 
   const jsonLd = [
     breadcrumbJsonLd([
@@ -89,7 +90,7 @@ export default async function WeddingDetailPage({ params }: Props) {
       contentLocation: wedding.place,
       keywords: ["svatba", wedding.season, "floristika", site.name].join(", "),
     },
-    faqJsonLd(weddingFaqs),
+    faqJsonLd(faqs),
   ];
 
   return (
@@ -177,7 +178,7 @@ export default async function WeddingDetailPage({ params }: Props) {
         )}
       </div>
 
-      <FaqSection faqs={weddingFaqs} />
+      <FaqSection faqs={faqs} />
     </div>
   );
 }

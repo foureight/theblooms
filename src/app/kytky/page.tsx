@@ -14,7 +14,7 @@ import {
 } from "@/lib/cms/content";
 import { fixCzechOrphans } from "@/lib/typography";
 import { Typo } from "@/components/typo";
-import { flowerFaqs } from "@/data/faqs";
+import { mergeFaqs } from "@/lib/cms/faqs";
 import {
   absoluteUrl,
   breadcrumbJsonLd,
@@ -101,6 +101,7 @@ export const dynamic = "force-dynamic";
 export default async function KytkyPage() {
   const cms = await getCmsContent();
   const seo = seoFrom(cms, "kytky");
+  const faqs = mergeFaqs(cms, "kytky");
   const hero = slotFrom(cms, "kytky.hero", KYTKY_HERO_FALLBACK);
   const eventImg = slotFrom(
     cms,
@@ -119,7 +120,7 @@ export default async function KytkyPage() {
       serviceType: "Floristická zakázka",
       minPrice: "2000",
     }),
-    faqJsonLd(flowerFaqs),
+    faqJsonLd(faqs),
   ];
   const builtInCards = services.map((s) => ({
     title: fixCzechOrphans(s.title),
@@ -344,7 +345,7 @@ export default async function KytkyPage() {
 
       </div>
 
-      <FaqSection faqs={flowerFaqs} />
+      <FaqSection faqs={faqs} />
     </div>
   );
 }

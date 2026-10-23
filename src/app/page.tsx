@@ -15,7 +15,7 @@ import {
   slotFrom,
   textFrom,
 } from "@/lib/cms/content";
-import { homeFaqs } from "@/data/faqs";
+import { mergeFaqs } from "@/lib/cms/faqs";
 import {
   absoluteUrl,
   breadcrumbJsonLd,
@@ -62,6 +62,7 @@ export const dynamic = "force-dynamic";
 export default async function HomePage() {
   const cms = await getCmsContent();
   const seo = seoFrom(cms, "home");
+  const faqs = mergeFaqs(cms, "home");
   const featuredWeddings = mergeWeddings(cms).slice(0, 3);
   const allWreaths = mergeWreaths(cms);
 
@@ -100,7 +101,7 @@ export default async function HomePage() {
     },
     personJsonLd(),
     breadcrumbJsonLd([{ name: "Úvod", path: "/" }]),
-    faqJsonLd(homeFaqs),
+    faqJsonLd(faqs),
   ];
   const flowersImg = slotFrom(
     cms,
@@ -369,7 +370,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <FaqSection faqs={homeFaqs} />
+      <FaqSection faqs={faqs} />
     </>
   );
 }

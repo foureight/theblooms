@@ -4,7 +4,6 @@ import { CmsImage } from "@/components/cms-image";
 import { FadeIn } from "@/components/fade-in";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
-import { aboutFaqs } from "@/data/faqs";
 import { site } from "@/data/site";
 import {
   getCmsContent,
@@ -12,6 +11,7 @@ import {
   slotFrom,
   textFrom,
 } from "@/lib/cms/content";
+import { mergeFaqs } from "@/lib/cms/faqs";
 import {
   absoluteUrl,
   breadcrumbJsonLd,
@@ -51,6 +51,7 @@ export const dynamic = "force-dynamic";
 export default async function AboutPage() {
   const cms = await getCmsContent();
   const seo = seoFrom(cms, "o-mne");
+  const faqs = mergeFaqs(cms, "o-mne");
   const portrait = slotFrom(cms, "o-mne.portrait", ABOUT_PORTRAIT_FALLBACK);
   const jsonLd = [
     breadcrumbJsonLd([
@@ -82,7 +83,7 @@ export default async function AboutPage() {
       about: floristOrganization(),
       description: seo.description,
     },
-    faqJsonLd(aboutFaqs),
+    faqJsonLd(faqs),
   ];
 
   return (
@@ -120,7 +121,7 @@ export default async function AboutPage() {
         </FadeIn>
       </div>
     </div>
-    <FaqSection faqs={aboutFaqs} />
+    <FaqSection faqs={faqs} />
     </>
   );
 }

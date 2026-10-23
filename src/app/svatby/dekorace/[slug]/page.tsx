@@ -5,10 +5,10 @@ import { DecorationVariantPicker } from "@/components/decoration-variant-picker"
 import { FadeIn } from "@/components/fade-in";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
-import { weddingFaqs } from "@/data/faqs";
 import { decorations as baseDecorations } from "@/data/weddings";
 import { site } from "@/data/site";
 import { getCmsContent, mergeDecoration } from "@/lib/cms/content";
+import { mergeFaqs } from "@/lib/cms/faqs";
 import {
   absoluteUrl,
   absoluteUrls,
@@ -52,6 +52,7 @@ export default async function DecorationDetailPage({ params }: Props) {
   const cms = await getCmsContent();
   const category = mergeDecoration(cms, slug);
   if (!category) notFound();
+  const faqs = mergeFaqs(cms, "svatby");
 
   const jsonLd = [
     breadcrumbJsonLd([
@@ -77,7 +78,7 @@ export default async function DecorationDetailPage({ params }: Props) {
         })),
       },
     },
-    faqJsonLd(weddingFaqs),
+    faqJsonLd(faqs),
   ];
 
   return (
@@ -118,7 +119,7 @@ export default async function DecorationDetailPage({ params }: Props) {
         </div>
       </div>
 
-      <FaqSection faqs={weddingFaqs} />
+      <FaqSection faqs={faqs} />
     </div>
   );
 }

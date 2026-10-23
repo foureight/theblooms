@@ -7,6 +7,7 @@ import {
   verifySessionToken,
   writeCms,
 } from "@/lib/cms/store";
+import { sanitizeFaqs } from "@/lib/cms/faqs";
 import {
   emptyCms,
   syncCustomWeddingSlugs,
@@ -84,6 +85,7 @@ export async function PUT(req: Request) {
       flowerOrder: Array.isArray(body.content.flowerOrder)
         ? body.content.flowerOrder.filter((s) => typeof s === "string")
         : [],
+      faqs: sanitizeFaqs(body.content.faqs),
     },
     baseWeddingSlugs,
   );

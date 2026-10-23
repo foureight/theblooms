@@ -3,7 +3,6 @@ import { InquiryForm } from "@/components/inquiry-form";
 import { FadeIn } from "@/components/fade-in";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
-import { contactFaqs } from "@/data/faqs";
 import { site, type InquiryType } from "@/data/site";
 import {
   getCmsContent,
@@ -11,6 +10,7 @@ import {
   seoFrom,
   textFrom,
 } from "@/lib/cms/content";
+import { mergeFaqs } from "@/lib/cms/faqs";
 import {
   absoluteUrl,
   breadcrumbJsonLd,
@@ -58,6 +58,7 @@ export default async function KontaktPage({ searchParams }: Props) {
     : "";
   const cms = await getCmsContent();
   const seo = seoFrom(cms, "kontakt");
+  const faqs = mergeFaqs(cms, "kontakt");
   const contact = mergeSiteContact(cms);
   const jsonLd = [
     breadcrumbJsonLd([
@@ -73,7 +74,7 @@ export default async function KontaktPage({ searchParams }: Props) {
       about: floristOrganization(),
       mainEntity: floristOrganization(),
     },
-    faqJsonLd(contactFaqs),
+    faqJsonLd(faqs),
   ];
 
   return (
@@ -148,7 +149,7 @@ export default async function KontaktPage({ searchParams }: Props) {
         </FadeIn>
       </div>
     </div>
-    <FaqSection faqs={contactFaqs} />
+    <FaqSection faqs={faqs} />
     </>
   );
 }

@@ -69,6 +69,21 @@ export type CmsPriceRow = {
   price: string;
 };
 
+export type FaqPageId =
+  | "home"
+  | "svatby"
+  | "vence"
+  | "advent"
+  | "kytky"
+  | "workshopy"
+  | "o-mne"
+  | "kontakt";
+
+export type CmsFaqItem = {
+  question: string;
+  answer: string;
+};
+
 /** Editable wedding orientation price list (/svatby/cenik) */
 export type CmsWeddingPriceList = {
   flowers?: CmsPriceRow[];
@@ -97,6 +112,8 @@ export type CmsContent = {
   weddingOrder: string[];
   /** Pořadí vlastních položek na stránce Kytky */
   flowerOrder: string[];
+  /** FAQ per page — when set, replaces code defaults for that page */
+  faqs: Partial<Record<FaqPageId, CmsFaqItem[]>>;
 };
 
 export type MediaItem = {
@@ -119,6 +136,7 @@ export const emptyCms = (): CmsContent => ({
   wreathOrder: [],
   weddingOrder: [],
   flowerOrder: [],
+  faqs: {},
 });
 
 /**

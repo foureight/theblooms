@@ -4,7 +4,6 @@ import { FadeIn } from "@/components/fade-in";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
 import { WreathCatalog } from "@/components/wreath-catalog";
-import { wreathFaqs } from "@/data/faqs";
 import { site } from "@/data/site";
 import {
   getCmsContent,
@@ -12,6 +11,7 @@ import {
   seoFrom,
   textFrom,
 } from "@/lib/cms/content";
+import { mergeFaqs } from "@/lib/cms/faqs";
 import {
   absoluteUrl,
   absoluteUrls,
@@ -54,6 +54,7 @@ export const dynamic = "force-dynamic";
 export default async function VencePage() {
   const cms = await getCmsContent();
   const seo = seoFrom(cms, "vence");
+  const faqs = mergeFaqs(cms, "vence");
   const wreaths = mergeWreaths(cms);
 
   const jsonLd = [
@@ -95,7 +96,7 @@ export default async function VencePage() {
         })),
       },
     },
-    faqJsonLd(wreathFaqs),
+    faqJsonLd(faqs),
   ];
 
   return (
@@ -135,7 +136,7 @@ export default async function VencePage() {
         <WreathCatalog items={wreaths} />
       </div>
     </div>
-    <FaqSection faqs={wreathFaqs} />
+    <FaqSection faqs={faqs} />
     </>
   );
 }

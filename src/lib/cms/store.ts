@@ -71,6 +71,7 @@ export async function readCms(): Promise<CmsContent> {
       wreathOrder: parsed.wreathOrder ?? [],
       weddingOrder: parsed.weddingOrder ?? [],
       flowerOrder: parsed.flowerOrder ?? [],
+      faqs: parsed.faqs ?? {},
     };
     // Couple-name keys → wedding-name slugs; custom titles → slugify
     const baseSlugs = new Set(baseWeddings.map((w) => w.slug));

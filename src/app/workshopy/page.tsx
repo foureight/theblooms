@@ -12,7 +12,7 @@ import {
   slotFrom,
   textFrom,
 } from "@/lib/cms/content";
-import { workshopFaqs } from "@/data/faqs";
+import { mergeFaqs } from "@/lib/cms/faqs";
 import { fixCzechOrphans } from "@/lib/typography";
 import { Typo } from "@/components/typo";
 import {
@@ -95,6 +95,7 @@ export const dynamic = "force-dynamic";
 export default async function WorkshopyPage() {
   const cms = await getCmsContent();
   const seo = seoFrom(cms, "workshopy");
+  const faqs = mergeFaqs(cms, "workshopy");
   const hero = slotFrom(cms, "workshopy.hero", WORKSHOPY_HERO_FALLBACK);
   const side = slotFrom(
     cms,
@@ -112,7 +113,7 @@ export default async function WorkshopyPage() {
       path: "/workshopy",
       serviceType: "Floristický workshop",
     }),
-    faqJsonLd(workshopFaqs),
+    faqJsonLd(faqs),
   ];
   const formatCards = [
     ...formats.map((f) => ({
@@ -265,7 +266,7 @@ export default async function WorkshopyPage() {
 
       </div>
 
-      <FaqSection faqs={workshopFaqs} />
+      <FaqSection faqs={faqs} />
     </div>
   );
 }

@@ -6,7 +6,6 @@ import { DecorationCarousel } from "@/components/decoration-carousel";
 import { FadeIn } from "@/components/fade-in";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
-import { weddingFaqs } from "@/data/faqs";
 import { site } from "@/data/site";
 import {
   getCmsContent,
@@ -16,6 +15,7 @@ import {
   slotFrom,
   textFrom,
 } from "@/lib/cms/content";
+import { mergeFaqs } from "@/lib/cms/faqs";
 import {
   absoluteUrl,
   absoluteUrls,
@@ -70,6 +70,7 @@ export const dynamic = "force-dynamic";
 export default async function SvatbyPage() {
   const cms = await getCmsContent();
   const seo = seoFrom(cms, "svatby");
+  const faqs = mergeFaqs(cms, "svatby");
   const weddings = mergeWeddings(cms);
   const decorations = mergeDecorations(cms);
   const hero = slotFrom(cms, "svatby.hero", SVATBY_HERO_FALLBACK);
@@ -111,7 +112,7 @@ export default async function SvatbyPage() {
         })),
       },
     },
-    faqJsonLd(weddingFaqs),
+    faqJsonLd(faqs),
   ];
 
   return (
@@ -317,7 +318,7 @@ export default async function SvatbyPage() {
         </FadeIn>
       </div>
 
-      <FaqSection faqs={weddingFaqs} />
+      <FaqSection faqs={faqs} />
     </div>
   );
 }
