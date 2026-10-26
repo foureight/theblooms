@@ -15,43 +15,23 @@ import {
   createOrder,
   updateOrderPayment,
   type OrderBilling,
-  type OrderItem,
   type OrderShipping,
 } from "@/lib/orders";
+import {
+  clientIpFromRequest,
+  consumeRateLimit,
+} from "@/lib/rate-limit";
+import { resolveCartItems } from "@/lib/resolve-cart-items";
 import { siteUrl } from "@/lib/seo";
 
 export const runtime = "nodejs";
 
+const CHECKOUT_LIMIT = 10;
+const CHECKOUT_WINDOW_MS = 15 * 60 * 1000;
+const CHECKOUT_BLOCK_MS = 15 * 60 * 1000;
+
 function asString(v: unknown) {
   return typeof v === "string" ? v.trim() : "";
-}
-
-function parseItems(raw: unknown): OrderItem[] | null {
-  if (!Array.isArray(raw) || raw.length === 0) return null;
-  const items: OrderItem[] = [];
-  for (const row of raw) {
-    if (!row || typeof row !== "object") return null;
-    const r = row as Record<string, unknown>;
-    const slug = asString(r.slug);
-    const name = asString(r.name);
-    const sizeId = asString(r.sizeId) || "m";
-    const sizeLabel = asString(r.sizeLabel);
-    const price = typeof r.price === "number" ? r.price : Number(r.price);
-    const quantity =
-      typeof r.quantity === "number" ? r.quantity : Number(r.quantity);
-    if (!slug || !name || !Number.isFinite(price) || price < 0) return null;
-    if (!Number.isFinite(quantity) || quantity < 1) return null;
-    items.push({
-      slug,
-      name,
-      sizeId,
-      sizeLabel,
-      price: Math.round(price),
-      quantity: Math.floor(quantity),
-      image: asString(r.image) || undefined,
-    });
-  }
-  return items;
 }
 
 function parsePacketa(raw: unknown): PacketaPoint | null {
@@ -95,19 +75,29 @@ function parseBilling(raw: unknown): OrderBilling | null | "invalid" {
   return { company, ico, dic: dic || undefined, street, city, zip };
 }
 
-function originFromRequest(req: Request) {
-  const env = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
-  if (env && !/theblooms\.cz$/i.test(new URL(env).hostname)) return env;
-  try {
-    return new URL(req.url).origin;
-  } catch {
-    return siteUrl;
-  }
-}
-
-/** Create order + Stripe Checkout (or mock payment URL). */
+/** Create order + Stripe Checkout (or mock payment URL in non-production). */
 export async function POST(req: Request) {
   try {
+    const ip = clientIpFromRequest(req);
+    const limited = consumeRateLimit(
+      `checkout:${ip}`,
+      CHECKOUT_LIMIT,
+      CHECKOUT_WINDOW_MS,
+      CHECKOUT_BLOCK_MS,
+    );
+    if (!limited.ok) {
+      return NextResponse.json(
+        {
+          error: `Příliš mnoho pokusů. Zkuste to znovu za ${limited.retryAfterSec} s.`,
+          code: "rate_limited",
+        },
+        {
+          status: 429,
+          headers: { "Retry-After": String(limited.retryAfterSec) },
+        },
+      );
+    }
+
     const body = (await req.json().catch(() => null)) as Record<
       string,
       unknown
@@ -133,6 +123,18 @@ export async function POST(req: Request) {
       );
     }
 
+    const useStripe = isStripeConfigured();
+    if (!useStripe && process.env.NODE_ENV === "production") {
+      return NextResponse.json(
+        {
+          error:
+            "Platby kartou nejsou nastavené. Zkuste to prosím později.",
+          code: "payments_unavailable",
+        },
+        { status: 503 },
+      );
+    }
+
     const firstName = asString(body.firstName);
     const lastName = asString(body.lastName);
     const email = asString(body.email);
@@ -140,7 +142,11 @@ export async function POST(req: Request) {
     const note = asString(body.note);
     const nameFromParts = `${firstName} ${lastName}`.trim();
     const name = nameFromParts || asString(body.name);
-    const items = parseItems(body.items);
+    const resolved = await resolveCartItems(body.items);
+    if ("error" in resolved) {
+      return NextResponse.json({ error: resolved.error }, { status: 400 });
+    }
+    const items = resolved.items;
     // Legacy "box" orders rejected — Z-BOX is not offered.
     const delivery = isDeliveryType(body.delivery) ? body.delivery : "point";
     const packeta = delivery === "home" ? null : parsePacketa(body.packeta);
@@ -152,13 +158,6 @@ export async function POST(req: Request) {
           error:
             "Doplňte fakturační údaje (firma, IČO o 8 číslicích, adresa).",
         },
-        { status: 400 },
-      );
-    }
-
-    if (!items) {
-      return NextResponse.json(
-        { error: "Košík je prázdný nebo položky nelze odeslat." },
         { status: 400 },
       );
     }
@@ -198,7 +197,6 @@ export async function POST(req: Request) {
     );
     const shippingFee = shippingCalc.fee;
     const total = subtotal + shippingFee;
-    const useStripe = isStripeConfigured();
 
     const shipping: OrderShipping = address
       ? {
@@ -248,7 +246,8 @@ export async function POST(req: Request) {
       status: "pending_payment",
     });
 
-    const origin = originFromRequest(req);
+    // Fixed site origin — never trust Host header (N3).
+    const origin = siteUrl;
 
     if (useStripe) {
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!.trim());
@@ -284,7 +283,7 @@ export async function POST(req: Request) {
           orderId: order.id,
         },
         success_url: `${origin}/pokladna/uspech?orderId=${order.id}&session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${origin}/pokladna/zruseno?orderId=${order.id}`,
+        cancel_url: `${origin}/pokladna/zruseno?orderId=${order.id}&session_id={CHECKOUT_SESSION_ID}`,
       });
 
       await updateOrderPayment(order.id, {

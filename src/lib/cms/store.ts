@@ -34,14 +34,24 @@ function adminPassword() {
   return process.env.ADMIN_PASSWORD?.trim() || "";
 }
 
-function sessionSecret() {
+/** Bump ADMIN_SESSION_VERSION in Zerops to invalidate every admin cookie. */
+function sessionVersion() {
+  return process.env.ADMIN_SESSION_VERSION?.trim() || "1";
+}
+
+function sessionSecret(): string | null {
+  const s = process.env.ADMIN_SECRET?.trim();
+  if (s) return s;
+  if (process.env.NODE_ENV === "production") return null;
   return (
-    process.env.ADMIN_SECRET?.trim() ||
     process.env.CAPTCHA_SECRET?.trim() ||
     adminPassword() ||
     "theblooms-dev-admin-secret"
   );
 }
+
+/** Session lifetime — 24 hours. */
+export const ADMIN_SESSION_MAX_AGE_SEC = 60 * 60 * 24;
 
 export function isAdminConfigured() {
   return Boolean(adminPassword());
@@ -163,26 +173,33 @@ export async function readMediaFile(filename: string) {
   }
 }
 
-function sign(payload: string) {
-  return createHmac("sha256", sessionSecret()).update(payload).digest("hex");
+function sign(payload: string, secret: string) {
+  return createHmac("sha256", secret).update(payload).digest("hex");
 }
 
 export function createSessionToken() {
-  const exp = Date.now() + 1000 * 60 * 60 * 24 * 14; // 14 dní
-  const payload = `ok.${exp}`;
-  return `${payload}.${sign(payload)}`;
+  const secret = sessionSecret();
+  if (!secret) {
+    throw new Error("ADMIN_SECRET is required in production");
+  }
+  const exp = Date.now() + ADMIN_SESSION_MAX_AGE_SEC * 1000;
+  const payload = `ok.${exp}.${sessionVersion()}`;
+  return `${payload}.${sign(payload, secret)}`;
 }
 
 export function verifySessionToken(token: string | undefined | null) {
   if (!token) return false;
+  const secret = sessionSecret();
+  if (!secret) return false;
   const parts = token.split(".");
-  if (parts.length !== 3) return false;
-  const [ok, expStr, sig] = parts;
+  if (parts.length !== 4) return false;
+  const [ok, expStr, ver, sig] = parts;
   if (ok !== "ok") return false;
+  if (ver !== sessionVersion()) return false;
   const exp = Number(expStr);
   if (!Number.isFinite(exp) || Date.now() > exp) return false;
-  const payload = `${ok}.${expStr}`;
-  const expected = sign(payload);
+  const payload = `${ok}.${expStr}.${ver}`;
+  const expected = sign(payload, secret);
   try {
     return timingSafeEqual(Buffer.from(sig), Buffer.from(expected));
   } catch {
@@ -192,9 +209,10 @@ export function verifySessionToken(token: string | undefined | null) {
 
 export function verifyPassword(password: string) {
   const expected = adminPassword();
-  if (!expected) return false;
-  const a = createHmac("sha256", sessionSecret()).update(password).digest();
-  const b = createHmac("sha256", sessionSecret()).update(expected).digest();
+  const secret = sessionSecret();
+  if (!expected || !secret) return false;
+  const a = createHmac("sha256", secret).update(password).digest();
+  const b = createHmac("sha256", secret).update(expected).digest();
   return timingSafeEqual(a, b);
 }
 

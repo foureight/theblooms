@@ -1,19 +1,37 @@
 import { createHmac, timingSafeEqual } from "crypto";
 
-const SECRET =
-  process.env.CAPTCHA_SECRET?.trim() || "theblooms-dev-captcha-secret";
 const TTL_MS = 10 * 60 * 1000;
 
-function sign(payload: string) {
-  return createHmac("sha256", SECRET).update(payload).digest("hex");
+/** Used captcha tokens — one successful verify consumes the token. */
+const usedTokens = new Map<string, number>();
+
+function captchaSecret(): string | null {
+  const s = process.env.CAPTCHA_SECRET?.trim();
+  if (s) return s;
+  if (process.env.NODE_ENV === "production") return null;
+  return "theblooms-dev-captcha-secret";
+}
+
+function sign(payload: string, secret: string) {
+  return createHmac("sha256", secret).update(payload).digest("hex");
+}
+
+function pruneUsedTokens(now = Date.now()) {
+  for (const [token, exp] of usedTokens) {
+    if (exp <= now) usedTokens.delete(token);
+  }
 }
 
 export function createCaptchaChallenge() {
+  const secret = captchaSecret();
+  if (!secret) {
+    throw new Error("CAPTCHA_SECRET is required in production");
+  }
   const a = 2 + Math.floor(Math.random() * 8);
   const b = 1 + Math.floor(Math.random() * 9);
   const exp = Date.now() + TTL_MS;
   const payload = `${a}.${b}.${exp}`;
-  const token = Buffer.from(`${payload}.${sign(payload)}`).toString(
+  const token = Buffer.from(`${payload}.${sign(payload, secret)}`).toString(
     "base64url",
   );
   return {
@@ -27,8 +45,14 @@ export function verifyCaptchaChallenge(
   answer: unknown,
 ): boolean {
   if (typeof token !== "string" || typeof answer !== "string") return false;
+  const secret = captchaSecret();
+  if (!secret) return false;
+
   const trimmed = answer.trim();
   if (!/^\d{1,3}$/.test(trimmed)) return false;
+
+  pruneUsedTokens();
+  if (usedTokens.has(token)) return false;
 
   let decoded: string;
   try {
@@ -41,7 +65,7 @@ export function verifyCaptchaChallenge(
   if (parts.length !== 4) return false;
   const [aRaw, bRaw, expRaw, sig] = parts;
   const payload = `${aRaw}.${bRaw}.${expRaw}`;
-  const expectedSig = sign(payload);
+  const expectedSig = sign(payload, secret);
 
   try {
     const a = Buffer.from(sig, "utf8");
@@ -58,5 +82,9 @@ export function verifyCaptchaChallenge(
     return false;
   }
   if (Date.now() > exp) return false;
-  return Number(trimmed) === a + b;
+  if (Number(trimmed) !== a + b) return false;
+
+  // One-time use until the challenge would have expired.
+  usedTokens.set(token, exp);
+  return true;
 }

@@ -60,7 +60,10 @@ function SuccessInner() {
           <>
             {" "}
             Číslo objednávky:{" "}
-            <span className="font-medium text-foreground">#{orderId}</span>.
+            <span className="font-medium text-foreground break-all">
+              #{orderId}
+            </span>
+            .
           </>
         ) : null}
       </p>

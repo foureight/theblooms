@@ -7,15 +7,20 @@ import { CtaLink } from "@/components/cta-link";
 function CancelInner() {
   const params = useSearchParams();
   const orderId = params.get("orderId") || "";
+  const sessionId = params.get("session_id") || "";
 
   useEffect(() => {
     if (!orderId) return;
     void fetch("/api/checkout/complete", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ orderId, action: "cancel" }),
+      body: JSON.stringify({
+        orderId,
+        sessionId: sessionId || undefined,
+        action: "cancel",
+      }),
     });
-  }, [orderId]);
+  }, [orderId, sessionId]);
 
   return (
     <div className="mx-auto max-w-xl px-4 py-20 text-center">
@@ -25,7 +30,7 @@ function CancelInner() {
         {orderId ? (
           <>
             {" "}
-            Objednávka #{orderId} byla označena jako zrušená.
+            Objednávka #{orderId.slice(0, 8)} byla označena jako zrušená.
           </>
         ) : null}
       </p>

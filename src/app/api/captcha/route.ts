@@ -2,5 +2,13 @@ import { NextResponse } from "next/server";
 import { createCaptchaChallenge } from "@/lib/captcha";
 
 export async function GET() {
-  return NextResponse.json(createCaptchaChallenge());
+  try {
+    return NextResponse.json(createCaptchaChallenge());
+  } catch (err) {
+    console.error("[captcha]", err);
+    return NextResponse.json(
+      { error: "Captcha není dostupná." },
+      { status: 503 },
+    );
+  }
 }

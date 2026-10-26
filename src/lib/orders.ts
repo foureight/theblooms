@@ -89,7 +89,7 @@ export async function createOrder(input: {
 }): Promise<Order> {
   const orders = await readOrders();
   const order: Order = {
-    id: randomUUID().slice(0, 8),
+    id: randomUUID(),
     createdAt: new Date().toISOString(),
     status: input.status ?? "new",
     customer: input.customer,
