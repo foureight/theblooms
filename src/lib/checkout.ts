@@ -51,6 +51,61 @@ export type DeliveryAddress = {
   zip: string;
 };
 
+export type AddressFieldErrors = Partial<
+  Record<"street" | "city" | "zip", string>
+>;
+
+/** CZ PSČ — 5 digits, optional space (120 00 / 12000). */
+export function isValidCzZip(raw: string) {
+  const digits = raw.replace(/\s/g, "");
+  return /^\d{5}$/.test(digits);
+}
+
+/**
+ * Street must include a house number (e.g. "Nuselská 12" or "Hlavní 12/3a").
+ * Packeta HD requires street + houseNumber separately.
+ */
+export function streetHasHouseNumber(raw: string) {
+  return /^.+\s+\d[\w\/\-]*$/u.test(raw.trim());
+}
+
+/** Local format checks before calling Packeta (always available). */
+export function addressFieldErrors(
+  address: DeliveryAddress,
+): AddressFieldErrors {
+  const errors: AddressFieldErrors = {};
+  const street = address.street.trim();
+  const city = address.city.trim();
+  const zip = address.zip.trim();
+
+  if (!street) {
+    errors.street = "Vyplňte ulici a číslo popisné.";
+  } else if (!streetHasHouseNumber(street)) {
+    errors.street = "Doplňte číslo popisné (např. Nuselská 12).";
+  } else if (street.length > 48) {
+    errors.street = "Ulice je příliš dlouhá.";
+  }
+
+  if (!city) {
+    errors.city = "Vyplňte město.";
+  } else if (city.length < 2) {
+    errors.city = "Město je příliš krátké.";
+  }
+
+  if (!zip) {
+    errors.zip = "Vyplňte PSČ.";
+  } else if (!isValidCzZip(zip)) {
+    errors.zip = "PSČ musí mít 5 číslic (např. 140 00).";
+  }
+
+  return errors;
+}
+
+export function addressValidationError(address: DeliveryAddress): string {
+  const e = addressFieldErrors(address);
+  return e.street || e.city || e.zip || "";
+}
+
 export function formatPacketaPoint(point: PacketaPoint) {
   const line = [point.street, point.zip, point.city].filter(Boolean).join(", ");
   return line ? `${point.name} — ${line}` : point.name;

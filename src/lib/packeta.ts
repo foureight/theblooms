@@ -87,7 +87,137 @@ export function splitStreet(streetRaw: string): {
   const street = streetRaw.trim();
   const m = street.match(/^(.+?)\s+(\d[\w\/\-]*)$/u);
   if (m) return { street: m[1]!.trim(), houseNumber: m[2]! };
-  return { street, houseNumber: "1" };
+  return { street, houseNumber: "" };
+}
+
+export type HomeAddressInput = {
+  street: string;
+  city: string;
+  zip: string;
+  /** Optional — improves Packeta phone/name checks when validating. */
+  name?: string;
+  surname?: string;
+  email?: string;
+  phone?: string;
+};
+
+export type PacketaAddressValidation = {
+  ok: boolean;
+  /** true when Packeta API was actually called */
+  viaPacketa: boolean;
+  error?: string;
+  field?: "street" | "city" | "zip" | "phone" | "general";
+};
+
+/**
+ * Dry-run address check via Packeta `packetAttributesValid`
+ * (no packet is created). Needs PACKETA_API_PASSWORD.
+ */
+export async function validateHomeAddressWithPacketa(
+  input: HomeAddressInput,
+): Promise<PacketaAddressValidation> {
+  const cfg = packetaConfig();
+  if (!cfg.configured) {
+    return {
+      ok: false,
+      viaPacketa: false,
+      error: "Packeta API není nakonfigurované.",
+      field: "general",
+    };
+  }
+
+  const streetRaw = input.street.trim();
+  const city = input.city.trim();
+  const zip = input.zip.replace(/\s/g, "");
+  const { street, houseNumber } = splitStreet(streetRaw);
+  if (!houseNumber) {
+    return {
+      ok: false,
+      viaPacketa: false,
+      error: "Doplňte číslo popisné (např. Nuselská 12).",
+      field: "street",
+    };
+  }
+
+  const name = (input.name || "Alena").slice(0, 32);
+  const surname = (input.surname || "Testova").slice(0, 32);
+  const email = input.email?.trim() || "overeni@theblooms.cz";
+  const phone = input.phone?.trim() || "+420777123456";
+
+  const attrs = [
+    tag("number", `validate-${Date.now()}`),
+    tag("name", name),
+    tag("surname", surname),
+    tag("email", email),
+    tag("phone", phone),
+    tag("addressId", cfg.homeCarrierId),
+    tag("street", street),
+    tag("houseNumber", houseNumber),
+    tag("city", city),
+    tag("zip", zip),
+    tag("value", 500),
+    tag("currency", "CZK"),
+    tag("weight", 1.5),
+    tag("eshop", cfg.eshop),
+  ].join("");
+
+  const xml = `<packetAttributesValid><apiPassword>${escapeXml(cfg.apiPassword)}</apiPassword><packetAttributes>${attrs}</packetAttributes></packetAttributesValid>`;
+
+  try {
+    const res = await fetch(REST_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/xml; charset=utf-8" },
+      body: xml,
+    });
+    const text = await res.text();
+    const status = xmlText(text, "status").toLowerCase();
+    if (status === "ok") {
+      return { ok: true, viaPacketa: true };
+    }
+
+    const faultName = xmlText(text, "name").toLowerCase();
+    const fault =
+      xmlText(text, "fault") ||
+      xmlText(text, "string") ||
+      xmlText(text, "message") ||
+      text.slice(0, 300);
+
+    let field: PacketaAddressValidation["field"] = "general";
+    if (/zip|psc|psč/i.test(faultName + fault)) field = "zip";
+    else if (/city|město|mesto/i.test(faultName + fault)) field = "city";
+    else if (/street|house|ulice|číslo|cislo/i.test(faultName + fault))
+      field = "street";
+    else if (/phone|telefon/i.test(faultName + fault)) field = "phone";
+
+    return {
+      ok: false,
+      viaPacketa: true,
+      error: humanizePacketaFault(fault || faultName),
+      field,
+    };
+  } catch (err) {
+    return {
+      ok: false,
+      viaPacketa: true,
+      error:
+        err instanceof Error
+          ? err.message
+          : "Ověření adresy u Zásilkovny selhalo.",
+      field: "general",
+    };
+  }
+}
+
+function humanizePacketaFault(raw: string) {
+  const t = raw.trim();
+  if (!t) return "Zásilkovna adresu neověřila.";
+  if (/zip|psc/i.test(t)) return "PSČ Zásilkovna neuznává — zkontrolujte číslo.";
+  if (/city/i.test(t)) return "Město nesedí k PSČ podle Zásilkovny.";
+  if (/street|house/i.test(t))
+    return "Ulice nebo číslo popisné Zásilkovna neuznává.";
+  if (/phone/i.test(t)) return "Telefon není ve formátu pro doručení.";
+  // Keep short Packeta messages; strip XML leftovers
+  return t.replace(/<[^>]+>/g, "").slice(0, 160);
 }
 
 async function postRest(bodyXml: string): Promise<string> {
@@ -159,6 +289,11 @@ export async function createPacketForOrderPackage(
       return Promise.reject(new Error("Chybí adresa pro doručení domů."));
     }
     const { street, houseNumber } = splitStreet(streetRaw);
+    if (!houseNumber) {
+      throw new Error(
+        "U adresy chybí číslo popisné (např. Nuselská 12).",
+      );
+    }
     destinationXml = [
       tag("addressId", cfg.homeCarrierId),
       tag("street", street),

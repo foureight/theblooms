@@ -12,6 +12,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   DELIVERY_OPTIONS,
+  addressFieldErrors,
+  addressValidationError,
   calculateShipping,
   contactFieldErrors,
   contactValidationError,
@@ -143,6 +145,16 @@ export default function CartPage() {
   const [contactTouched, setContactTouched] = useState<
     Partial<Record<keyof ContactFields, boolean>>
   >({});
+  const [deliveryAttempted, setDeliveryAttempted] = useState(false);
+  const [addressTouched, setAddressTouched] = useState<
+    Partial<Record<"street" | "city" | "zip", boolean>>
+  >({});
+  const [addressApiError, setAddressApiError] = useState("");
+  const [addressApiFields, setAddressApiFields] = useState<
+    Partial<Record<"street" | "city" | "zip", string>>
+  >({});
+  const [addressOkHint, setAddressOkHint] = useState("");
+  const [validatingAddress, setValidatingAddress] = useState(false);
 
   const loadCaptcha = useCallback(async () => {
     setCaptchaLoading(true);
@@ -244,14 +256,88 @@ export default function CartPage() {
 
   const invalidInputClass =
     "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20";
+  const localAddressErrors = addressFieldErrors(address);
+  const mergedAddressErrors: Partial<
+    Record<"street" | "city" | "zip", string>
+  > = {
+    ...localAddressErrors,
+    ...addressApiFields,
+  };
+  const homeAddressError =
+    addressValidationError(address) || addressApiError;
   const deliveryError =
     delivery === "home"
-      ? !address.street.trim() || !address.city.trim() || !address.zip.trim()
-        ? "Vyplňte ulici, město a PSČ."
-        : ""
+      ? homeAddressError
       : !point
         ? "Vyberte výdejní místo."
         : "";
+
+  function showAddressError(field: "street" | "city" | "zip") {
+    return Boolean(
+      mergedAddressErrors[field] &&
+        (deliveryAttempted || addressTouched[field]),
+    );
+  }
+
+  function markAddressTouched(field: "street" | "city" | "zip") {
+    setAddressTouched((t) => ({ ...t, [field]: true }));
+  }
+
+  function clearAddressApiState() {
+    setAddressApiError("");
+    setAddressApiFields({});
+    setAddressOkHint("");
+  }
+
+  async function validateHomeAddressRemote(): Promise<string> {
+    const local = addressValidationError(address);
+    if (local) return local;
+
+    setValidatingAddress(true);
+    clearAddressApiState();
+    try {
+      const res = await fetch("/api/packeta/validate-address", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          street: address.street.trim(),
+          city: address.city.trim(),
+          zip: address.zip.trim(),
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
+        }),
+      });
+      const data = (await res.json()) as {
+        ok?: boolean;
+        error?: string;
+        warning?: string;
+        viaPacketa?: boolean;
+        fields?: Partial<Record<"street" | "city" | "zip", string>>;
+      };
+      if (!res.ok || !data.ok) {
+        if (data.fields) setAddressApiFields(data.fields);
+        const msg = data.error || "Adresu se nepodařilo ověřit.";
+        setAddressApiError(msg);
+        return msg;
+      }
+      if (data.viaPacketa) {
+        setAddressOkHint("Adresa je v pořádku pro Zásilkovnu na adresu.");
+      } else if (data.warning) {
+        setAddressOkHint(data.warning);
+      } else {
+        setAddressOkHint("Formát adresy je v pořádku.");
+      }
+      return "";
+    } catch {
+      const msg = "Ověření adresy selhalo — zkontrolujte připojení.";
+      setAddressApiError(msg);
+      return msg;
+    } finally {
+      setValidatingAddress(false);
+    }
+  }
 
   const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
   const contactSummary = [
@@ -275,9 +361,23 @@ export default function CartPage() {
     setOpen((o) => ({ ...o, [id]: !o[id] }));
   }
 
-  function advance(from: SectionId, to: SectionId, sectionError: string) {
+  async function advance(
+    from: SectionId,
+    to: SectionId,
+    sectionError: string,
+  ) {
     if (from === "contact") {
       setContactAttempted(true);
+    }
+    if (from === "delivery") {
+      setDeliveryAttempted(true);
+      if (delivery === "home") {
+        const remoteErr = await validateHomeAddressRemote();
+        if (remoteErr) {
+          setError(remoteErr);
+          return;
+        }
+      }
     }
     if (sectionError) {
       setError(sectionError);
@@ -290,12 +390,20 @@ export default function CartPage() {
   async function payWithCard() {
     setError("");
     setContactAttempted(true);
+    setDeliveryAttempted(true);
     if (contactError) {
       setOpen((o) => ({ ...o, contact: true }));
       setError(contactError);
       return;
     }
-    if (deliveryError) {
+    if (delivery === "home") {
+      const remoteErr = await validateHomeAddressRemote();
+      if (remoteErr) {
+        setOpen((o) => ({ ...o, delivery: true }));
+        setError(remoteErr);
+        return;
+      }
+    } else if (deliveryError) {
       setOpen((o) => ({ ...o, delivery: true }));
       setError(deliveryError);
       return;
@@ -814,38 +922,103 @@ export default function CartPage() {
                   <Input
                     id="addr-street"
                     value={address.street}
-                    onChange={(e) =>
-                      setAddress((a) => ({ ...a, street: e.target.value }))
-                    }
+                    onChange={(e) => {
+                      clearAddressApiState();
+                      setAddress((a) => ({ ...a, street: e.target.value }));
+                    }}
+                    onBlur={() => markAddressTouched("street")}
                     autoComplete="street-address"
-                    className="h-11 rounded-none"
+                    placeholder="např. Nuselská 12"
+                    aria-invalid={showAddressError("street") || undefined}
+                    aria-describedby={
+                      showAddressError("street") ? "addr-street-err" : undefined
+                    }
+                    className={cn(
+                      "h-11 rounded-none",
+                      showAddressError("street") && invalidInputClass,
+                    )}
                   />
+                  {showAddressError("street") ? (
+                    <p
+                      id="addr-street-err"
+                      role="alert"
+                      className="text-xs text-destructive"
+                    >
+                      {mergedAddressErrors.street}
+                    </p>
+                  ) : null}
                 </div>
                 <div className="space-y-2 sm:col-span-2">
                   <Label htmlFor="addr-city">Město</Label>
                   <Input
                     id="addr-city"
                     value={address.city}
-                    onChange={(e) =>
-                      setAddress((a) => ({ ...a, city: e.target.value }))
-                    }
+                    onChange={(e) => {
+                      clearAddressApiState();
+                      setAddress((a) => ({ ...a, city: e.target.value }));
+                    }}
+                    onBlur={() => markAddressTouched("city")}
                     autoComplete="address-level2"
-                    className="h-11 rounded-none"
+                    aria-invalid={showAddressError("city") || undefined}
+                    aria-describedby={
+                      showAddressError("city") ? "addr-city-err" : undefined
+                    }
+                    className={cn(
+                      "h-11 rounded-none",
+                      showAddressError("city") && invalidInputClass,
+                    )}
                   />
+                  {showAddressError("city") ? (
+                    <p
+                      id="addr-city-err"
+                      role="alert"
+                      className="text-xs text-destructive"
+                    >
+                      {mergedAddressErrors.city}
+                    </p>
+                  ) : null}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="addr-zip">PSČ</Label>
                   <Input
                     id="addr-zip"
                     value={address.zip}
-                    onChange={(e) =>
-                      setAddress((a) => ({ ...a, zip: e.target.value }))
-                    }
+                    onChange={(e) => {
+                      clearAddressApiState();
+                      setAddress((a) => ({ ...a, zip: e.target.value }));
+                    }}
+                    onBlur={() => markAddressTouched("zip")}
                     inputMode="numeric"
                     autoComplete="postal-code"
-                    className="h-11 rounded-none"
+                    placeholder="140 00"
+                    aria-invalid={showAddressError("zip") || undefined}
+                    aria-describedby={
+                      showAddressError("zip") ? "addr-zip-err" : undefined
+                    }
+                    className={cn(
+                      "h-11 rounded-none",
+                      showAddressError("zip") && invalidInputClass,
+                    )}
                   />
+                  {showAddressError("zip") ? (
+                    <p
+                      id="addr-zip-err"
+                      role="alert"
+                      className="text-xs text-destructive"
+                    >
+                      {mergedAddressErrors.zip}
+                    </p>
+                  ) : null}
                 </div>
+                {addressOkHint ? (
+                  <p className="text-xs text-moss-deep sm:col-span-3">
+                    {addressOkHint}
+                  </p>
+                ) : null}
+                <p className="text-xs text-muted-foreground sm:col-span-3">
+                  Adresu ověříme u Zásilkovny (formát + PSČ). Nejde o katastr —
+                  správnost domu kontroluje dopravce při doručení.
+                </p>
               </div>
             ) : (
               <PacketaPicker
@@ -863,9 +1036,14 @@ export default function CartPage() {
             type="button"
             variant="outline"
             className="mt-5"
-            onClick={() => advance("delivery", "payment", deliveryError)}
+            disabled={validatingAddress}
+            onClick={() =>
+              void advance("delivery", "payment", deliveryError)
+            }
           >
-            Pokračovat na platbu
+            {validatingAddress
+              ? "Ověřuji adresu…"
+              : "Pokračovat na platbu"}
           </Button>
         </AccordionSection>
 
