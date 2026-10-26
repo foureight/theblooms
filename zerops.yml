@@ -17,7 +17,7 @@ zerops:
       envVariables:
         NEXT_PUBLIC_SITE_URL: https://theblooms.cz
         NEXT_PUBLIC_TYPEKIT_ID: zwe5oqo
-        # NEXT_PUBLIC_PACKETA_API_KEY: "VAS_WIDGET_KLIC_Z_PACKETY"
+        NEXT_PUBLIC_PACKETA_API_KEY: API9381a55c7f9690b3
       buildCommands:
         - npm ci
         - npm run build
@@ -34,12 +34,12 @@ zerops:
         NODE_ENV: production
         NEXT_PUBLIC_SITE_URL: https://theblooms.cz
         NEXT_PUBLIC_TYPEKIT_ID: zwe5oqo
-        # NEXT_PUBLIC_PACKETA_API_KEY: "VAS_WIDGET_KLIC_Z_PACKETY"
+        NEXT_PUBLIC_PACKETA_API_KEY: API9381a55c7f9690b3
         UPLOADS_DIR: /srv/uploads
         PACKETA_SENDER_ID: "578009"
         PACKETA_ESHOP: theblooms
         PACKETA_HOME_CARRIER_ID: "106"
-        # PACKETA_API_PASSWORD — Secret ve Zerops GUI
+        # PACKETA_API_PASSWORD — jiné heslo z klientské sekce Packeta (Secret ve Zerops GUI)
       start: npm run start
       healthCheck:
         httpGet:
