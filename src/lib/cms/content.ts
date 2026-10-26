@@ -392,6 +392,14 @@ export function mergeWreath(cms: CmsContent, slug: string): Wreath | undefined {
 const DECORATION_PLACEHOLDER =
   "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=1200&q=80";
 
+function resolveDecorationOrder(cms: CmsContent, allSlugs: string[]): string[] {
+  const saved = (cms.decorationOrder ?? []).filter((s) => allSlugs.includes(s));
+  const uniqueSaved = [...new Set(saved)];
+  if (uniqueSaved.length === 0) return allSlugs;
+  const missing = allSlugs.filter((s) => !uniqueSaved.includes(s));
+  return [...uniqueSaved, ...missing];
+}
+
 export function mergeDecorations(cms: CmsContent): DecorationCategory[] {
   const baseSlugs = new Set(baseDecorations.map((d) => d.slug));
   const merged = baseDecorations.map((d) => {
@@ -453,7 +461,14 @@ export function mergeDecorations(cms: CmsContent): DecorationCategory[] {
     });
   }
 
-  return merged;
+  const order = resolveDecorationOrder(
+    cms,
+    merged.map((d) => d.slug),
+  );
+  const bySlug = new Map(merged.map((d) => [d.slug, d]));
+  return order
+    .map((slug) => bySlug.get(slug))
+    .filter((d): d is DecorationCategory => Boolean(d));
 }
 
 export function mergeDecoration(

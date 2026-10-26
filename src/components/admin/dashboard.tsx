@@ -628,8 +628,21 @@ export function AdminDashboard({
           })),
         custom: true as const,
       }));
-    return [...base, ...customs];
-  }, [content.decorations, baseDecorationSlugs]);
+    const merged = [...base, ...customs];
+    const all = merged.map((d) => d.slug);
+    const saved = (content.decorationOrder ?? []).filter((s) =>
+      all.includes(s),
+    );
+    const uniqueSaved = [...new Set(saved)];
+    const order =
+      uniqueSaved.length === 0
+        ? all
+        : [...uniqueSaved, ...all.filter((s) => !uniqueSaved.includes(s))];
+    const bySlug = new Map(merged.map((d) => [d.slug, d]));
+    return order
+      .map((slug) => bySlug.get(slug))
+      .filter((d): d is (typeof merged)[number] => Boolean(d));
+  }, [content.decorations, content.decorationOrder, baseDecorationSlugs]);
 
   const orderedWreaths = useMemo(() => {
     const customs = Object.entries(content.wreaths ?? {})
@@ -728,7 +741,7 @@ export function AdminDashboard({
     slugs: string[],
     slug: string,
     direction: -1 | 1,
-    key: "wreathOrder" | "weddingOrder" | "flowerOrder",
+    key: "wreathOrder" | "weddingOrder" | "decorationOrder" | "flowerOrder",
   ) {
     const i = slugs.indexOf(slug);
     const j = i + direction;
@@ -753,6 +766,15 @@ export function AdminDashboard({
       slug,
       direction,
       "weddingOrder",
+    );
+  }
+
+  function moveDecoration(slug: string, direction: -1 | 1) {
+    moveInOrder(
+      allDecorations.map((d) => d.slug),
+      slug,
+      direction,
+      "decorationOrder",
     );
   }
 
@@ -823,6 +845,13 @@ export function AdminDashboard({
     const slug = uniqueSlug(`${title}-${Date.now()}`, taken, "dekorace");
     setContent((c) => ({
       ...c,
+      decorationOrder: [
+        slug,
+        ...(c.decorationOrder?.length
+          ? c.decorationOrder
+          : allDecorations.map((d) => d.slug)
+        ).filter((s) => s !== slug),
+      ],
       decorations: {
         ...c.decorations,
         [slug]: {
@@ -848,7 +877,11 @@ export function AdminDashboard({
     setContent((c) => {
       const next = { ...c.decorations };
       delete next[slug];
-      return { ...c, decorations: next };
+      return {
+        ...c,
+        decorations: next,
+        decorationOrder: (c.decorationOrder ?? []).filter((s) => s !== slug),
+      };
     });
     setStatus("Kategorie dekorací odebrána. Uložte změny.");
   }
@@ -1693,8 +1726,10 @@ export function AdminDashboard({
               </div>
 
               <div className="mt-8 space-y-10">
-                {allDecorations.map((d) => {
+                {allDecorations.map((d, index) => {
                   const o = content.decorations[d.slug] ?? {};
+                  const atTop = index === 0;
+                  const atBottom = index === allDecorations.length - 1;
                   return (
                     <section
                       key={d.slug}
@@ -1702,18 +1737,44 @@ export function AdminDashboard({
                       className="border border-border/70 p-4 sm:p-6"
                     >
                       <div className="flex flex-wrap items-start justify-between gap-3">
-                        <h3 className="font-display text-2xl text-moss-deep">
-                          {d.title}
-                        </h3>
-                        {d.custom ? (
+                        <div>
+                          <p className="text-xs tracking-[0.14em] uppercase text-muted-foreground">
+                            Pořadí {index + 1} / {allDecorations.length}
+                            {d.custom ? " · nová" : ""}
+                          </p>
+                          <h3 className="mt-1 font-display text-2xl text-moss-deep">
+                            {d.title}
+                          </h3>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
                           <button
                             type="button"
-                            onClick={() => removeDecoration(d.slug)}
-                            className="px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
+                            disabled={atTop}
+                            onClick={() => moveDecoration(d.slug, -1)}
+                            className="border border-border px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-moss-deep transition-colors hover:border-sky-600 hover:bg-sky-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                            aria-label="Posunout nahoru"
                           >
-                            Smazat kategorii
+                            ↑ Nahoru
                           </button>
-                        ) : null}
+                          <button
+                            type="button"
+                            disabled={atBottom}
+                            onClick={() => moveDecoration(d.slug, 1)}
+                            className="border border-border px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-moss-deep transition-colors hover:border-sky-600 hover:bg-sky-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                            aria-label="Posunout dolů"
+                          >
+                            ↓ Dolů
+                          </button>
+                          {d.custom ? (
+                            <button
+                              type="button"
+                              onClick={() => removeDecoration(d.slug)}
+                              className="px-3 py-2 text-[10px] tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
+                            >
+                              Smazat kategorii
+                            </button>
+                          ) : null}
+                        </div>
                       </div>
 
                       <div className="mt-6 grid gap-4 sm:grid-cols-2">

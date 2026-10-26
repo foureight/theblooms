@@ -70,6 +70,7 @@ export async function readCms(): Promise<CmsContent> {
       weddingPriceList: parsed.weddingPriceList ?? {},
       wreathOrder: parsed.wreathOrder ?? [],
       weddingOrder: parsed.weddingOrder ?? [],
+      decorationOrder: parsed.decorationOrder ?? [],
       flowerOrder: parsed.flowerOrder ?? [],
       faqs: parsed.faqs ?? {},
     };

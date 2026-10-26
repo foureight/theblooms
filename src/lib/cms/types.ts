@@ -110,6 +110,8 @@ export type CmsContent = {
   wreathOrder: string[];
   /** Pořadí svatebních realizací */
   weddingOrder: string[];
+  /** Pořadí kategorií dekorací (slug → pozice) */
+  decorationOrder: string[];
   /** Pořadí vlastních položek na stránce Kytky */
   flowerOrder: string[];
   /** FAQ per page — when set, replaces code defaults for that page */
@@ -135,6 +137,7 @@ export const emptyCms = (): CmsContent => ({
   weddingPriceList: {},
   wreathOrder: [],
   weddingOrder: [],
+  decorationOrder: [],
   flowerOrder: [],
   faqs: {},
 });

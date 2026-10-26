@@ -82,6 +82,9 @@ export async function PUT(req: Request) {
       weddingOrder: Array.isArray(body.content.weddingOrder)
         ? body.content.weddingOrder.filter((s) => typeof s === "string")
         : [],
+      decorationOrder: Array.isArray(body.content.decorationOrder)
+        ? body.content.decorationOrder.filter((s) => typeof s === "string")
+        : [],
       flowerOrder: Array.isArray(body.content.flowerOrder)
         ? body.content.flowerOrder.filter((s) => typeof s === "string")
         : [],
