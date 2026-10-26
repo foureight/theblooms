@@ -12,7 +12,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   DELIVERY_OPTIONS,
+  calculateShipping,
   formatAddress,
+  isValidPhone,
   type DeliveryAddress,
   type DeliveryType,
   type PacketaPoint,
@@ -24,7 +26,7 @@ const packetaKey = process.env.NEXT_PUBLIC_PACKETA_API_KEY?.trim() || "";
 
 type SectionId = "contact" | "delivery" | "payment";
 
-const DELIVERY_ORDER: DeliveryType[] = ["point", "box", "home"];
+const DELIVERY_ORDER: DeliveryType[] = ["point", "home"];
 
 function AccordionSection({
   index,
@@ -107,9 +109,7 @@ export default function CartPage() {
   const [phone, setPhone] = useState("");
   const [note, setNote] = useState("");
   const [delivery, setDelivery] = useState<DeliveryType>("point");
-  const [points, setPoints] = useState<
-    Record<"point" | "box", PacketaPoint | null>
-  >({ point: null, box: null });
+  const [point, setPoint] = useState<PacketaPoint | null>(null);
   const [address, setAddress] = useState<DeliveryAddress>({
     street: "",
     city: "",
@@ -152,10 +152,28 @@ export default function CartPage() {
     );
   }
 
-  const shipping = DELIVERY_OPTIONS[delivery].fee;
+  const shippingItems = items
+    .map((item) => {
+      const product = resolveLine(item, catalog);
+      if (!product) return null;
+      return {
+        slug: item.slug,
+        name: product.name,
+        sizeId: item.sizeId,
+        sizeLabel: product.sizeLabel,
+        quantity: item.quantity,
+      };
+    })
+    .filter(Boolean) as {
+    slug: string;
+    name: string;
+    sizeId: string;
+    sizeLabel: string;
+    quantity: number;
+  }[];
+  const shippingCalc = calculateShipping(shippingItems, delivery);
+  const shipping = shippingCalc.fee;
   const grandTotal = total + shipping;
-  const point = delivery === "home" ? null : points[delivery];
-  const needsPhone = delivery === "home";
 
   const billingError = !wantsInvoice
     ? ""
@@ -170,23 +188,22 @@ export default function CartPage() {
     ? "Vyplňte jméno."
     : !/^\S+@\S+\.\S+$/.test(email.trim())
       ? "Vyplňte platný e-mail."
-      : billingError;
+      : !isValidPhone(phone)
+        ? "Vyplňte platný telefon (pro Zásilkovnu povinný)."
+        : billingError;
   const deliveryError =
     delivery === "home"
       ? !address.street.trim() || !address.city.trim() || !address.zip.trim()
         ? "Vyplňte ulici, město a PSČ."
-        : !phone.trim()
-          ? "Pro kurýra vyplňte v kontaktu telefon."
-          : ""
+        : ""
       : !point
-        ? delivery === "box"
-          ? "Vyberte Z-BOX."
-          : "Vyberte výdejní místo."
+        ? "Vyberte výdejní místo."
         : "";
 
   const contactSummary = [
     name.trim(),
     email.trim(),
+    phone.trim(),
     wantsInvoice && billing.company.trim()
       ? `faktura: ${billing.company.trim()}`
       : "",
@@ -195,9 +212,9 @@ export default function CartPage() {
     .join(" · ");
   const deliverySummary =
     delivery === "home"
-      ? `Na adresu${formatAddress(address) ? ` — ${formatAddress(address)}` : ""}`
+      ? `Na adresu${formatAddress(address) ? ` — ${formatAddress(address)}` : ""} · ${shippingCalc.summary}`
       : point
-        ? point.name
+        ? `${point.name} · ${shippingCalc.summary}`
         : DELIVERY_OPTIONS[delivery].label;
 
   function toggle(id: SectionId) {
@@ -221,11 +238,7 @@ export default function CartPage() {
       return;
     }
     if (deliveryError) {
-      setOpen((o) => ({
-        ...o,
-        delivery: true,
-        contact: deliveryError.includes("telefon") ? true : o.contact,
-      }));
+      setOpen((o) => ({ ...o, delivery: true }));
       setError(deliveryError);
       return;
     }
@@ -383,18 +396,14 @@ export default function CartPage() {
               />
             </div>
             <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="order-phone">
-                Telefon{" "}
-                <span className="text-muted-foreground">
-                  {needsPhone ? "(pro kurýra)" : "(volitelně)"}
-                </span>
-              </Label>
+              <Label htmlFor="order-phone">Telefon (povinný pro Zásilkovnu)</Label>
               <Input
                 id="order-phone"
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 autoComplete="tel"
+                placeholder="+420…"
                 className="h-11 rounded-none"
               />
             </div>
@@ -529,6 +538,7 @@ export default function CartPage() {
             {DELIVERY_ORDER.map((type) => {
               const option = DELIVERY_OPTIONS[type];
               const active = delivery === type;
+              const feeForType = calculateShipping(shippingItems, type).fee;
               return (
                 <button
                   key={type}
@@ -565,12 +575,18 @@ export default function CartPage() {
                     </span>
                   </span>
                   <span className="shrink-0 text-sm font-medium">
-                    {formatPrice(option.fee)}
+                    {formatPrice(feeForType)}
                   </span>
                 </button>
               );
             })}
           </div>
+
+          <p className="mt-3 text-xs text-muted-foreground">
+            Doprava podle velikosti a počtu balíků — každý věnec jde zvlášť
+            (menší / střední / větší krabice). Orientační ceny; finální ceník
+            Zásilkovny doplníme po potvrzení nadrozměrů.
+          </p>
 
           <div className="mt-5">
             {delivery === "home" ? (
@@ -615,11 +631,9 @@ export default function CartPage() {
               </div>
             ) : (
               <PacketaPicker
-                key={delivery}
-                mode={delivery}
-                value={points[delivery]}
+                value={point}
                 onChange={(p) => {
-                  setPoints((s) => ({ ...s, [delivery]: p }));
+                  setPoint(p);
                   setError("");
                 }}
                 apiKey={packetaKey}
@@ -657,11 +671,16 @@ export default function CartPage() {
           <p className="text-muted-foreground">Zboží</p>
           <p className="font-medium">{formatPrice(total)}</p>
         </div>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4">
           <p className="text-muted-foreground">
             {DELIVERY_OPTIONS[delivery].label}
+            {shippingCalc.summary ? (
+              <span className="mt-0.5 block text-xs">
+                {shippingCalc.summary}
+              </span>
+            ) : null}
           </p>
-          <p className="font-medium">{formatPrice(shipping)}</p>
+          <p className="shrink-0 font-medium">{formatPrice(shipping)}</p>
         </div>
         <div className="flex items-center justify-between border-t border-border pt-3 text-base">
           <p className="text-muted-foreground">Celkem</p>

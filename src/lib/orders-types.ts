@@ -26,11 +26,35 @@ export type OrderCustomer = {
   billing?: OrderBilling;
 };
 
+export type OrderShippingPackage = {
+  itemSlug: string;
+  itemName: string;
+  sizeId: string;
+  sizeLabel: string;
+  tier: "small" | "medium" | "large";
+  boxLabel: string;
+  dimensionsCm: { length: number; width: number; height: number };
+  fee: number;
+};
+
+export type OrderPacketaPacket = {
+  packetId: string;
+  barcode: string;
+  barcodeText?: string;
+  packageIndex: number;
+  createdAt: string;
+};
+
 export type OrderShipping = {
   method: "zasilkovna";
-  /** Missing on older orders = pickup point. */
+  /** Missing on older orders = pickup point. "box" kept for legacy orders. */
   delivery?: "point" | "box" | "home";
   fee: number;
+  /** Human summary e.g. "2 balíky (1× menší, 1× větší)" */
+  packageSummary?: string;
+  packages?: OrderShippingPackage[];
+  /** Created Packeta API packets (one per physical box). */
+  packetaPackets?: OrderPacketaPacket[];
   packetaId?: string;
   packetaName?: string;
   packetaCity?: string;

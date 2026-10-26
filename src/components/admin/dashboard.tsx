@@ -152,6 +152,42 @@ export function AdminDashboard({
     }
   }
 
+  async function createPacketaPackets(orderId: string) {
+    setStatus("");
+    try {
+      const res = await fetch("/api/admin/packeta", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId }),
+      });
+      const data = (await res.json()) as {
+        error?: string;
+        order?: Order;
+        packets?: { barcode: string }[];
+      };
+      if (!res.ok || !data.order) {
+        setStatus(data.error || "Zásilky Zásilkovny se nepodařilo vytvořit.");
+        return;
+      }
+      setOrders((prev) =>
+        prev.map((o) => (o.id === orderId ? data.order! : o)),
+      );
+      const n = data.packets?.length ?? 0;
+      setStatus(
+        n
+          ? `Zásilkovna: vytvořeno ${n} ${n === 1 ? "zásilka" : n < 5 ? "zásilky" : "zásilek"}.`
+          : "Zásilky Zásilkovny uloženy.",
+      );
+    } catch {
+      setStatus("Síťová chyba při vytváření zásilek.");
+    }
+  }
+
+  function downloadPacketaLabels(orderId: string) {
+    setStatus("");
+    window.open(`/api/admin/packeta?orderId=${encodeURIComponent(orderId)}`, "_blank");
+  }
+
   async function save() {
     setSaving(true);
     setStatus("");
@@ -1226,15 +1262,29 @@ export function AdminDashboard({
                       </p>
                     ) : null}
                     {order.shipping ? (
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        {order.shipping.delivery === "home"
-                          ? `Zásilkovna na adresu: ${order.shipping.addressStreet}, ${order.shipping.addressZip} ${order.shipping.addressCity}`
-                          : `${order.shipping.delivery === "box" ? "Z-BOX" : "Zásilkovna"}: ${order.shipping.packetaName}${
-                              order.shipping.packetaStreet
-                                ? ` — ${order.shipping.packetaStreet}, ${order.shipping.packetaZip} ${order.shipping.packetaCity}`
-                                : ""
-                            }`}
-                      </p>
+                      <div className="mt-2 space-y-1 text-sm text-muted-foreground">
+                        <p>
+                          {order.shipping.delivery === "home"
+                            ? `Zásilkovna na adresu: ${order.shipping.addressStreet}, ${order.shipping.addressZip} ${order.shipping.addressCity}`
+                            : `${order.shipping.delivery === "box" ? "Z-BOX (starší)" : "Zásilkovna"}: ${order.shipping.packetaName}${
+                                order.shipping.packetaStreet
+                                  ? ` — ${order.shipping.packetaStreet}, ${order.shipping.packetaZip} ${order.shipping.packetaCity}`
+                                  : ""
+                              }`}
+                        </p>
+                        {order.shipping.packageSummary ? (
+                          <p>Balíky: {order.shipping.packageSummary}</p>
+                        ) : null}
+                        {order.shipping.packetaPackets &&
+                        order.shipping.packetaPackets.length > 0 ? (
+                          <p>
+                            Zásilkovna ID:{" "}
+                            {order.shipping.packetaPackets
+                              .map((p) => p.barcode || p.packetId)
+                              .join(", ")}
+                          </p>
+                        ) : null}
+                      </div>
                     ) : null}
                     {order.payment ? (
                       <p className="mt-1 text-xs text-muted-foreground">
@@ -1290,6 +1340,31 @@ export function AdminDashboard({
                       >
                         Znovu nová
                       </button>
+                    ) : null}
+                    {order.shipping &&
+                    order.status !== "cancelled" &&
+                    order.status !== "pending_payment" ? (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => void createPacketaPackets(order.id)}
+                          className="border border-border px-3 py-1.5 text-[10px] tracking-[0.14em] uppercase text-moss-deep transition-colors hover:border-sky-600 hover:bg-sky-600 hover:text-white"
+                        >
+                          {order.shipping.packetaPackets?.length
+                            ? "Doplnit zásilky"
+                            : "Vytvořit zásilky"}
+                        </button>
+                        {order.shipping.packetaPackets &&
+                        order.shipping.packetaPackets.length > 0 ? (
+                          <button
+                            type="button"
+                            onClick={() => downloadPacketaLabels(order.id)}
+                            className="border border-border px-3 py-1.5 text-[10px] tracking-[0.14em] uppercase text-moss-deep transition-colors hover:border-sky-600 hover:bg-sky-600 hover:text-white"
+                          >
+                            Štítky PDF
+                          </button>
+                        ) : null}
+                      </>
                     ) : null}
                   </div>
                 </div>

@@ -2,10 +2,11 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import {
   DELIVERY_OPTIONS,
-  deliveryFee,
+  calculateShipping,
   formatAddress,
   isDeliveryType,
   isStripeConfigured,
+  isValidPhone,
   type DeliveryAddress,
   type PacketaPoint,
 } from "@/lib/checkout";
@@ -119,13 +120,17 @@ export async function POST(req: Request) {
     const phone = asString(body.phone);
     const note = asString(body.note);
     const items = parseItems(body.items);
+    // Legacy "box" orders rejected — Z-BOX is not offered.
     const delivery = isDeliveryType(body.delivery) ? body.delivery : "point";
     const packeta = delivery === "home" ? null : parsePacketa(body.packeta);
     const address = delivery === "home" ? parseAddress(body.address) : null;
     const billing = parseBilling(body.billing);
     if (billing === "invalid") {
       return NextResponse.json(
-        { error: "Doplňte fakturační údaje (firma, IČO o 8 číslicích, adresa)." },
+        {
+          error:
+            "Doplňte fakturační údaje (firma, IČO o 8 číslicích, adresa).",
+        },
         { status: 400 },
       );
     }
@@ -139,32 +144,40 @@ export async function POST(req: Request) {
     if (!email.includes("@")) {
       return NextResponse.json({ error: "Neplatný e-mail." }, { status: 400 });
     }
+    if (!isValidPhone(phone)) {
+      return NextResponse.json(
+        {
+          error:
+            "Pro Zásilkovnu vyplňte platný telefon (9 číslic, nebo +420…).",
+        },
+        { status: 400 },
+      );
+    }
     if (delivery === "home" && !address) {
       return NextResponse.json(
         { error: "Vyplňte adresu pro doručení." },
         { status: 400 },
       );
     }
-    if (delivery === "home" && !phone) {
-      return NextResponse.json(
-        { error: "Pro doručení na adresu vyplňte telefon pro kurýra." },
-        { status: 400 },
-      );
-    }
     if (delivery !== "home" && !packeta) {
       return NextResponse.json(
-        {
-          error:
-            delivery === "box"
-              ? "Vyberte Z-BOX Zásilkovny."
-              : "Vyberte výdejní místo Zásilkovny.",
-        },
+        { error: "Vyberte výdejní místo Zásilkovny." },
         { status: 400 },
       );
     }
 
     const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
-    const shippingFee = deliveryFee(delivery);
+    const shippingCalc = calculateShipping(
+      items.map((i) => ({
+        slug: i.slug,
+        name: i.name,
+        sizeId: i.sizeId,
+        sizeLabel: i.sizeLabel,
+        quantity: i.quantity,
+      })),
+      delivery,
+    );
+    const shippingFee = shippingCalc.fee;
     const total = subtotal + shippingFee;
     const useStripe = isStripeConfigured();
 
@@ -173,6 +186,8 @@ export async function POST(req: Request) {
           method: "zasilkovna",
           delivery,
           fee: shippingFee,
+          packageSummary: shippingCalc.summary,
+          packages: shippingCalc.packages,
           addressStreet: address.street,
           addressCity: address.city,
           addressZip: address.zip,
@@ -181,6 +196,8 @@ export async function POST(req: Request) {
           method: "zasilkovna",
           delivery,
           fee: shippingFee,
+          packageSummary: shippingCalc.summary,
+          packages: shippingCalc.packages,
           packetaId: packeta!.id,
           packetaName: packeta!.name,
           packetaCity: packeta!.city,
@@ -189,8 +206,8 @@ export async function POST(req: Request) {
           packetaUrl: packeta!.url,
         };
     const shippingLine = address
-      ? `${DELIVERY_OPTIONS.home.label} — ${formatAddress(address)}`
-      : `${DELIVERY_OPTIONS[delivery].label} — ${packeta!.name}`;
+      ? `${DELIVERY_OPTIONS.home.label} — ${formatAddress(address)} · ${shippingCalc.summary}`
+      : `${DELIVERY_OPTIONS[delivery].label} — ${packeta!.name} · ${shippingCalc.summary}`;
 
     const order = await createOrder({
       customer: {

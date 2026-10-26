@@ -1,34 +1,39 @@
 /** Zásilkovna shipping + Stripe card payment helpers. */
 
-export type DeliveryType = "point" | "box" | "home";
+import {
+  deliveryFeeFrom,
+  type CartShippingItem,
+  type ShippingPackage,
+  buildShippingPackages,
+  shippingFeeFromPackages,
+  summarizePackages,
+} from "@/lib/shipping";
+
+export type DeliveryType = "point" | "home";
 
 export const DELIVERY_OPTIONS: Record<
   DeliveryType,
-  { label: string; description: string; fee: number }
+  { label: string; description: string; feeFrom: number }
 > = {
   point: {
     label: "Zásilkovna — výdejní místo",
-    description: "Vyzvednete na pobočce Zásilkovny.",
-    fee: 89,
-  },
-  box: {
-    label: "Zásilkovna — Z-BOX",
-    description: "Samoobslužný box, vyzvednutí 24/7.",
-    fee: 89,
+    description: "Kamenná pobočka Zásilkovny — bez Z-BOXů.",
+    feeFrom: deliveryFeeFrom("point"),
   },
   home: {
     label: "Zásilkovna — doručení na adresu",
     description: "Kurýr doručí až k vám domů.",
-    fee: 129,
+    feeFrom: deliveryFeeFrom("home"),
   },
 };
 
+/** @deprecated Prefer calculateShipping — kept for simple single-package fallbacks. */
 export function deliveryFee(type: DeliveryType) {
-  return DELIVERY_OPTIONS[type].fee;
+  return deliveryFeeFrom(type);
 }
 
 export function isDeliveryType(v: unknown): v is DeliveryType {
-  return v === "point" || v === "box" || v === "home";
+  return v === "point" || v === "home";
 }
 
 export type PacketaPoint = {
@@ -57,6 +62,31 @@ export function formatAddress(a: DeliveryAddress) {
     .join(", ");
 }
 
+export function calculateShipping(
+  items: CartShippingItem[],
+  delivery: DeliveryType,
+): {
+  packages: ShippingPackage[];
+  fee: number;
+  summary: string;
+} {
+  const packages = buildShippingPackages(items, delivery);
+  return {
+    packages,
+    fee: shippingFeeFromPackages(packages),
+    summary: summarizePackages(packages),
+  };
+}
+
+/** Basic CZ/SK mobile or landline — required for all Packeta deliveries. */
+export function isValidPhone(raw: string) {
+  const digits = raw.replace(/[\s\-()./+]/g, "");
+  if (/^420\d{9}$/.test(digits)) return true;
+  if (/^421\d{9}$/.test(digits)) return true;
+  if (/^\d{9}$/.test(digits)) return true;
+  return false;
+}
+
 export function isStripeConfigured() {
   return Boolean(
     process.env.STRIPE_SECRET_KEY?.trim() &&
@@ -71,3 +101,5 @@ export function packetaApiKey() {
     ""
   );
 }
+
+export type { ShippingPackage, CartShippingItem };

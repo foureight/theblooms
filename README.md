@@ -27,11 +27,12 @@ Poptávky se logují na server (`/api/inquiry`). Formulář má matematickou cap
 
 ### Košík, Zásilkovna a platba kartou
 
-1. V košíku (`/kosik`) jsou tři harmonika: **Kontakt**, **Doručení — Zásilkovna** (výdejní místo, Z-BOX, nebo na adresu) a **Platba kartou**. Ceny dopravy jsou v `src/lib/checkout.ts` (`DELIVERY_OPTIONS`).
-2. **Zásilkovna** — nastavte `NEXT_PUBLIC_PACKETA_API_KEY` (Packeta widget, pro Z-BOX filtr `zbox`). Bez klíče se zobrazí demo výběr míst a boxů.
-3. **Platba kartou** — Stripe Checkout (`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` + `STRIPE_SECRET_KEY`). Bez klíčů běží lokální demo na `/pokladna/mock`.
-4. Webhook (produkce): `STRIPE_WEBHOOK_SECRET` → endpoint `/api/stripe/webhook` (event `checkout.session.completed`).
-5. Objednávky (včetně místa Zásilkovny a stavu platby) uvidíte v adminu.
+1. V košíku (`/kosik`) jsou tři harmonika: **Kontakt** (telefon povinný), **Doručení — Zásilkovna** (jen kamenné výdejní místo nebo doručení na adresu — **bez Z-BOXů**) a **Platba kartou**.
+2. Cena dopravy se počítá podle velikosti a počtu balíků (každý věnec = 1 balík) v `src/lib/shipping.ts`. Orientační sazby do nahrání oficiálního ceníku.
+3. **Widget** — `NEXT_PUBLIC_PACKETA_API_KEY` (bez klíče demo výdejní místa).
+4. **API zásilek / štítků** (admin Objednávky) — `PACKETA_API_PASSWORD`, odesílatel `PACKETA_SENDER_ID=578009`, `PACKETA_ESHOP=theblooms`.
+5. **Platba kartou** — Stripe Checkout (`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` + `STRIPE_SECRET_KEY`). Bez klíčů demo na `/pokladna/mock`.
+6. Webhook (produkce): `STRIPE_WEBHOOK_SECRET` → `/api/stripe/webhook` (`checkout.session.completed`).
 
 SEO / GEO / AIO: stránky mají rozšířené texty, FAQ a JSON-LD (`Service`, `FAQPage`, `BreadcrumbList`, u věnců `Product`). Canonical URL nastavte přes `NEXT_PUBLIC_SITE_URL` (výchozí `https://theblooms.cz`).
 

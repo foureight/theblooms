@@ -161,3 +161,17 @@ export async function updateOrderPayment(
   await writeOrders(orders);
   return next;
 }
+
+export async function updateOrderShipping(
+  id: string,
+  shipping: OrderShipping,
+): Promise<Order | null> {
+  const orders = await readOrders();
+  const i = orders.findIndex((o) => o.id === id);
+  if (i < 0) return null;
+  const current = orders[i]!;
+  const next: Order = { ...current, shipping };
+  orders[i] = next;
+  await writeOrders(orders);
+  return next;
+}

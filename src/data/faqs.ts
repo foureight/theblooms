@@ -62,7 +62,7 @@ export const adventWreathFaqs: FaqItem[] = [
   {
     question: "Dovážíte adventní věnce po Česku?",
     answer:
-      "Ano. Objednávku odešleme přes Zásilkovnu (výdejní místo, Z-BOX nebo na adresu). Detaily dopravy a platby kartou jsou v košíku.",
+      "Ano. Objednávku odešleme přes Zásilkovnu — na kamenné výdejní místo nebo na adresu (bez Z-BOXů). Detaily dopravy a platby kartou jsou v košíku.",
   },
   {
     question: "Jaké typy adventních věnců nabízíte?",

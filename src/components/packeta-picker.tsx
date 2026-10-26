@@ -9,7 +9,6 @@ type Props = {
   value: PacketaPoint | null;
   onChange: (point: PacketaPoint | null) => void;
   apiKey?: string;
-  mode?: "point" | "box";
 };
 
 declare global {
@@ -50,30 +49,6 @@ const DEMO_POINTS: PacketaPoint[] = [
   },
 ];
 
-const DEMO_BOXES: PacketaPoint[] = [
-  {
-    id: "Z-1021",
-    name: "Z-BOX Praha 4 — Nusle, Táborská",
-    city: "Praha",
-    street: "Táborská 31",
-    zip: "140 00",
-  },
-  {
-    id: "Z-2207",
-    name: "Z-BOX Praha 2 — Vinohrady, Náměstí Míru",
-    city: "Praha",
-    street: "Náměstí Míru 9",
-    zip: "120 00",
-  },
-  {
-    id: "Z-3315",
-    name: "Z-BOX Brno — Křenová",
-    city: "Brno",
-    street: "Křenová 65",
-    zip: "602 00",
-  },
-];
-
 function loadPacketaScript(): Promise<void> {
   if (typeof window === "undefined") return Promise.resolve();
   if (window.Packeta?.Widget) return Promise.resolve();
@@ -107,17 +82,10 @@ function mapPoint(raw: Record<string, string>): PacketaPoint {
   };
 }
 
-export function PacketaPicker({
-  value,
-  onChange,
-  apiKey = "",
-  mode = "point",
-}: Props) {
+export function PacketaPicker({ value, onChange, apiKey = "" }: Props) {
   const [ready, setReady] = useState(false);
   const [error, setError] = useState("");
   const live = Boolean(apiKey);
-  const isBox = mode === "box";
-  const demo = isBox ? DEMO_BOXES : DEMO_POINTS;
 
   useEffect(() => {
     if (!live) return;
@@ -143,6 +111,7 @@ export function PacketaPicker({
       setError("Widget ještě není připravený.");
       return;
     }
+    // Only brick-and-mortar pickup points — no Z-BOX.
     window.Packeta.Widget.pick(
       apiKey,
       (point) => {
@@ -154,12 +123,10 @@ export function PacketaPicker({
       {
         country: "cz",
         language: "cs",
-        vendors: isBox
-          ? [{ country: "cz", group: "zbox" }]
-          : [{ country: "cz" }],
+        vendors: [{ country: "cz", group: "zpoint" }],
       },
     );
-  }, [apiKey, isBox, live, onChange]);
+  }, [apiKey, live, onChange]);
 
   return (
     <div className="space-y-3">
@@ -171,13 +138,7 @@ export function PacketaPicker({
             disabled={!ready}
             className="border border-moss-deep/40 px-4 py-2.5 text-[10px] font-medium tracking-[0.16em] uppercase text-moss-deep transition-colors hover:border-bloom-light hover:text-bloom-light disabled:opacity-50"
           >
-            {value
-              ? isBox
-                ? "Změnit Z-BOX"
-                : "Změnit výdejní místo"
-              : isBox
-                ? "Vybrat Z-BOX na mapě"
-                : "Vybrat výdejní místo na mapě"}
+            {value ? "Změnit výdejní místo" : "Vybrat výdejní místo na mapě"}
           </button>
           {value ? (
             <div className="border border-bloom/35 bg-white px-4 py-3 text-sm">
@@ -192,10 +153,10 @@ export function PacketaPicker({
         <>
           <p className="text-xs text-muted-foreground">
             Demo režim (chybí <code>NEXT_PUBLIC_PACKETA_API_KEY</code>) —
-            vyberte ukázkové {isBox ? "Z-BOX" : "místo"}:
+            vyberte ukázkové výdejní místo:
           </p>
           <ul className="space-y-2">
-            {demo.map((point) => {
+            {DEMO_POINTS.map((point) => {
               const active = value?.id === point.id;
               return (
                 <li key={point.id}>
