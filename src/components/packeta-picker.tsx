@@ -122,10 +122,11 @@ export function PacketaPicker({ value, onChange, apiKey = "" }: Props) {
   const [ready, setReady] = useState(false);
   const [error, setError] = useState("");
   const [fallbackDemo, setFallbackDemo] = useState(false);
+  const [retryToken, setRetryToken] = useState(0);
   const live = Boolean(apiKey) && !fallbackDemo;
 
   useEffect(() => {
-    if (!apiKey) return;
+    if (!apiKey || fallbackDemo) return;
     let cancelled = false;
     setError("");
     setReady(false);
@@ -143,7 +144,7 @@ export function PacketaPicker({ value, onChange, apiKey = "" }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [apiKey]);
+  }, [apiKey, fallbackDemo, retryToken]);
 
   const openWidget = useCallback(() => {
     setError("");
@@ -242,8 +243,13 @@ export function PacketaPicker({ value, onChange, apiKey = "" }: Props) {
             <button
               type="button"
               onClick={() => {
-                setFallbackDemo(false);
+                const failed = document.querySelector<HTMLScriptElement>(
+                  'script[data-packeta-widget="1"][data-packeta-failed="1"]',
+                );
+                failed?.remove();
                 setError("");
+                setFallbackDemo(false);
+                setRetryToken((n) => n + 1);
               }}
               className="text-[10px] tracking-[0.14em] uppercase text-muted-foreground underline-offset-4 hover:text-moss-deep hover:underline"
             >

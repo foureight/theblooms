@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { Check } from "lucide-react";
 import { formatPrice } from "@/data/wreaths";
 import { PacketaPicker } from "@/components/packeta-picker";
@@ -13,14 +13,16 @@ import { Label } from "@/components/ui/label";
 import {
   DELIVERY_OPTIONS,
   calculateShipping,
+  contactValidationError,
   formatAddress,
-  isValidPhone,
   type DeliveryAddress,
   type DeliveryType,
   type PacketaPoint,
 } from "@/lib/checkout";
 import { cartKey, resolveLine, useCart } from "@/lib/cart";
 import { cn } from "@/lib/utils";
+
+type CaptchaChallenge = { token: string; question: string };
 
 const packetaKey = process.env.NEXT_PUBLIC_PACKETA_API_KEY?.trim() || "";
 
@@ -104,10 +106,15 @@ export default function CartPage() {
     useCart();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [note, setNote] = useState("");
+  const [website, setWebsite] = useState(""); // honeypot
+  const [captcha, setCaptcha] = useState<CaptchaChallenge | null>(null);
+  const [captchaAnswer, setCaptchaAnswer] = useState("");
+  const [captchaLoading, setCaptchaLoading] = useState(true);
   const [delivery, setDelivery] = useState<DeliveryType>("point");
   const [point, setPoint] = useState<PacketaPoint | null>(null);
   const [address, setAddress] = useState<DeliveryAddress>({
@@ -129,6 +136,25 @@ export default function CartPage() {
     delivery: false,
     payment: false,
   });
+
+  const loadCaptcha = useCallback(async () => {
+    setCaptchaLoading(true);
+    setCaptchaAnswer("");
+    try {
+      const res = await fetch("/api/captcha", { cache: "no-store" });
+      if (!res.ok) throw new Error("captcha");
+      const data = (await res.json()) as CaptchaChallenge;
+      setCaptcha(data);
+    } catch {
+      setCaptcha(null);
+    } finally {
+      setCaptchaLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadCaptcha();
+  }, [loadCaptcha]);
 
   if (!hydrated) {
     return (
@@ -184,13 +210,18 @@ export default function CartPage() {
         : !billing.street.trim() || !billing.city.trim() || !billing.zip.trim()
           ? "Vyplňte fakturační adresu."
           : "";
-  const contactError = !name.trim()
-    ? "Vyplňte jméno."
-    : !/^\S+@\S+\.\S+$/.test(email.trim())
-      ? "Vyplňte platný e-mail."
-      : !isValidPhone(phone)
-        ? "Vyplňte platný telefon (pro Zásilkovnu povinný)."
-        : billingError;
+  const contactFieldsError = contactValidationError({
+    firstName,
+    lastName,
+    email,
+    phone,
+  });
+  const captchaError = !captchaAnswer.trim()
+    ? "Vyplňte ověření (výsledek příkladu)."
+    : !captcha
+      ? "Ověření se nepodařilo načíst — zkuste nový příklad."
+      : "";
+  const contactError = contactFieldsError || billingError || captchaError;
   const deliveryError =
     delivery === "home"
       ? !address.street.trim() || !address.city.trim() || !address.zip.trim()
@@ -200,8 +231,9 @@ export default function CartPage() {
         ? "Vyberte výdejní místo."
         : "";
 
+  const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
   const contactSummary = [
-    name.trim(),
+    fullName,
     email.trim(),
     phone.trim(),
     wantsInvoice && billing.company.trim()
@@ -270,10 +302,15 @@ export default function CartPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: name.trim(),
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+          name: fullName,
           email: email.trim(),
           phone: phone.trim(),
           note: note.trim(),
+          website,
+          captchaToken: captcha?.token,
+          captchaAnswer: captchaAnswer.trim(),
           items: payloadItems,
           delivery,
           packeta: point,
@@ -281,8 +318,18 @@ export default function CartPage() {
           billing: wantsInvoice ? billing : undefined,
         }),
       });
-      const data = (await res.json()) as { error?: string; url?: string };
+      const data = (await res.json()) as {
+        error?: string;
+        url?: string;
+        code?: string;
+      };
       if (!res.ok || !data.url) {
+        if (data.code === "captcha") {
+          setOpen((o) => ({ ...o, contact: true }));
+          setError("Ověření nesedí. Zkuste nový příklad.");
+          void loadCaptcha();
+          return;
+        }
         setError(data.error || "Platbu se nepodařilo spustit.");
         return;
       }
@@ -373,14 +420,24 @@ export default function CartPage() {
           open={open.contact}
           onToggle={() => toggle("contact")}
         >
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="relative grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="order-name">Jméno a příjmení</Label>
+              <Label htmlFor="order-first-name">Jméno</Label>
               <Input
-                id="order-name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                autoComplete="name"
+                id="order-first-name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                autoComplete="given-name"
+                className="h-11 rounded-none"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="order-last-name">Příjmení</Label>
+              <Input
+                id="order-last-name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                autoComplete="family-name"
                 className="h-11 rounded-none"
               />
             </div>
@@ -395,8 +452,8 @@ export default function CartPage() {
                 className="h-11 rounded-none"
               />
             </div>
-            <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="order-phone">Telefon (povinný pro Zásilkovnu)</Label>
+            <div className="space-y-2">
+              <Label htmlFor="order-phone">Telefon</Label>
               <Input
                 id="order-phone"
                 type="tel"
@@ -420,6 +477,53 @@ export default function CartPage() {
                 className="w-full border border-border bg-white px-3 py-3 text-sm outline-none focus:border-bloom"
                 placeholder="Termín, vzkaz k balení…"
               />
+            </div>
+
+            {/* Honeypot — leave empty */}
+            <div
+              className="absolute -left-[9999px] h-0 w-0 overflow-hidden"
+              aria-hidden
+            >
+              <Label htmlFor="order-website">Web</Label>
+              <Input
+                id="order-website"
+                tabIndex={-1}
+                autoComplete="off"
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2 sm:col-span-2">
+              <Label htmlFor="order-captcha">
+                Ověření{" "}
+                <span className="normal-case tracking-normal text-muted-foreground">
+                  {captchaLoading
+                    ? "(načítám…)"
+                    : captcha
+                      ? `— ${captcha.question}`
+                      : "(nedostupné)"}
+                </span>
+              </Label>
+              <div className="flex flex-wrap items-center gap-3">
+                <Input
+                  id="order-captcha"
+                  inputMode="numeric"
+                  autoComplete="off"
+                  value={captchaAnswer}
+                  onChange={(e) => setCaptchaAnswer(e.target.value)}
+                  disabled={captchaLoading || !captcha}
+                  placeholder="Výsledek"
+                  className="h-11 max-w-[8rem] rounded-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => void loadCaptcha()}
+                  className="text-[10px] tracking-[0.14em] uppercase text-muted-foreground underline-offset-4 hover:text-moss-deep hover:underline"
+                >
+                  Nový příklad
+                </button>
+              </div>
             </div>
           </div>
 

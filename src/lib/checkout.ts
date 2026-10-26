@@ -87,6 +87,40 @@ export function isValidPhone(raw: string) {
   return false;
 }
 
+/** First or last name — letters (incl. Czech), spaces, hyphen, apostrophe. */
+export function isValidPersonName(raw: string) {
+  const v = raw.trim();
+  if (v.length < 2 || v.length > 60) return false;
+  return /^[\p{L}][\p{L}\s'\-]*[\p{L}]$/u.test(v) || /^[\p{L}]{2,}$/u.test(v);
+}
+
+export function isValidEmail(raw: string) {
+  const v = raw.trim();
+  if (v.length < 5 || v.length > 120) return false;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(v);
+}
+
+export function contactValidationError(input: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+}): string {
+  if (!isValidPersonName(input.firstName)) {
+    return "Vyplňte platné jméno (alespoň 2 písmena).";
+  }
+  if (!isValidPersonName(input.lastName)) {
+    return "Vyplňte platné příjmení (alespoň 2 písmena).";
+  }
+  if (!isValidEmail(input.email)) {
+    return "Vyplňte platný e-mail.";
+  }
+  if (!isValidPhone(input.phone)) {
+    return "Vyplňte platný telefon (9 číslic, nebo +420…).";
+  }
+  return "";
+}
+
 export function isStripeConfigured() {
   return Boolean(
     process.env.STRIPE_SECRET_KEY?.trim() &&

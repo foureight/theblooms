@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
+import { verifyCaptchaChallenge } from "@/lib/captcha";
 import {
   DELIVERY_OPTIONS,
   calculateShipping,
+  contactValidationError,
   formatAddress,
   isDeliveryType,
   isStripeConfigured,
-  isValidPhone,
   type DeliveryAddress,
   type PacketaPoint,
 } from "@/lib/checkout";
@@ -115,10 +116,30 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Neplatná data." }, { status: 400 });
     }
 
-    const name = asString(body.name);
+    // Honeypot — bots that fill hidden fields are rejected quietly
+    if (typeof body.website === "string" && body.website.trim() !== "") {
+      return NextResponse.json({
+        ok: true,
+        orderId: "ok",
+        provider: "mock",
+        url: "/",
+      });
+    }
+
+    if (!verifyCaptchaChallenge(body.captchaToken, body.captchaAnswer)) {
+      return NextResponse.json(
+        { error: "Ověření nesedí. Zkuste nový příklad.", code: "captcha" },
+        { status: 400 },
+      );
+    }
+
+    const firstName = asString(body.firstName);
+    const lastName = asString(body.lastName);
     const email = asString(body.email);
     const phone = asString(body.phone);
     const note = asString(body.note);
+    const nameFromParts = `${firstName} ${lastName}`.trim();
+    const name = nameFromParts || asString(body.name);
     const items = parseItems(body.items);
     // Legacy "box" orders rejected — Z-BOX is not offered.
     const delivery = isDeliveryType(body.delivery) ? body.delivery : "point";
@@ -135,23 +156,21 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!name || !email || !items) {
+    if (!items) {
       return NextResponse.json(
-        { error: "Vyplňte jméno, e-mail a položky košíku." },
+        { error: "Košík je prázdný nebo položky nelze odeslat." },
         { status: 400 },
       );
     }
-    if (!email.includes("@")) {
-      return NextResponse.json({ error: "Neplatný e-mail." }, { status: 400 });
-    }
-    if (!isValidPhone(phone)) {
-      return NextResponse.json(
-        {
-          error:
-            "Pro Zásilkovnu vyplňte platný telefon (9 číslic, nebo +420…).",
-        },
-        { status: 400 },
-      );
+
+    const contactErr = contactValidationError({
+      firstName,
+      lastName,
+      email,
+      phone,
+    });
+    if (contactErr) {
+      return NextResponse.json({ error: contactErr }, { status: 400 });
     }
     if (delivery === "home" && !address) {
       return NextResponse.json(
