@@ -175,3 +175,11 @@ export async function updateOrderShipping(
   await writeOrders(orders);
   return next;
 }
+
+export async function deleteOrder(id: string): Promise<boolean> {
+  const orders = await readOrders();
+  const next = orders.filter((o) => o.id !== id);
+  if (next.length === orders.length) return false;
+  await writeOrders(next);
+  return true;
+}

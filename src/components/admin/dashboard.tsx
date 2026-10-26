@@ -152,6 +152,27 @@ export function AdminDashboard({
     }
   }
 
+  async function removeOrder(id: string) {
+    if (!confirm(`Trvale smazat objednávku #${id}?`)) return;
+    setStatus("");
+    try {
+      const res = await fetch("/api/admin/orders", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      const data = (await res.json()) as { error?: string; ok?: boolean };
+      if (!res.ok || !data.ok) {
+        setStatus(data.error || "Objednávku se nepodařilo smazat.");
+        return;
+      }
+      setOrders((prev) => prev.filter((o) => o.id !== id));
+      setStatus(`Objednávka #${id} smazána.`);
+    } catch {
+      setStatus("Síťová chyba při mazání objednávky.");
+    }
+  }
+
   async function createPacketaPackets(orderId: string) {
     setStatus("");
     try {
@@ -1341,6 +1362,13 @@ export function AdminDashboard({
                         Znovu nová
                       </button>
                     ) : null}
+                    <button
+                      type="button"
+                      onClick={() => void removeOrder(order.id)}
+                      className="border border-border px-3 py-1.5 text-[10px] tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white"
+                    >
+                      Smazat
+                    </button>
                     {order.shipping &&
                     order.status !== "cancelled" &&
                     order.status !== "pending_payment" ? (

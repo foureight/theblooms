@@ -5,6 +5,7 @@ import {
   verifySessionToken,
 } from "@/lib/cms/store";
 import {
+  deleteOrder,
   readOrders,
   updateOrderStatus,
   type OrderStatus,
@@ -47,4 +48,23 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ error: "Objednávka nenalezena." }, { status: 404 });
   }
   return NextResponse.json({ ok: true, order });
+}
+
+export async function DELETE(req: Request) {
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ error: "Nejste přihlášeni." }, { status: 401 });
+  }
+  const body = (await req.json().catch(() => null)) as { id?: string } | null;
+  const id = body?.id?.trim();
+  if (!id) {
+    return NextResponse.json({ error: "Chybí id." }, { status: 400 });
+  }
+  const ok = await deleteOrder(id);
+  if (!ok) {
+    return NextResponse.json(
+      { error: "Objednávka nenalezena." },
+      { status: 404 },
+    );
+  }
+  return NextResponse.json({ ok: true, id });
 }
