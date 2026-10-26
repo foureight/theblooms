@@ -37,6 +37,13 @@ export async function POST(req: Request) {
     }
 
     if (action === "cancel") {
+      // Only unpaid checkouts can be cancelled via this public callback.
+      if (order.status !== "pending_payment") {
+        return NextResponse.json(
+          { error: "Objednávku nelze zrušit." },
+          { status: 400 },
+        );
+      }
       await updateOrderStatus(orderId, "cancelled");
       return NextResponse.json({ ok: true, status: "cancelled" });
     }
@@ -64,8 +71,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: true, status: "paid", orderId });
     }
 
-    // Mock card payment (local / missing Stripe keys)
-    if (order.payment?.provider === "mock" || !isStripeConfigured()) {
+    // Mock card payment — only for orders explicitly created as mock provider.
+    // Do not treat "Stripe missing" as an open pay switch on production.
+    if (order.payment?.provider === "mock") {
       await markOrderPaid(orderId);
       return NextResponse.json({ ok: true, status: "paid", orderId });
     }
