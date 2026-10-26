@@ -13,8 +13,10 @@ import { Label } from "@/components/ui/label";
 import {
   DELIVERY_OPTIONS,
   calculateShipping,
+  contactFieldErrors,
   contactValidationError,
   formatAddress,
+  type ContactFields,
   type DeliveryAddress,
   type DeliveryType,
   type PacketaPoint,
@@ -136,6 +138,11 @@ export default function CartPage() {
     delivery: false,
     payment: false,
   });
+  /** After „Pokračovat“ / platba — show red frames on invalid contact fields. */
+  const [contactAttempted, setContactAttempted] = useState(false);
+  const [contactTouched, setContactTouched] = useState<
+    Partial<Record<keyof ContactFields, boolean>>
+  >({});
 
   const loadCaptcha = useCallback(async () => {
     setCaptchaLoading(true);
@@ -210,18 +217,33 @@ export default function CartPage() {
         : !billing.street.trim() || !billing.city.trim() || !billing.zip.trim()
           ? "Vyplňte fakturační adresu."
           : "";
-  const contactFieldsError = contactValidationError({
+  const contactValues: ContactFields = {
     firstName,
     lastName,
     email,
     phone,
-  });
+  };
+  const fieldErrors = contactFieldErrors(contactValues);
+  const contactFieldsError = contactValidationError(contactValues);
   const captchaError = !captchaAnswer.trim()
     ? "Vyplňte ověření (výsledek příkladu)."
     : !captcha
       ? "Ověření se nepodařilo načíst — zkuste nový příklad."
       : "";
   const contactError = contactFieldsError || billingError || captchaError;
+
+  function showFieldError(field: keyof ContactFields) {
+    return Boolean(
+      fieldErrors[field] && (contactAttempted || contactTouched[field]),
+    );
+  }
+
+  function markContactTouched(field: keyof ContactFields) {
+    setContactTouched((t) => ({ ...t, [field]: true }));
+  }
+
+  const invalidInputClass =
+    "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20";
   const deliveryError =
     delivery === "home"
       ? !address.street.trim() || !address.city.trim() || !address.zip.trim()
@@ -254,6 +276,9 @@ export default function CartPage() {
   }
 
   function advance(from: SectionId, to: SectionId, sectionError: string) {
+    if (from === "contact") {
+      setContactAttempted(true);
+    }
     if (sectionError) {
       setError(sectionError);
       return;
@@ -264,6 +289,7 @@ export default function CartPage() {
 
   async function payWithCard() {
     setError("");
+    setContactAttempted(true);
     if (contactError) {
       setOpen((o) => ({ ...o, contact: true }));
       setError(contactError);
@@ -427,9 +453,26 @@ export default function CartPage() {
                 id="order-first-name"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
+                onBlur={() => markContactTouched("firstName")}
                 autoComplete="given-name"
-                className="h-11 rounded-none"
+                aria-invalid={showFieldError("firstName") || undefined}
+                aria-describedby={
+                  showFieldError("firstName") ? "order-first-name-err" : undefined
+                }
+                className={cn(
+                  "h-11 rounded-none",
+                  showFieldError("firstName") && invalidInputClass,
+                )}
               />
+              {showFieldError("firstName") ? (
+                <p
+                  id="order-first-name-err"
+                  role="alert"
+                  className="text-xs text-destructive"
+                >
+                  {fieldErrors.firstName}
+                </p>
+              ) : null}
             </div>
             <div className="space-y-2">
               <Label htmlFor="order-last-name">Příjmení</Label>
@@ -437,9 +480,26 @@ export default function CartPage() {
                 id="order-last-name"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
+                onBlur={() => markContactTouched("lastName")}
                 autoComplete="family-name"
-                className="h-11 rounded-none"
+                aria-invalid={showFieldError("lastName") || undefined}
+                aria-describedby={
+                  showFieldError("lastName") ? "order-last-name-err" : undefined
+                }
+                className={cn(
+                  "h-11 rounded-none",
+                  showFieldError("lastName") && invalidInputClass,
+                )}
               />
+              {showFieldError("lastName") ? (
+                <p
+                  id="order-last-name-err"
+                  role="alert"
+                  className="text-xs text-destructive"
+                >
+                  {fieldErrors.lastName}
+                </p>
+              ) : null}
             </div>
             <div className="space-y-2">
               <Label htmlFor="order-email">E-mail</Label>
@@ -448,9 +508,26 @@ export default function CartPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                onBlur={() => markContactTouched("email")}
                 autoComplete="email"
-                className="h-11 rounded-none"
+                aria-invalid={showFieldError("email") || undefined}
+                aria-describedby={
+                  showFieldError("email") ? "order-email-err" : undefined
+                }
+                className={cn(
+                  "h-11 rounded-none",
+                  showFieldError("email") && invalidInputClass,
+                )}
               />
+              {showFieldError("email") ? (
+                <p
+                  id="order-email-err"
+                  role="alert"
+                  className="text-xs text-destructive"
+                >
+                  {fieldErrors.email}
+                </p>
+              ) : null}
             </div>
             <div className="space-y-2">
               <Label htmlFor="order-phone">Telefon</Label>
@@ -459,10 +536,27 @@ export default function CartPage() {
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
+                onBlur={() => markContactTouched("phone")}
                 autoComplete="tel"
                 placeholder="+420…"
-                className="h-11 rounded-none"
+                aria-invalid={showFieldError("phone") || undefined}
+                aria-describedby={
+                  showFieldError("phone") ? "order-phone-err" : undefined
+                }
+                className={cn(
+                  "h-11 rounded-none",
+                  showFieldError("phone") && invalidInputClass,
+                )}
               />
+              {showFieldError("phone") ? (
+                <p
+                  id="order-phone-err"
+                  role="alert"
+                  className="text-xs text-destructive"
+                >
+                  {fieldErrors.phone}
+                </p>
+              ) : null}
             </div>
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="order-note">
@@ -514,7 +608,18 @@ export default function CartPage() {
                   onChange={(e) => setCaptchaAnswer(e.target.value)}
                   disabled={captchaLoading || !captcha}
                   placeholder="Výsledek"
-                  className="h-11 max-w-[8rem] rounded-none"
+                  aria-invalid={
+                    (contactAttempted && Boolean(captchaError)) || undefined
+                  }
+                  aria-describedby={
+                    contactAttempted && captchaError
+                      ? "order-captcha-err"
+                      : undefined
+                  }
+                  className={cn(
+                    "h-11 max-w-[8rem] rounded-none",
+                    contactAttempted && captchaError && invalidInputClass,
+                  )}
                 />
                 <button
                   type="button"
@@ -524,6 +629,15 @@ export default function CartPage() {
                   Nový příklad
                 </button>
               </div>
+              {contactAttempted && captchaError ? (
+                <p
+                  id="order-captcha-err"
+                  role="alert"
+                  className="text-xs text-destructive"
+                >
+                  {captchaError}
+                </p>
+              ) : null}
             </div>
           </div>
 

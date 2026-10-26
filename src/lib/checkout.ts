@@ -100,25 +100,55 @@ export function isValidEmail(raw: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(v);
 }
 
-export function contactValidationError(input: {
+export type ContactFields = {
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
-}): string {
-  if (!isValidPersonName(input.firstName)) {
-    return "Vyplňte platné jméno (alespoň 2 písmena).";
+};
+
+export type ContactFieldErrors = Partial<Record<keyof ContactFields, string>>;
+
+/** Per-field messages for the cart contact form (empty vs invalid). */
+export function contactFieldErrors(input: ContactFields): ContactFieldErrors {
+  const errors: ContactFieldErrors = {};
+
+  if (!input.firstName.trim()) {
+    errors.firstName = "Vyplňte jméno.";
+  } else if (!isValidPersonName(input.firstName)) {
+    errors.firstName = "Jméno musí mít alespoň 2 písmena (bez číslic).";
   }
-  if (!isValidPersonName(input.lastName)) {
-    return "Vyplňte platné příjmení (alespoň 2 písmena).";
+
+  if (!input.lastName.trim()) {
+    errors.lastName = "Vyplňte příjmení.";
+  } else if (!isValidPersonName(input.lastName)) {
+    errors.lastName = "Příjmení musí mít alespoň 2 písmena (bez číslic).";
   }
-  if (!isValidEmail(input.email)) {
-    return "Vyplňte platný e-mail.";
+
+  if (!input.email.trim()) {
+    errors.email = "Vyplňte e-mail.";
+  } else if (!isValidEmail(input.email)) {
+    errors.email = "E-mail nevypadá správně (např. jmeno@domena.cz).";
   }
-  if (!isValidPhone(input.phone)) {
-    return "Vyplňte platný telefon (9 číslic, nebo +420…).";
+
+  if (!input.phone.trim()) {
+    errors.phone = "Vyplňte telefon.";
+  } else if (!isValidPhone(input.phone)) {
+    errors.phone = "Telefon: 9 číslic, nebo +420… / +421…";
   }
-  return "";
+
+  return errors;
+}
+
+export function contactValidationError(input: ContactFields): string {
+  const errors = contactFieldErrors(input);
+  return (
+    errors.firstName ||
+    errors.lastName ||
+    errors.email ||
+    errors.phone ||
+    ""
+  );
 }
 
 export function isStripeConfigured() {
