@@ -3,11 +3,13 @@
 # Import infrastruktury: zerops-import.yml (Local Storage `vol` + Node.js `app`)
 #
 # NEXT_PUBLIC_* patří do build.envVariables — Next.js je vloží do client bundle
-# při `npm run build`. (Dříve byly jen pod run — to pro widget nestačí spolehlivě.)
+# při `npm run build`. (Dříve byly jen pod run.)
 #
-# Packeta:
-#   NEXT_PUBLIC_PACKETA_API_KEY — veřejný widget klíč (build + ideálně i run)
-#   PACKETA_API_PASSWORD        — API heslo jako Secret ve službě app (jen runtime)
+# Packeta widget klíč:
+#   1) Nastavte NEXT_PUBLIC_PACKETA_API_KEY ve Zerops GUI u služby `app`
+#      (build kontejner má všechny service env vars), NEBO
+#   2) Odkomentujte řádek níže a vložte veřejný widget klíč z Packeta.
+# API heslo PACKETA_API_PASSWORD nastavte jako Secret ve službě `app` (jen runtime).
 zerops:
   - setup: app
     build:
@@ -15,9 +17,7 @@ zerops:
       envVariables:
         NEXT_PUBLIC_SITE_URL: https://theblooms.cz
         NEXT_PUBLIC_TYPEKIT_ID: zwe5oqo
-        # Stejný způsob jako SITE_URL / TYPEKIT. Doplňte widget klíč z Packeta
-        # (klientská sekce), nebo nastavte stejnojmennou env ve Zerops GUI před buildem.
-        NEXT_PUBLIC_PACKETA_API_KEY: ""
+        # NEXT_PUBLIC_PACKETA_API_KEY: "VAS_WIDGET_KLIC_Z_PACKETY"
       buildCommands:
         - npm ci
         - npm run build
@@ -34,12 +34,12 @@ zerops:
         NODE_ENV: production
         NEXT_PUBLIC_SITE_URL: https://theblooms.cz
         NEXT_PUBLIC_TYPEKIT_ID: zwe5oqo
-        NEXT_PUBLIC_PACKETA_API_KEY: ""
+        # NEXT_PUBLIC_PACKETA_API_KEY: "VAS_WIDGET_KLIC_Z_PACKETY"
         UPLOADS_DIR: /srv/uploads
         PACKETA_SENDER_ID: "578009"
         PACKETA_ESHOP: theblooms
         PACKETA_HOME_CARRIER_ID: "106"
-        # PACKETA_API_PASSWORD nastavte jako Secret ve službě app
+        # PACKETA_API_PASSWORD — Secret ve Zerops GUI
       start: npm run start
       healthCheck:
         httpGet:

@@ -7,6 +7,7 @@
 # 2. Nastavte silné heslo ADMIN_PASSWORD
 # 3. Přidejte vlastní doménu / public HTTP access
 # 4. Zkontrolujte NEXT_PUBLIC_SITE_URL
+# 5. Doplňte NEXT_PUBLIC_PACKETA_API_KEY + Secret PACKETA_API_PASSWORD
 #
 # Pokud máte veřejné GitHub/GitLab repo, můžete místo kroku 1 odkomentovat
 # buildFromGit + zeropsSetup níže a build spustí hned při importu.
@@ -40,14 +41,13 @@ services:
       ADMIN_PASSWORD: zmente-toto-heslo
       ADMIN_SECRET: <@generateRandomString(<48>)>
       CAPTCHA_SECRET: <@generateRandomString(<48>)>
-      # API heslo Zásilkovny (client section) — jen runtime, ne do veřejného gitu
       PACKETA_API_PASSWORD: zmente-packeta-api-heslo
     envVariables:
       NODE_ENV: production
       UPLOADS_DIR: /srv/uploads
       NEXT_PUBLIC_SITE_URL: https://theblooms.cz
       NEXT_PUBLIC_TYPEKIT_ID: zwe5oqo
-      # Veřejný widget klíč — doplňte z Packeta / Zerops GUI (musí být i při buildu)
+      # Veřejný widget klíč z Packeta — doplňte před produkčním buildem
       NEXT_PUBLIC_PACKETA_API_KEY: ""
       PACKETA_SENDER_ID: "578009"
       PACKETA_ESHOP: theblooms
