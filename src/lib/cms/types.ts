@@ -20,6 +20,8 @@ export type CmsWreathSizeOverride = {
 export type CmsWreathOverride = {
   /** CMS-only entry (not in code defaults) */
   custom?: boolean;
+  /** Hide a built-in wreath from the e-shop */
+  hidden?: boolean;
   name?: string;
   description?: string;
   price?: number;

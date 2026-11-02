@@ -703,7 +703,12 @@ export function AdminDashboard({
 
   const orderedWreaths = useMemo(() => {
     const customs = Object.entries(content.wreaths ?? {})
-      .filter(([slug, o]) => !baseWreathSlugs.has(slug) && Boolean(o.name?.trim()))
+      .filter(
+        ([slug, o]) =>
+          !baseWreathSlugs.has(slug) &&
+          !o.hidden &&
+          Boolean(o.name?.trim()),
+      )
       .map(([slug, o]) => {
         const price = typeof o.price === "number" ? o.price : 990;
         const size = o.size?.trim() || DEFAULT_SIZE_LABELS.m;
@@ -721,7 +726,9 @@ export function AdminDashboard({
         };
       });
     const merged = [
-      ...baseWreaths.map((w) => {
+      ...baseWreaths
+        .filter((w) => !content.wreaths[w.slug]?.hidden)
+        .map((w) => {
         const o = content.wreaths[w.slug];
         const price =
           typeof o?.price === "number" && Number.isFinite(o.price)
@@ -1046,8 +1053,19 @@ export function AdminDashboard({
   }
 
   function removeWreath(slug: string) {
-    if (!confirm("Smazat tento věnec z webu?")) return;
+    if (!confirm("Smazat tento věnec z e-shopu?")) return;
+    const isBase = baseWreathSlugs.has(slug);
     setContent((c) => {
+      if (isBase) {
+        return {
+          ...c,
+          wreaths: {
+            ...c.wreaths,
+            [slug]: { ...c.wreaths[slug], hidden: true },
+          },
+          wreathOrder: (c.wreathOrder ?? []).filter((s) => s !== slug),
+        };
+      }
       const next = { ...c.wreaths };
       delete next[slug];
       return {
@@ -1056,7 +1074,8 @@ export function AdminDashboard({
         wreathOrder: (c.wreathOrder ?? []).filter((s) => s !== slug),
       };
     });
-    setStatus("Věnec odebrán. Uložte změny.");
+    setOpenWreathSlug((current) => (current === slug ? null : current));
+    setStatus("Věnec smazán z e-shopu. Uložte změny.");
   }
 
   function addWorkshop() {
@@ -2104,7 +2123,7 @@ export function AdminDashboard({
             <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="text-sm text-muted-foreground">
                 Přehled: fotka, název, sezóna. Kliknutím otevřete editaci.
-                Šipkami měníte pořadí na webu.
+                Šipkami měníte pořadí; Smazat odstraní položku z e-shopu.
               </p>
               <button
                 type="button"
@@ -2200,15 +2219,13 @@ export function AdminDashboard({
                       >
                         ↓
                       </button>
-                      {w.custom ? (
-                        <button
-                          type="button"
-                          onClick={() => removeWreath(w.slug)}
-                          className="px-2 py-2 text-[10px] tracking-[0.12em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white sm:px-3"
-                        >
-                          Smazat
-                        </button>
-                      ) : null}
+                      <button
+                        type="button"
+                        onClick={() => removeWreath(w.slug)}
+                        className="px-2 py-2 text-[10px] tracking-[0.12em] uppercase text-muted-foreground transition-colors hover:bg-moss-deep hover:text-white sm:px-3"
+                      >
+                        Smazat
+                      </button>
                     </div>
                   </div>
 

@@ -301,34 +301,36 @@ export function mergeWedding(
 
 export function mergeWreaths(cms: CmsContent): Wreath[] {
   const baseSlugs = new Set(baseWreaths.map((w) => w.slug));
-  const merged = baseWreaths.map((w) => {
-    const o = cms.wreaths[w.slug];
-    if (!o) {
-      return { ...w };
-    }
-    const slots = mergeWreathSizeSlots(w.price, w.size, o);
-    const synced = syncPriceFromSizes(
-      slots,
-      o.price,
-      o.size,
-      w.price,
-      w.size,
-    );
-    return {
-      ...w,
-      name: cmsString(o.name, w.name),
-      description: cmsString(o.description, w.description),
-      price: synced.price,
-      size: synced.size,
-      sizes: synced.sizes,
-      season: (cmsString(o.season, w.season) || w.season) as Wreath["season"],
-      available: cmsBool(o.available, w.available),
-      image: cmsString(o.image, w.image),
-    };
-  });
+  const merged = baseWreaths
+    .filter((w) => !cms.wreaths[w.slug]?.hidden)
+    .map((w) => {
+      const o = cms.wreaths[w.slug];
+      if (!o) {
+        return { ...w };
+      }
+      const slots = mergeWreathSizeSlots(w.price, w.size, o);
+      const synced = syncPriceFromSizes(
+        slots,
+        o.price,
+        o.size,
+        w.price,
+        w.size,
+      );
+      return {
+        ...w,
+        name: cmsString(o.name, w.name),
+        description: cmsString(o.description, w.description),
+        price: synced.price,
+        size: synced.size,
+        sizes: synced.sizes,
+        season: (cmsString(o.season, w.season) || w.season) as Wreath["season"],
+        available: cmsBool(o.available, w.available),
+        image: cmsString(o.image, w.image),
+      };
+    });
 
   for (const [slug, o] of Object.entries(cms.wreaths ?? {})) {
-    if (baseSlugs.has(slug)) continue;
+    if (baseSlugs.has(slug) || o.hidden) continue;
     const name = o.name?.trim();
     if (!name) continue;
     const basePrice = cmsNumber(o.price, 990);
@@ -374,13 +376,25 @@ export function defaultWreathOrder(): string[] {
 }
 
 export function resolveWreathOrder(cms: CmsContent): string[] {
-  const base = baseWreaths.map((w) => w.slug);
+  const base = baseWreaths
+    .filter((w) => !cms.wreaths[w.slug]?.hidden)
+    .map((w) => w.slug);
   const custom = Object.entries(cms.wreaths ?? {})
-    .filter(([slug, o]) => !base.includes(slug) && Boolean(o.name?.trim()))
+    .filter(
+      ([slug, o]) =>
+        !baseWreaths.some((w) => w.slug === slug) &&
+        !o.hidden &&
+        Boolean(o.name?.trim()),
+    )
     .map(([slug]) => slug);
   const all = [...base, ...custom];
   const saved = (cms.wreathOrder ?? []).filter((s) => all.includes(s));
-  if (saved.length === 0) return [...defaultWreathOrder(), ...custom];
+  if (saved.length === 0) {
+    return [
+      ...defaultWreathOrder().filter((s) => all.includes(s)),
+      ...custom,
+    ];
+  }
   const missing = all.filter((s) => !saved.includes(s));
   return [...saved, ...missing];
 }
