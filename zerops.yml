@@ -28,7 +28,7 @@ zerops:
         httpGet:
           port: 3000
           path: /api/health
-        failureTimeout: 60
+        failureTimeout: "60s"
         retryPeriod: "10s"
     run:
       base: nodejs@22
