@@ -1,7 +1,9 @@
-import { mkdir, rm } from "fs/promises";
+import { mkdir, rm, stat } from "fs/promises";
 
 const DEFAULT_RETRIES = 80;
 const RETRY_MS = 50;
+/** A lock older than this is left over from a crashed/restarted container. */
+const STALE_MS = 30_000;
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -29,6 +31,15 @@ export async function withFileLock<T>(
     } catch (err) {
       const code = (err as NodeJS.ErrnoException)?.code;
       if (code !== "EEXIST") throw err;
+      // Break locks abandoned by a process that died mid-write; otherwise
+      // every later order would fail until someone deletes the lock by hand.
+      const age = await stat(lockDir)
+        .then((s) => Date.now() - s.mtimeMs)
+        .catch(() => 0);
+      if (age > STALE_MS) {
+        await rm(lockDir, { recursive: true, force: true }).catch(() => {});
+        continue;
+      }
       await sleep(retryMs);
     }
   }
