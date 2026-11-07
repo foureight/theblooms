@@ -1,6 +1,7 @@
-import { mkdir, readFile, writeFile } from "fs/promises";
+import { mkdir, readFile, rename, writeFile } from "fs/promises";
 import path from "path";
 import { randomUUID } from "crypto";
+import { withFileLock } from "@/lib/file-lock";
 import type {
   Order,
   OrderCustomer,
@@ -49,7 +50,7 @@ function normalizeOrder(raw: Order): Order {
   };
 }
 
-export async function readOrders(): Promise<Order[]> {
+async function readOrdersUnlocked(): Promise<Order[]> {
   await ensureOrdersFile();
   try {
     const raw = await readFile(ordersPath(), "utf8");
@@ -64,13 +65,32 @@ export async function readOrders(): Promise<Order[]> {
   }
 }
 
-async function writeOrders(orders: Order[]) {
+async function writeOrdersUnlocked(orders: Order[]) {
   await ensureOrdersFile();
-  await writeFile(
-    ordersPath(),
-    JSON.stringify({ orders }, null, 2),
-    "utf8",
-  );
+  const file = ordersPath();
+  const tmp = `${file}.${process.pid}.${Date.now()}.tmp`;
+  await writeFile(tmp, JSON.stringify({ orders }, null, 2), "utf8");
+  await rename(tmp, file);
+}
+
+/** Read without exclusive lock (OK for admin lists / display). */
+export async function readOrders(): Promise<Order[]> {
+  return readOrdersUnlocked();
+}
+
+/**
+ * Serialize all read-modify-write updates so two containers
+ * sharing Local Storage cannot clobber each other's writes.
+ */
+async function mutateOrders(
+  mutator: (orders: Order[]) => Order[] | Promise<Order[]>,
+): Promise<Order[]> {
+  return withFileLock(ordersPath(), async () => {
+    const current = await readOrdersUnlocked();
+    const next = await mutator(current);
+    await writeOrdersUnlocked(next);
+    return next;
+  });
 }
 
 export async function getOrder(id: string): Promise<Order | null> {
@@ -87,7 +107,6 @@ export async function createOrder(input: {
   payment?: OrderPayment;
   status?: OrderStatus;
 }): Promise<Order> {
-  const orders = await readOrders();
   const order: Order = {
     id: randomUUID(),
     createdAt: new Date().toISOString(),
@@ -99,8 +118,10 @@ export async function createOrder(input: {
     payment: input.payment,
     total: input.total,
   };
-  orders.unshift(order);
-  await writeOrders(orders);
+  await mutateOrders((orders) => {
+    orders.unshift(order);
+    return orders;
+  });
   return order;
 }
 
@@ -108,39 +129,43 @@ export async function updateOrderStatus(
   id: string,
   status: OrderStatus,
 ): Promise<Order | null> {
-  const orders = await readOrders();
-  const i = orders.findIndex((o) => o.id === id);
-  if (i < 0) return null;
-  const current = orders[i]!;
-  const next = { ...current, status };
-  orders[i] = next;
-  await writeOrders(orders);
-  return next;
+  let updated: Order | null = null;
+  await mutateOrders((orders) => {
+    const i = orders.findIndex((o) => o.id === id);
+    if (i < 0) return orders;
+    const current = orders[i]!;
+    updated = { ...current, status };
+    orders[i] = updated;
+    return orders;
+  });
+  return updated;
 }
 
 export async function markOrderPaid(
   id: string,
   opts?: { stripeSessionId?: string },
 ): Promise<Order | null> {
-  const orders = await readOrders();
-  const i = orders.findIndex((o) => o.id === id);
-  if (i < 0) return null;
-  const current = orders[i]!;
-  const next: Order = {
-    ...current,
-    status: current.status === "cancelled" ? current.status : "new",
-    payment: {
-      method: "card",
-      provider: current.payment?.provider ?? "mock",
-      status: "paid",
-      stripeSessionId:
-        opts?.stripeSessionId || current.payment?.stripeSessionId,
-      paidAt: new Date().toISOString(),
-    },
-  };
-  orders[i] = next;
-  await writeOrders(orders);
-  return next;
+  let updated: Order | null = null;
+  await mutateOrders((orders) => {
+    const i = orders.findIndex((o) => o.id === id);
+    if (i < 0) return orders;
+    const current = orders[i]!;
+    updated = {
+      ...current,
+      status: current.status === "cancelled" ? current.status : "new",
+      payment: {
+        method: "card",
+        provider: current.payment?.provider ?? "mock",
+        status: "paid",
+        stripeSessionId:
+          opts?.stripeSessionId || current.payment?.stripeSessionId,
+        paidAt: new Date().toISOString(),
+      },
+    };
+    orders[i] = updated;
+    return orders;
+  });
+  return updated;
 }
 
 export async function updateOrderPayment(
@@ -148,38 +173,44 @@ export async function updateOrderPayment(
   payment: OrderPayment,
   status?: OrderStatus,
 ): Promise<Order | null> {
-  const orders = await readOrders();
-  const i = orders.findIndex((o) => o.id === id);
-  if (i < 0) return null;
-  const current = orders[i]!;
-  const next: Order = {
-    ...current,
-    payment,
-    status: status ?? current.status,
-  };
-  orders[i] = next;
-  await writeOrders(orders);
-  return next;
+  let updated: Order | null = null;
+  await mutateOrders((orders) => {
+    const i = orders.findIndex((o) => o.id === id);
+    if (i < 0) return orders;
+    const current = orders[i]!;
+    updated = {
+      ...current,
+      payment,
+      status: status ?? current.status,
+    };
+    orders[i] = updated;
+    return orders;
+  });
+  return updated;
 }
 
 export async function updateOrderShipping(
   id: string,
   shipping: OrderShipping,
 ): Promise<Order | null> {
-  const orders = await readOrders();
-  const i = orders.findIndex((o) => o.id === id);
-  if (i < 0) return null;
-  const current = orders[i]!;
-  const next: Order = { ...current, shipping };
-  orders[i] = next;
-  await writeOrders(orders);
-  return next;
+  let updated: Order | null = null;
+  await mutateOrders((orders) => {
+    const i = orders.findIndex((o) => o.id === id);
+    if (i < 0) return orders;
+    const current = orders[i]!;
+    updated = { ...current, shipping };
+    orders[i] = updated;
+    return orders;
+  });
+  return updated;
 }
 
 export async function deleteOrder(id: string): Promise<boolean> {
-  const orders = await readOrders();
-  const next = orders.filter((o) => o.id !== id);
-  if (next.length === orders.length) return false;
-  await writeOrders(next);
-  return true;
+  let removed = false;
+  await mutateOrders((orders) => {
+    const next = orders.filter((o) => o.id !== id);
+    removed = next.length !== orders.length;
+    return next;
+  });
+  return removed;
 }
